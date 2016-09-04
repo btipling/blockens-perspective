@@ -1,0 +1,364 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		596DD17610E888E2F51122D3 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 596DDA8539DA9FB8CFC085B9 /* Info.plist */; };
+		596DD26812FC658D99CC9622 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 596DD693FFA52B0A437EFF10 /* MainMenu.xib */; };
+		596DD346B1E75871BE2BC75C /* GameWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DD71509758D619368DD8F /* GameWindow.swift */; };
+		596DD3738CD2FDB309C45714 /* CubeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DD1350F3DA099677B40EE /* CubeController.swift */; };
+		596DD40E6ADAC37AA664253D /* SkyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DD4B138296B5B5BE1AB54 /* SkyController.swift */; };
+		596DD42720830726C72D0BEF /* RenderUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DD487FA02D6C3E5D44C7A /* RenderUtils.swift */; };
+		596DD46793DCDF17FC7CB954 /* Cube.metal in Sources */ = {isa = PBXBuildFile; fileRef = 596DD1912B9EB22332E369CC /* Cube.metal */; };
+		596DD46F6ADF9DE25D88B586 /* utils.metal in Sources */ = {isa = PBXBuildFile; fileRef = 596DDF76465D421FA5A59446 /* utils.metal */; };
+		596DD7D7015F85301790101B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 596DD6FE29D7853C86BB1915 /* Assets.xcassets */; };
+		596DDA3141FB697E508AB7B4 /* utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DD1C9EF7B9A6114F21ED0 /* utils.swift */; };
+		596DDB70DE8BC4A1BF45BD03 /* RendererController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DDBF4F807336EDB86EBB8 /* RendererController.swift */; };
+		596DDB79F7A7A8CA2B08EC51 /* CubeRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DDDAFF4D2DB176C083092 /* CubeRenderer.swift */; };
+		596DDC5BCCFDFE0C5304FAB9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DD6F5A7DF142BE342CB0A /* AppDelegate.swift */; };
+		596DDC5E027C9509CA68960F /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 596DDCEE299FF458757F2002 /* Shaders.metal */; };
+		596DDCCE8F426D3D180A5E6E /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DDEDFB2F17F413AB3C038 /* GameViewController.swift */; };
+		596DDDAF64E0833AD5DA7782 /* Sky.metal in Sources */ = {isa = PBXBuildFile; fileRef = 596DD71252DC62F6946FB9A2 /* Sky.metal */; };
+		596DDF9DA312D49961BD799C /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DD1AE74D3D2F6AF581CD5 /* Renderer.swift */; };
+		596DDFF20F0981C889BA83C0 /* SkyRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DDE1C9848B3D3260FE9A4 /* SkyRenderer.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		596DD1350F3DA099677B40EE /* CubeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CubeController.swift; sourceTree = "<group>"; };
+		596DD1912B9EB22332E369CC /* Cube.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Cube.metal; sourceTree = "<group>"; };
+		596DD1AE74D3D2F6AF581CD5 /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		596DD1C9EF7B9A6114F21ED0 /* utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = utils.swift; sourceTree = "<group>"; };
+		596DD487FA02D6C3E5D44C7A /* RenderUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenderUtils.swift; sourceTree = "<group>"; };
+		596DD4B138296B5B5BE1AB54 /* SkyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkyController.swift; sourceTree = "<group>"; };
+		596DD525BBEEF0271C7B5C29 /* blockens-perspective.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "blockens-perspective.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		596DD6F5A7DF142BE342CB0A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		596DD6FE29D7853C86BB1915 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		596DD71252DC62F6946FB9A2 /* Sky.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Sky.metal; sourceTree = "<group>"; };
+		596DD71509758D619368DD8F /* GameWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameWindow.swift; sourceTree = "<group>"; };
+		596DDA5DB18DAFE007088EA9 /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
+		596DDA8539DA9FB8CFC085B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
+		596DDBF1A31AB6EF47CF84E9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		596DDBF4F807336EDB86EBB8 /* RendererController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RendererController.swift; sourceTree = "<group>"; };
+		596DDCEE299FF458757F2002 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		596DDDAFF4D2DB176C083092 /* CubeRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CubeRenderer.swift; sourceTree = "<group>"; };
+		596DDE1C9848B3D3260FE9A4 /* SkyRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkyRenderer.swift; sourceTree = "<group>"; };
+		596DDEDFB2F17F413AB3C038 /* GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		596DDF76465D421FA5A59446 /* utils.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = utils.metal; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		596DD2830DA85C6BA2F249EC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		596DD1A9B919E746DAA4295B /* Sky */ = {
+			isa = PBXGroup;
+			children = (
+				596DDE1C9848B3D3260FE9A4 /* SkyRenderer.swift */,
+				596DD4B138296B5B5BE1AB54 /* SkyController.swift */,
+			);
+			path = Sky;
+			sourceTree = "<group>";
+		};
+		596DD23350A15C7BDF8F00F0 = {
+			isa = PBXGroup;
+			children = (
+				596DDF62D7742CD9F6FC279F /* Products */,
+				596DDB6F5E5DCB635E9475EA /* blockens-perspective */,
+			);
+			sourceTree = "<group>";
+		};
+		596DD58380A3326D3BE992E3 /* Cube */ = {
+			isa = PBXGroup;
+			children = (
+				596DDDAFF4D2DB176C083092 /* CubeRenderer.swift */,
+				596DD1350F3DA099677B40EE /* CubeController.swift */,
+			);
+			path = Cube;
+			sourceTree = "<group>";
+		};
+		596DD707A44A5C2E8DDA49DD /* src */ = {
+			isa = PBXGroup;
+			children = (
+				596DDEDFB2F17F413AB3C038 /* GameViewController.swift */,
+				596DD6F5A7DF142BE342CB0A /* AppDelegate.swift */,
+				596DD1AE74D3D2F6AF581CD5 /* Renderer.swift */,
+				596DDBF4F807336EDB86EBB8 /* RendererController.swift */,
+				596DD1C9EF7B9A6114F21ED0 /* utils.swift */,
+				596DD1A9B919E746DAA4295B /* Sky */,
+				596DD487FA02D6C3E5D44C7A /* RenderUtils.swift */,
+				596DD58380A3326D3BE992E3 /* Cube */,
+				596DD71509758D619368DD8F /* GameWindow.swift */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		596DD7D06295D8F70BB473BB /* shaders */ = {
+			isa = PBXGroup;
+			children = (
+				596DD71252DC62F6946FB9A2 /* Sky.metal */,
+				596DDA5DB18DAFE007088EA9 /* utils.h */,
+				596DDF76465D421FA5A59446 /* utils.metal */,
+				596DD1912B9EB22332E369CC /* Cube.metal */,
+			);
+			path = shaders;
+			sourceTree = "<group>";
+		};
+		596DDB6F5E5DCB635E9475EA /* blockens-perspective */ = {
+			isa = PBXGroup;
+			children = (
+				596DDA8539DA9FB8CFC085B9 /* Info.plist */,
+				596DD6FE29D7853C86BB1915 /* Assets.xcassets */,
+				596DD693FFA52B0A437EFF10 /* MainMenu.xib */,
+				596DDCEE299FF458757F2002 /* Shaders.metal */,
+				596DD7D06295D8F70BB473BB /* shaders */,
+				596DD707A44A5C2E8DDA49DD /* src */,
+			);
+			path = "blockens-perspective";
+			sourceTree = "<group>";
+		};
+		596DDF62D7742CD9F6FC279F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				596DD525BBEEF0271C7B5C29 /* blockens-perspective.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		596DD0392731C577F4DC1786 /* blockens-perspective */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 596DDB3BD43E26491EE58F6A /* Build configuration list for PBXNativeTarget "blockens-perspective" */;
+			buildPhases = (
+				596DD8B50AEE8F97767EEBF2 /* Sources */,
+				596DD2830DA85C6BA2F249EC /* Frameworks */,
+				596DD247C162F095C9502C8A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "blockens-perspective";
+			productName = "blockens-perspective";
+			productReference = 596DD525BBEEF0271C7B5C29 /* blockens-perspective.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		596DDE2B554244093362C540 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0730;
+				ORGANIZATIONNAME = apphacker;
+			};
+			buildConfigurationList = 596DD7C734C68FF43439ACB5 /* Build configuration list for PBXProject "blockens-perspective" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 596DD23350A15C7BDF8F00F0;
+			productRefGroup = 596DDF62D7742CD9F6FC279F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				596DD0392731C577F4DC1786 /* blockens-perspective */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		596DD247C162F095C9502C8A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				596DD17610E888E2F51122D3 /* Info.plist in Resources */,
+				596DD7D7015F85301790101B /* Assets.xcassets in Resources */,
+				596DD26812FC658D99CC9622 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		596DD8B50AEE8F97767EEBF2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				596DDC5E027C9509CA68960F /* Shaders.metal in Sources */,
+				596DDDAF64E0833AD5DA7782 /* Sky.metal in Sources */,
+				596DD46F6ADF9DE25D88B586 /* utils.metal in Sources */,
+				596DD46793DCDF17FC7CB954 /* Cube.metal in Sources */,
+				596DDCCE8F426D3D180A5E6E /* GameViewController.swift in Sources */,
+				596DDC5BCCFDFE0C5304FAB9 /* AppDelegate.swift in Sources */,
+				596DDF9DA312D49961BD799C /* Renderer.swift in Sources */,
+				596DDB70DE8BC4A1BF45BD03 /* RendererController.swift in Sources */,
+				596DDA3141FB697E508AB7B4 /* utils.swift in Sources */,
+				596DDFF20F0981C889BA83C0 /* SkyRenderer.swift in Sources */,
+				596DD40E6ADAC37AA664253D /* SkyController.swift in Sources */,
+				596DD42720830726C72D0BEF /* RenderUtils.swift in Sources */,
+				596DDB79F7A7A8CA2B08EC51 /* CubeRenderer.swift in Sources */,
+				596DD3738CD2FDB309C45714 /* CubeController.swift in Sources */,
+				596DD346B1E75871BE2BC75C /* GameWindow.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		596DD693FFA52B0A437EFF10 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				596DDBF1A31AB6EF47CF84E9 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		596DD0515550442C7055EE6B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		596DD155B9AC765D4D5E9C80 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "blockens-perspective/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.apphacker.blockens-perspective";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		596DD7B431E13967E083F458 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "blockens-perspective/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.apphacker.blockens-perspective";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		596DDC6099E3A909DAC75A88 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		596DD7C734C68FF43439ACB5 /* Build configuration list for PBXProject "blockens-perspective" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				596DD0515550442C7055EE6B /* Debug */,
+				596DDC6099E3A909DAC75A88 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		596DDB3BD43E26491EE58F6A /* Build configuration list for PBXNativeTarget "blockens-perspective" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				596DD155B9AC765D4D5E9C80 /* Debug */,
+				596DD7B431E13967E083F458 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 596DDE2B554244093362C540 /* Project object */;
+}
