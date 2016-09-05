@@ -9,7 +9,7 @@
 import Cocoa
 import MetalKit
 
-class GameViewController: NSViewController, MTKViewDelegate {
+class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
 
     var device: MTLDevice! = nil
 
@@ -35,7 +35,7 @@ class GameViewController: NSViewController, MTKViewDelegate {
             print("Metal is not supported on this device")
             self.view = NSView(frame: self.view.frame)
             return
-        }
+    }
 
         // Setup view properties.
         let view = self.view as! MTKView
@@ -57,48 +57,55 @@ class GameViewController: NSViewController, MTKViewDelegate {
         }
         loadAssets(view, frameInfo: frameInfo)
     }
+    
+    func windowDidResize(notification: NSNotification) {
+        let view = self.view as! MTKView
+        registerViewDimensions(view);
+        cube.update(frameInfo)
+    }
+    
     func handleKeyEvent(event: NSEvent) {
 
         switch event.keyCode {
 
             case A_KEY:
-                frameInfo.rotateX -= ROTATION_CHANGE_MODIFIER
+                frameInfo.rotateX = round((frameInfo.rotateX - ROTATION_CHANGE_MODIFIER) * 10)/10
                 break
             case D_KEY:
-                frameInfo.rotateX += ROTATION_CHANGE_MODIFIER
+                frameInfo.rotateX = round((frameInfo.rotateX + ROTATION_CHANGE_MODIFIER) * 10)/10
                 break
             case S_KEY:
-                frameInfo.rotateY -= ROTATION_CHANGE_MODIFIER
+                frameInfo.rotateY = round((frameInfo.rotateY - ROTATION_CHANGE_MODIFIER) * 10)/10
                 break
             case W_KEY:
-                frameInfo.rotateY += ROTATION_CHANGE_MODIFIER
+                frameInfo.rotateY = round((frameInfo.rotateY + ROTATION_CHANGE_MODIFIER) * 10)/10
                 break
 
             case B_KEY:
-                frameInfo.rotateZ -= ROTATION_CHANGE_MODIFIER
+                frameInfo.rotateZ = round((frameInfo.rotateZ - ROTATION_CHANGE_MODIFIER) * 10)/10
                 break
             case F_KEY:
-                frameInfo.rotateZ += ROTATION_CHANGE_MODIFIER
+                frameInfo.rotateZ = round((frameInfo.rotateZ + ROTATION_CHANGE_MODIFIER) * 10)/10
                 break
 
-            case UP_KEY:
-                frameInfo.yPos += POS_CHANGE_MODIFIER
-                break
-            case DOWN_KEY:
-                frameInfo.yPos -= POS_CHANGE_MODIFIER
-                break
             case LEFT_KEY:
-                frameInfo.xPos -= POS_CHANGE_MODIFIER
+                frameInfo.xPos = round((frameInfo.xPos - POS_CHANGE_MODIFIER) * 10)/10
                 break
             case RIGHT_KEY:
-                frameInfo.xPos += POS_CHANGE_MODIFIER
+                frameInfo.xPos = round((frameInfo.xPos + POS_CHANGE_MODIFIER) * 10)/10
+                break
+            case DOWN_KEY:
+                frameInfo.yPos = round((frameInfo.yPos - POS_CHANGE_MODIFIER) * 10)/10
+                break
+            case UP_KEY:
+                frameInfo.yPos = round((frameInfo.yPos + POS_CHANGE_MODIFIER) * 10)/10
                 break
 
             case O_KEY:
-                frameInfo.zPos += POS_CHANGE_MODIFIER
+                frameInfo.zPos = round((frameInfo.zPos + POS_CHANGE_MODIFIER) * 10)/10
                 break
             case I_KEY:
-                frameInfo.zPos -= POS_CHANGE_MODIFIER
+                frameInfo.zPos = round((frameInfo.zPos - POS_CHANGE_MODIFIER) * 10)/10
                 break
 
             case PLUS_KEY:
@@ -141,17 +148,11 @@ class GameViewController: NSViewController, MTKViewDelegate {
     }
 
     func setupFrameInfo(view: MTKView) -> FrameInfo {
-        let frame = view.frame
-        let width = frame.size.width
-        let height = frame.size.height
-        let maxDimension = max(width, height)
-        let sizeDiff = abs(width - height)
-        let ratio: Float = Float(sizeDiff)/Float(maxDimension)
 
         frameInfo = FrameInfo(
-                viewWidth: Int32(width),
-                viewHeight: Int32(height),
-                viewDiffRatio: ratio,
+                viewWidth: 0,
+                viewHeight: 0,
+                viewDiffRatio: 0.0,
                 rotateX: 2.2,
                 rotateY: 3.9,
                 rotateZ: 1.0,
@@ -160,9 +161,24 @@ class GameViewController: NSViewController, MTKViewDelegate {
                 zPos: -1.9,
                 zoom: 0.2,
                 near: -19.7,
-                far: 15.6
+                far: 19.0
                 )
+        registerViewDimensions(view)
         return frameInfo
+    }
+    
+    func registerViewDimensions(view: MTKView) {
+        print("registering view dimensions")
+        let frame = view.frame
+        let width = frame.size.width
+        let height = frame.size.height
+        let maxDimension = max(width, height)
+        let sizeDiff = abs(width - height)
+        let ratio: Float = Float(sizeDiff)/Float(maxDimension)
+        
+        frameInfo.viewWidth = Int32(width)
+        frameInfo.viewHeight = Int32(height)
+        frameInfo.viewDiffRatio = ratio
     }
 
     func loadAssets(view: MTKView, frameInfo: FrameInfo) {

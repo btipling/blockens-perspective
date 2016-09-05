@@ -36,7 +36,8 @@ vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
 
     float3 transformedPositionVertex = rotate3D(positionVertex, cubeRotationVertex);
     float4 translatedVertex = translationMatrix(transformedPositionVertex, worldVector);
-    float4 screenCoordinates = orthoGraphicProjection(translatedVertex, cubeInfo->zoom, cubeInfo->zoom, cubeInfo->near, cubeInfo->far);
+    float4 screenCoordinates = orthoGraphicProjection(translatedVertex, cubeInfo->zoom, cubeInfo->winResX,
+                                                        cubeInfo->winResY, cubeInfo->near, cubeInfo->far);
 
     uint face = vid / 6;
     float3 color = colors[face];

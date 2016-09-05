@@ -21,6 +21,9 @@
                 <rect key="frame" x="0.0" y="0.0" width="480" height="360"/>
                 <autoresizingMask key="autoresizingMask"/>
             </view>
+            <connections>
+                <outlet property="delegate" destination="hW3-AJ-wXb" id="pHl-gA-fKD"/>
+            </connections>
         </window>
         <viewController id="hW3-AJ-wXb" customClass="GameViewController" customModule="blockens_perspective" customModuleProvider="target">
             <connections>
