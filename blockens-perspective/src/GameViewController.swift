@@ -203,7 +203,6 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     func drawInMTKView(view: MTKView) {
         dispatch_semaphore_wait(inflightSemaphore, DISPATCH_TIME_FOREVER)
         
-        print("rendering \(frameInfo)")
         let commandBuffer = commandQueue.commandBuffer()
         commandBuffer.label = "Frame command buffer"
 

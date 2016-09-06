@@ -17,12 +17,24 @@ struct GroundInfo {
 };
 
 vertex VertextOut GroundVertex(uint vid [[ vertex_id ]],
-                            constant packed_float2* position  [[ buffer(0) ]]) {
+                               constant packed_float3* position  [[ buffer(0) ]],
+                               constant GroundInfo* groundInfo [[ buffer(1)]],
+                               constant RenderInfo* renderInfo [[ buffer(2) ]]) {
     
     VertextOut outVertex;
     
-    float2 pos = position[vid];
-    outVertex.position = float4(pos[0], pos[1], 0.0, 1.0);
+    float3 positionVertex = position[vid];
+    float3 worldVector = float3(0.0, 0.0, 0.0);
+    
+    float3 groundRotationVertex = float3(groundInfo->xRotation, groundInfo->yRotation, groundInfo->zRotation);
+
+    float3 scaleVertex = scaleVector(positionVertex, groundInfo->xScale, groundInfo->yScale, 1.0);
+    float3 transformedPositionVertex = rotate3D(scaleVertex, groundRotationVertex);
+    float4 translatedVertex = translationMatrix(transformedPositionVertex, worldVector);
+    float4 screenCoordinates = orthoGraphicProjection(translatedVertex, renderInfo);
+
+    outVertex.position = screenCoordinates;
+
     return outVertex;
 }
 

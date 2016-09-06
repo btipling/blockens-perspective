@@ -34,11 +34,11 @@ class GroundRenderer: Renderer {
         GroundVertexBuffer = renderUtils.createRectangleVertexBuffer(device, bufferLabel: "Ground vertices")
         
         var groundInfo = GroundInfo(
-            xRotation: 90.0,
-            yRotation: 45.0,
-            zRotation: 30.0,
-            xScale: 1.0,
-            yScale: 1.0)
+            xRotation: 0.5,
+            yRotation: 0.0,
+            zRotation: 0.0,
+            xScale: 3.5,
+            yScale: 3.5)
         
         groundInfoBuffer = renderUtils.createSizedBuffer(device, bufferLabel: "ground rotation")
         let contents = groundInfoBuffer.contents()
@@ -49,12 +49,13 @@ class GroundRenderer: Renderer {
         print("loading Ground assets done")
     }
     
+    
     func render(renderEncoder: MTLRenderCommandEncoder) {
         
         renderUtils.setPipeLineState(renderEncoder, pipelineState: pipelineState, name: "Ground")
         renderUtils.setup3D(renderEncoder)
         
-        for (i, vertexBuffer) in [GroundVertexBuffer].enumerate() {
+        for (i, vertexBuffer) in [GroundVertexBuffer, groundInfoBuffer, renderUtils.renderInfoBuffer()].enumerate() {
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, atIndex: i)
         }
         

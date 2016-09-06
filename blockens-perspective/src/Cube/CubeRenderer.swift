@@ -24,7 +24,6 @@ class CubeRenderer: Renderer {
     var cubeVertexBuffer: MTLBuffer! = nil
     var colorBuffer: MTLBuffer! = nil
     var cubeInfoBuffer: MTLBuffer! = nil
-    var viewFrameBuffer: MTLBuffer! = nil
 
     init (utils: RenderUtils) {
         renderUtils = utils
@@ -55,7 +54,7 @@ class CubeRenderer: Renderer {
     }
 
     private func updateCubeRotation(frameInfo: FrameInfo) {
-        print("Updating cube rotation with \(frameInfo)")
+        
         var cubeInfo = CubeInfo(
                 xRotation: frameInfo.rotateX,
                 yRotation: frameInfo.rotateY,
@@ -63,7 +62,9 @@ class CubeRenderer: Renderer {
                 xPos: frameInfo.xPos,
                 yPos: frameInfo.yPos,
                 zPos: frameInfo.zPos)
+        
         print("CubeRotation: \(cubeInfo)")
+        
         let contents = cubeInfoBuffer.contents()
         let pointer = UnsafeMutablePointer<CubeInfo>(contents)
         pointer.initializeFrom(&cubeInfo, count: 1)

@@ -20,13 +20,14 @@ class RenderUtils {
     var depthStencilState: MTLDepthStencilState? = nil
 
     let rectangleVertexData:[Float] = [
-            -1.0, -1.0,
-            -1.0,  1.0,
-            1.0, -1.0,
-
-            -1.0, 1.0,
-            1.0,  1.0,
-            1.0,  -1.0,
+        
+        -1.0, 1.0, -1.0,
+        1.0, 1.0, -1.0,
+        -1.0, -1.0, -1.0,
+        
+        1.0, 1.0, -1.0,
+        1.0, -1.0, -1.0,
+        -1.0, -1.0, -1.0,
     ]
 
     let rectangleTextureCoords:[Float] = [
@@ -149,13 +150,14 @@ class RenderUtils {
     func renderInfoBuffer() -> MTLBuffer {
         return renderInfoBuffer_!
     }
-
+    
+    // Divided by 3 below because each pair is x,y,z for a single vertex.
     func numVerticesInARectangle() -> Int {
-        return rectangleVertexData.count/2 // Divided by 2 because each pair is x,y for a single vertex.
+        return rectangleVertexData.count/3
     }
 
     func numVerticesInACube() -> Int {
-        return cubeVertexData.count/3 // Divided by 3 because each pair is x,y,z for a single vertex.
+        return cubeVertexData.count/3
     }
 
     func numCubeColors() -> Int {

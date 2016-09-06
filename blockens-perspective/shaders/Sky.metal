@@ -9,12 +9,12 @@
 #include "utils.h"
 
 vertex VertextOut skyVertex(uint vid [[ vertex_id ]],
-                                     constant packed_float2* position  [[ buffer(0) ]]) {
+                                     constant packed_float3* position  [[ buffer(0) ]]) {
 
     VertextOut outVertex;
 
-    float2 pos = position[vid];
-    outVertex.position = float4(pos[0], pos[1], 0.0, 1.0);
+    float3 pos = position[vid];
+    outVertex.position = float4(pos[0], pos[1], 1.0, 1.0);
     return outVertex;
 }
 
