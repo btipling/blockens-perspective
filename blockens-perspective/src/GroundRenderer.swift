@@ -9,6 +9,7 @@ import MetalKit
 struct GroundInfo {
     var rotation: [Float32]
     var scale: [Float32]
+    var position: [Float32]
 }
 
 class GroundRenderer: Renderer {
@@ -30,13 +31,14 @@ class GroundRenderer: Renderer {
         pipelineState = renderUtils.createPipeLineState("GroundVertex", fragment: "GroundFragment", device: device, view: view)
         GroundVertexBuffer = renderUtils.createRectangleVertexBuffer(device, bufferLabel: "Ground vertices")
         
-        var groundInfo = GroundInfo(
+        let groundInfo = GroundInfo(
             rotation: [0.5, 0.0, 0.0],
-            scale: [3.5, 3.5, 1.0])
+            scale: [3.5, 3.5, 1.0],
+            position: [1.0, 1.0, 1.0])
         
         let floatSize = sizeof(Float)
         let float3Size = floatSize * 4
-        let uniformsStructSize = float3Size * 2;
+        let uniformsStructSize = float3Size * 3;
         
         groundInfoBuffer = device.newBufferWithLength(uniformsStructSize, options: [])
         groundInfoBuffer.label = "ground rotation"
@@ -45,6 +47,7 @@ class GroundRenderer: Renderer {
         let pointer = groundInfoBuffer.contents()
         memcpy(pointer, groundInfo.rotation, float3Size)
         memcpy(pointer + float3Size, groundInfo.scale, float3Size)
+        memcpy(pointer + (float3Size * 2), groundInfo.position, float3Size)
         
         
         print("loading Ground assets done")
