@@ -216,9 +216,9 @@ float4x4 matrixProduct4x4(float4x4 m1, float4x4 m2) {
     return result;
 }
 
-float3 scaleVector(float3 vector, float xScale, float yScale, float zScale) {
+float3 scaleVector(float3 vector, float3 scale) {
     
-    float3x3 scaleMatrix = float3x3( float3(xScale, 0, 0), float3(0, yScale, 0), float3(0, zScale, 0) );
+    float3x3 scaleMatrix = float3x3( float3(scale.x, 0, 0), float3(0, scale.y, 0), float3(0, scale.z, 0) );
     return transform3x3(vector, scaleMatrix);
 }
 

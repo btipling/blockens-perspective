@@ -8,8 +8,7 @@ import MetalKit
 
 struct GroundInfo {
     var rotation: [Float32]
-    var xScale: Float32
-    var yScale: Float32
+    var scale: [Float32]
 }
 
 class GroundRenderer: Renderer {
@@ -33,13 +32,19 @@ class GroundRenderer: Renderer {
         
         var groundInfo = GroundInfo(
             rotation: [0.5, 0.0, 0.0],
-            xScale: 3.5,
-            yScale: 3.5)
+            scale: [3.5, 3.5, 1.0])
         
-        groundInfoBuffer = renderUtils.createSizedBuffer(device, bufferLabel: "ground rotation")
-        let contents = groundInfoBuffer.contents()
-        let pointer = UnsafeMutablePointer<GroundInfo>(contents)
-        pointer.initializeFrom(&groundInfo, count: 1)
+        let floatSize = sizeof(Float)
+        let float3Size = floatSize * 4
+        let uniformsStructSize = float3Size * 2;
+        
+        groundInfoBuffer = device.newBufferWithLength(uniformsStructSize, options: [])
+        groundInfoBuffer.label = "ground rotation"
+        
+        
+        let pointer = groundInfoBuffer.contents()
+        memcpy(pointer, groundInfo.rotation, float3Size)
+        memcpy(pointer + float3Size, groundInfo.scale, float3Size)
         
         
         print("loading Ground assets done")
