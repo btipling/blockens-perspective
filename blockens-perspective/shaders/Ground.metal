@@ -24,7 +24,7 @@ vertex VertextOut GroundVertex(uint vid [[ vertex_id ]],
     float3 positionVertex = position[vid];
     float3 worldVector = float3(0.0, 0.0, 0.0);
     
-    float3 groundRotationVertex = float3(groundInfo->rotation[0], groundInfo->rotation[1], groundInfo->rotation[2]);
+    float3 groundRotationVertex = groundInfo->rotation;
 
     float3 scaleVertex = scaleVector(positionVertex, groundInfo->xScale, groundInfo->yScale, 1.0);
     float3 transformedPositionVertex = rotate3D(scaleVertex, groundRotationVertex);
