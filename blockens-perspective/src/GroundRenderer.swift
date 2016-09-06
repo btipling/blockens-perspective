@@ -7,9 +7,7 @@ import Foundation
 import MetalKit
 
 struct GroundInfo {
-    var xRotation: Float32
-    var yRotation: Float32
-    var zRotation: Float32
+    var rotation: [Float32]
     var xScale: Float32
     var yScale: Float32
 }
@@ -34,9 +32,7 @@ class GroundRenderer: Renderer {
         GroundVertexBuffer = renderUtils.createRectangleVertexBuffer(device, bufferLabel: "Ground vertices")
         
         var groundInfo = GroundInfo(
-            xRotation: 0.5,
-            yRotation: 0.0,
-            zRotation: 0.0,
+            rotation: [0.5, 0.0, 0.0],
             xScale: 3.5,
             yScale: 3.5)
         
