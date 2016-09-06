@@ -34,7 +34,7 @@ class GroundRenderer: Renderer {
         let groundInfo = GroundInfo(
             rotation: [0.5, 0.0, 0.0],
             scale: [3.5, 3.5, 1.0],
-            position: [1.0, 1.0, 1.0])
+            position: [0.0, 1.0, 0.0])
         
         let floatSize = sizeof(Float)
         let float3Size = floatSize * 4
