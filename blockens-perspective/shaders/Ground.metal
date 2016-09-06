@@ -9,11 +9,8 @@
 #include "utils.h"
 
 struct GroundInfo {
-    float xRotation;
-    float yRotation;
-    float zRotation;
-    float xScale;
-    float yScale;
+    float3 rotation;
+    float3 scale;
 };
 
 vertex VertextOut GroundVertex(uint vid [[ vertex_id ]],
@@ -26,9 +23,9 @@ vertex VertextOut GroundVertex(uint vid [[ vertex_id ]],
     float3 positionVertex = position[vid];
     float3 worldVector = float3(0.0, 0.0, 0.0);
     
-    float3 groundRotationVertex = float3(groundInfo->xRotation, groundInfo->yRotation, groundInfo->zRotation);
+    float3 groundRotationVertex = groundInfo->rotation;
 
-    float3 scaleVertex = scaleVector(positionVertex, groundInfo->xScale, groundInfo->yScale, 1.0);
+    float3 scaleVertex = scaleVector(positionVertex, groundInfo->scale);
     float3 transformedPositionVertex = rotate3D(scaleVertex, groundRotationVertex);
     float4 translatedVertex = translationMatrix(transformedPositionVertex, worldVector);
     float4 screenCoordinates = orthoGraphicProjection(translatedVertex, renderInfo);
