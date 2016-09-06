@@ -15,17 +15,13 @@ struct CubeInfo {
     float xPos;
     float yPos;
     float zPos;
-    float zoom;
-    float near;
-    float far;
-    float winResX;
-    float winResY;
 };
 
 vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
                                      constant packed_float3* position  [[ buffer(0) ]],
                                      constant packed_float3* colors  [[ buffer(1) ]],
-                                     constant CubeInfo* cubeInfo [[ buffer(2)]]) {
+                                     constant CubeInfo* cubeInfo [[ buffer(2)]],
+                                     constant RenderInfo* renderInfo [[ buffer(3) ]]) {
 
     CubeOut outVertex;
 
@@ -36,8 +32,7 @@ vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
 
     float3 transformedPositionVertex = rotate3D(positionVertex, cubeRotationVertex);
     float4 translatedVertex = translationMatrix(transformedPositionVertex, worldVector);
-    float4 screenCoordinates = orthoGraphicProjection(translatedVertex, cubeInfo->zoom, cubeInfo->winResX,
-                                                        cubeInfo->winResY, cubeInfo->near, cubeInfo->far);
+    float4 screenCoordinates = orthoGraphicProjection(translatedVertex, renderInfo);
 
     uint face = vid / 6;
     float3 color = colors[face];

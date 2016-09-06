@@ -13,11 +13,6 @@ struct CubeInfo {
     var xPos: Float32
     var yPos: Float32
     var zPos: Float32
-    var zoom: Float32
-    var near: Float32
-    var far: Float32
-    var winResX: Float32
-    var winResY: Float32
 }
 
 class CubeRenderer: Renderer {
@@ -30,22 +25,15 @@ class CubeRenderer: Renderer {
     var colorBuffer: MTLBuffer! = nil
     var cubeInfoBuffer: MTLBuffer! = nil
     var viewFrameBuffer: MTLBuffer! = nil
-    var depthStencilState: MTLDepthStencilState! = nil
 
     init (utils: RenderUtils) {
         renderUtils = utils
     }
 
     func loadAssets(device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
-
-        var depthStateDescriptor =  MTLDepthStencilDescriptor()
-        depthStateDescriptor.depthWriteEnabled = true
-        depthStateDescriptor.depthCompareFunction = MTLCompareFunction.Greater
-        depthStencilState = device.newDepthStencilStateWithDescriptor(depthStateDescriptor)
-
+        
         pipelineState = renderUtils.createPipeLineState("cubeVertex", fragment: "cubeFragment", device: device, view: view)
         cubeVertexBuffer = renderUtils.createCubeVertexBuffer(device, bufferLabel: "cube vertices")
-
 
         let bufferSize = sizeof(Float32) * renderUtils.cubeColors.count
         colorBuffer = device.newBufferWithLength(bufferSize, options: [])
@@ -58,6 +46,7 @@ class CubeRenderer: Renderer {
         cubeInfoBuffer = renderUtils.createSizedBuffer(device, bufferLabel: "cube rotation")
 
         updateCubeRotation(frameInfo)
+        
         print("loading cube assets done")
     }
 
@@ -66,24 +55,15 @@ class CubeRenderer: Renderer {
     }
 
     private func updateCubeRotation(frameInfo: FrameInfo) {
+        print("Updating cube rotation with \(frameInfo)")
         var cubeInfo = CubeInfo(
                 xRotation: frameInfo.rotateX,
                 yRotation: frameInfo.rotateY,
                 zRotation: frameInfo.rotateZ,
                 xPos: frameInfo.xPos,
                 yPos: frameInfo.yPos,
-                zPos: frameInfo.zPos,
-                zoom: frameInfo.zoom,
-                near: frameInfo.near,
-                far: frameInfo.far,
-                winResX: Float32(frameInfo.viewWidth),
-                winResY: Float32(frameInfo.viewHeight)
-                )
+                zPos: frameInfo.zPos)
         print("CubeRotation: \(cubeInfo)")
-//        if (frameInfo.rotateX != 0.0) {
-//            cubeInfo.xRotation = 90
-//            print("fudging it \(cubeInfo.xRotation)")
-//        }
         let contents = cubeInfoBuffer.contents()
         let pointer = UnsafeMutablePointer<CubeInfo>(contents)
         pointer.initializeFrom(&cubeInfo, count: 1)
@@ -91,12 +71,9 @@ class CubeRenderer: Renderer {
 
 
     func render(renderEncoder: MTLRenderCommandEncoder) {
-
         renderUtils.setPipeLineState(renderEncoder, pipelineState: pipelineState, name: "cube")
-        renderEncoder.setCullMode(MTLCullMode.Back)
-        renderEncoder.setFrontFacingWinding(MTLWinding.Clockwise)
-        renderEncoder.setDepthStencilState(depthStencilState)
-        for (i, vertexBuffer) in [cubeVertexBuffer, colorBuffer, cubeInfoBuffer].enumerate() {
+        renderUtils.setup3D(renderEncoder)
+        for (i, vertexBuffer) in [cubeVertexBuffer, colorBuffer, cubeInfoBuffer, renderUtils.renderInfoBuffer()].enumerate() {
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, atIndex: i)
         }
 

@@ -20,6 +20,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     var renderers: [Renderer] = Array()
     var cube: CubeController! = nil
     var frameInfo: FrameInfo! = nil
+    
+    let renderUtils = RenderUtils()
 
     override func viewDidLoad() {
 
@@ -35,33 +37,39 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             print("Metal is not supported on this device")
             self.view = NSView(frame: self.view.frame)
             return
-    }
+        }
 
         // Setup view properties.
         let view = self.view as! MTKView
         view.delegate = self
         view.device = device
         view.sampleCount = 4
-
-
-        let frameInfo = setupFrameInfo(view)
+        
+        // Setup some initial render state.
+        setupFrameInfo(view)
+        renderUtils.depthStencilState(device)
 
         // Add render controllers, order matters.
         let renderControllers: [RenderController] = [
                 SkyController(),
+                GroundController(),
                 cube,
         ]
-
+        
+        // Collect renderers and provide renderUtils to controllers.
         for renderController in renderControllers {
+            renderController.setRenderUtils(renderUtils)
             renderers.append(renderController.renderer())
         }
-        loadAssets(view, frameInfo: frameInfo)
+        
+        loadAssets(view)
     }
     
     func windowDidResize(notification: NSNotification) {
         let view = self.view as! MTKView
-        registerViewDimensions(view);
+        registerViewDimensions(view)
         cube.update(frameInfo)
+        renderUtils.setRenderInfoWithFrameInfo(frameInfo)
     }
     
     func handleKeyEvent(event: NSEvent) {
@@ -144,11 +152,12 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         print("After \(frameInfo)")
 
         cube.update(frameInfo)
+        renderUtils.setRenderInfoWithFrameInfo(frameInfo)
 
     }
 
-    func setupFrameInfo(view: MTKView) -> FrameInfo {
-
+    func setupFrameInfo(view: MTKView) {
+        print("Setting up frame info")
         frameInfo = FrameInfo(
                 viewWidth: 0,
                 viewHeight: 0,
@@ -162,13 +171,12 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
                 zoom: 0.2,
                 near: -19.7,
                 far: 19.0
-                )
+        )
         registerViewDimensions(view)
-        return frameInfo
     }
     
     func registerViewDimensions(view: MTKView) {
-        print("registering view dimensions")
+        print("Registering view dimensions")
         let frame = view.frame
         let width = frame.size.width
         let height = frame.size.height
@@ -181,10 +189,12 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         frameInfo.viewDiffRatio = ratio
     }
 
-    func loadAssets(view: MTKView, frameInfo: FrameInfo) {
+    func loadAssets(view: MTKView) {
         commandQueue = device.newCommandQueue()
         commandQueue.label = "main command queue"
-
+        
+        renderUtils.createRenderInfoBuffer(device)
+        renderUtils.setRenderInfoWithFrameInfo(frameInfo)
         for renderer in renderers {
             renderer.loadAssets(device, view: view, frameInfo: frameInfo)
         }
@@ -192,7 +202,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
 
     func drawInMTKView(view: MTKView) {
         dispatch_semaphore_wait(inflightSemaphore, DISPATCH_TIME_FOREVER)
-
+        
+        print("rendering \(frameInfo)")
         let commandBuffer = commandQueue.commandBuffer()
         commandBuffer.label = "Frame command buffer"
 

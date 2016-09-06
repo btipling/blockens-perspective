@@ -2,7 +2,6 @@
 #ifndef utils_h
 #define utils_h
 
-
 #include <metal_stdlib>
 
 using namespace metal;
@@ -15,6 +14,14 @@ struct VertextOut {
 struct CubeOut {
     float4  position [[position]];
     float4 color;
+};
+
+struct RenderInfo {
+    float zoom;
+    float near;
+    float far;
+    float winResX;
+    float winResY;
 };
 
 float4 rgbaToNormalizedGPUColors(int r, int g, int b);
@@ -57,7 +64,7 @@ float4 transform4x4(float4 vector, float4x4 matrix);
 float3x3 matrixProduct3x3(float3x3 m1, float3x3 m2);
 float4x4 matrixProduct4x4(float4x4 m1, float4x4 m2);
 
-float4 orthoGraphicProjection(float4 cameraSpaceVector, float zoomX, float winResX, float winResY, float near, float far);
+float4 orthoGraphicProjection(float4 cameraSpaceVector, constant RenderInfo* renderInfo);
 float2 mapToWindow(float4 clipCoordinates, float winResX, float winResY);
 float3 rotate3D(float3 vector, float3 angles);
 float4 translationMatrix(float3 position, float3 translation);

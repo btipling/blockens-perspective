@@ -7,8 +7,12 @@ import Foundation
 
 class SkyController: RenderController {
 
-    private let _renderer = SkyRenderer(utils: RenderUtils())
-
+    private var _renderer: SkyRenderer! = nil
+    
+    func setRenderUtils(renderUtils: RenderUtils) {
+        _renderer = SkyRenderer(utils: renderUtils)
+    }
+    
     func renderer() -> Renderer {
         return _renderer
     }

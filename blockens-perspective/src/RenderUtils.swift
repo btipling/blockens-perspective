@@ -7,6 +7,17 @@ import Foundation
 import MetalKit
 
 class RenderUtils {
+    
+    struct RenderInfo {
+        var zoom: Float32
+        var near: Float32
+        var far: Float32
+        var winResX: Float32
+        var winResY: Float32
+    }
+    
+    private var renderInfoBuffer_: MTLBuffer? = nil;
+    var depthStencilState: MTLDepthStencilState? = nil
 
     let rectangleVertexData:[Float] = [
             -1.0, -1.0,
@@ -119,6 +130,25 @@ class RenderUtils {
     ];
 
     let CONSTANT_BUFFER_SIZE = 1024*1024
+    
+    func setRenderInfoWithFrameInfo(frameInfo: FrameInfo) {
+        var renderInfo = RenderInfo(zoom: frameInfo.zoom, near: frameInfo.near, far: frameInfo.far,
+                                    winResX: Float32(frameInfo.viewWidth),
+                                    winResY: Float32(frameInfo.viewHeight))
+        if (renderInfoBuffer_ != nil) {
+            let contents = renderInfoBuffer_!.contents()
+            let pointer = UnsafeMutablePointer<RenderInfo>(contents)
+            pointer.initializeFrom(&renderInfo, count: 1)
+        }
+    }
+    
+    func createRenderInfoBuffer(device: MTLDevice) {
+        renderInfoBuffer_ = createSizedBuffer(device, bufferLabel: "Render info")
+    }
+    
+    func renderInfoBuffer() -> MTLBuffer {
+        return renderInfoBuffer_!
+    }
 
     func numVerticesInARectangle() -> Int {
         return rectangleVertexData.count/2 // Divided by 2 because each pair is x,y for a single vertex.
@@ -242,5 +272,20 @@ class RenderUtils {
         let contents = buffer.contents()
         let pointer = UnsafeMutablePointer<Float32>(contents)
         pointer.initializeFrom(data)
+    }
+    
+    func depthStencilState (device: MTLDevice) {
+        let depthStateDescriptor = MTLDepthStencilDescriptor()
+        depthStateDescriptor.depthWriteEnabled = true
+        depthStateDescriptor.depthCompareFunction = MTLCompareFunction.Greater
+        depthStencilState = device.newDepthStencilStateWithDescriptor(depthStateDescriptor)
+    }
+    
+    func setup3D(renderEncoder: MTLRenderCommandEncoder) {
+        renderEncoder.setCullMode(MTLCullMode.Back)
+        renderEncoder.setFrontFacingWinding(MTLWinding.Clockwise)
+        if (depthStencilState != nil) {
+            renderEncoder.setDepthStencilState(depthStencilState!)
+        }
     }
 }

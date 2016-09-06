@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		40E64B401D7E1A6E004144A0 /* GroundController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E64B3F1D7E1A6E004144A0 /* GroundController.swift */; };
+		40E64B421D7E1A7B004144A0 /* GroundRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E64B411D7E1A7B004144A0 /* GroundRenderer.swift */; };
+		40E64B441D7E33D3004144A0 /* Ground.metal in Sources */ = {isa = PBXBuildFile; fileRef = 40E64B431D7E33D3004144A0 /* Ground.metal */; };
 		596DD17610E888E2F51122D3 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 596DDA8539DA9FB8CFC085B9 /* Info.plist */; };
 		596DD26812FC658D99CC9622 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 596DD693FFA52B0A437EFF10 /* MainMenu.xib */; };
 		596DD346B1E75871BE2BC75C /* GameWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DD71509758D619368DD8F /* GameWindow.swift */; };
@@ -28,6 +31,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		40E64B3F1D7E1A6E004144A0 /* GroundController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroundController.swift; sourceTree = "<group>"; };
+		40E64B411D7E1A7B004144A0 /* GroundRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroundRenderer.swift; sourceTree = "<group>"; };
+		40E64B431D7E33D3004144A0 /* Ground.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Ground.metal; sourceTree = "<group>"; };
 		596DD1350F3DA099677B40EE /* CubeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CubeController.swift; sourceTree = "<group>"; };
 		596DD1912B9EB22332E369CC /* Cube.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Cube.metal; sourceTree = "<group>"; };
 		596DD1AE74D3D2F6AF581CD5 /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
@@ -61,6 +67,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		40E64B3E1D7E1A43004144A0 /* Ground */ = {
+			isa = PBXGroup;
+			children = (
+				40E64B3F1D7E1A6E004144A0 /* GroundController.swift */,
+				40E64B411D7E1A7B004144A0 /* GroundRenderer.swift */,
+			);
+			name = Ground;
+			sourceTree = "<group>";
+		};
 		596DD1A9B919E746DAA4295B /* Sky */ = {
 			isa = PBXGroup;
 			children = (
@@ -90,15 +105,16 @@
 		596DD707A44A5C2E8DDA49DD /* src */ = {
 			isa = PBXGroup;
 			children = (
-				596DDEDFB2F17F413AB3C038 /* GameViewController.swift */,
 				596DD6F5A7DF142BE342CB0A /* AppDelegate.swift */,
+				596DDEDFB2F17F413AB3C038 /* GameViewController.swift */,
+				596DD71509758D619368DD8F /* GameWindow.swift */,
 				596DD1AE74D3D2F6AF581CD5 /* Renderer.swift */,
 				596DDBF4F807336EDB86EBB8 /* RendererController.swift */,
-				596DD1C9EF7B9A6114F21ED0 /* utils.swift */,
-				596DD1A9B919E746DAA4295B /* Sky */,
 				596DD487FA02D6C3E5D44C7A /* RenderUtils.swift */,
+				596DD1C9EF7B9A6114F21ED0 /* utils.swift */,
 				596DD58380A3326D3BE992E3 /* Cube */,
-				596DD71509758D619368DD8F /* GameWindow.swift */,
+				40E64B3E1D7E1A43004144A0 /* Ground */,
+				596DD1A9B919E746DAA4295B /* Sky */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -110,6 +126,7 @@
 				596DDA5DB18DAFE007088EA9 /* utils.h */,
 				596DDF76465D421FA5A59446 /* utils.metal */,
 				596DD1912B9EB22332E369CC /* Cube.metal */,
+				40E64B431D7E33D3004144A0 /* Ground.metal */,
 			);
 			path = shaders;
 			sourceTree = "<group>";
@@ -203,9 +220,12 @@
 				596DDDAF64E0833AD5DA7782 /* Sky.metal in Sources */,
 				596DD46F6ADF9DE25D88B586 /* utils.metal in Sources */,
 				596DD46793DCDF17FC7CB954 /* Cube.metal in Sources */,
+				40E64B441D7E33D3004144A0 /* Ground.metal in Sources */,
+				40E64B401D7E1A6E004144A0 /* GroundController.swift in Sources */,
 				596DDCCE8F426D3D180A5E6E /* GameViewController.swift in Sources */,
 				596DDC5BCCFDFE0C5304FAB9 /* AppDelegate.swift in Sources */,
 				596DDF9DA312D49961BD799C /* Renderer.swift in Sources */,
+				40E64B421D7E1A7B004144A0 /* GroundRenderer.swift in Sources */,
 				596DDB70DE8BC4A1BF45BD03 /* RendererController.swift in Sources */,
 				596DDA3141FB697E508AB7B4 /* utils.swift in Sources */,
 				596DDFF20F0981C889BA83C0 /* SkyRenderer.swift in Sources */,

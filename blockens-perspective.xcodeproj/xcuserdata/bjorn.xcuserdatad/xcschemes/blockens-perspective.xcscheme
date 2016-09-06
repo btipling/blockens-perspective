@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "596DD0392731C577F4DC1786"
-               BuildableName = "blockens-perspective"
+               BuildableName = "blockens-perspective.app"
                BlueprintName = "blockens-perspective"
                ReferencedContainer = "container:blockens-perspective.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "596DD0392731C577F4DC1786"
-            BuildableName = "blockens-perspective"
+            BuildableName = "blockens-perspective.app"
             BlueprintName = "blockens-perspective"
             ReferencedContainer = "container:blockens-perspective.xcodeproj">
          </BuildableReference>

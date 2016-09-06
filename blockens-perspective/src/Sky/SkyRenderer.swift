@@ -6,11 +6,6 @@
 import Foundation
 import MetalKit
 
-struct SkyInfo {
-    var tickCount: Int32
-    var viewDiffRatio : Float32
-}
-
 class SkyRenderer: Renderer {
 
     let renderUtils: RenderUtils

@@ -216,15 +216,15 @@ float4x4 matrixProduct4x4(float4x4 m1, float4x4 m2) {
     return result;
 }
 
-float4 orthoGraphicProjection(float4 cameraSpaceVector, float zoomX, float winResX, float winResY, float near, float far) {
+float4 orthoGraphicProjection(float4 cameraSpaceVector, constant RenderInfo* renderInfo) {
 
-    float4 expandedCameraSpace;
     float4x4 orthoGraphicProjectionMatrix;
 
-    float zoomY = zoomX * (winResX/winResY);
-    float zPlane = far - near;
+    float zoomX = renderInfo->zoom;
+    float zoomY = zoomX * (renderInfo->winResX/renderInfo->winResY);
+    float zPlane = renderInfo->far - renderInfo->near;
     float clipPlane1 = -1 * (2/zPlane);
-    float clipPlane2 = -1 * ((far + near)/zPlane);
+    float clipPlane2 = -1 * ((renderInfo->far + renderInfo->near)/zPlane);
 
     orthoGraphicProjectionMatrix = float4x4(
         float4(zoomX, 0, 0, 0), float4(0, zoomY, 0, 0), float4(0, 0, clipPlane1, 0), float4(0, 0, clipPlane2, 1)

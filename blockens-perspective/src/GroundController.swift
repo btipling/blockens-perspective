@@ -5,19 +5,15 @@
 
 import Foundation
 
-class CubeController: RenderController {
-
-    private var _renderer: CubeRenderer! = nil
-
+class GroundController: RenderController {
+    
+    private var _renderer: GroundRenderer! = nil
+    
     func setRenderUtils(renderUtils: RenderUtils) {
-        _renderer = CubeRenderer(utils: renderUtils)
+        _renderer = GroundRenderer(utils: renderUtils)
     }
     
     func renderer() -> Renderer {
         return _renderer
-    }
-
-    func update(frameInfo: FrameInfo) {
-        _renderer.update(frameInfo);
     }
 }
