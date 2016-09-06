@@ -65,6 +65,7 @@ float3x3 matrixProduct3x3(float3x3 m1, float3x3 m2);
 float4x4 matrixProduct4x4(float4x4 m1, float4x4 m2);
 
 float4 orthoGraphicProjection(float4 cameraSpaceVector, constant RenderInfo* renderInfo);
+float4 perspectiveProjection(float4 cameraSpaceVector, constant RenderInfo* renderInfo);
 float2 mapToWindow(float4 clipCoordinates, float winResX, float winResY);
 float3 scaleVector(float3 vector, float3 scale);
 float3 rotate3D(float3 vector, float3 angles);

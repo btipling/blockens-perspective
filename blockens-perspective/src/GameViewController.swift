@@ -167,7 +167,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
                 rotateZ: 1.0,
                 xPos: 0.0,
                 yPos: 0.0,
-                zPos: -1.9,
+                zPos: 1.9,
                 zoom: 0.2,
                 near: -19.7,
                 far: 19.0

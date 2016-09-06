@@ -224,19 +224,35 @@ float3 scaleVector(float3 vector, float3 scale) {
 
 float4 orthoGraphicProjection(float4 cameraSpaceVector, constant RenderInfo* renderInfo) {
 
-    float4x4 orthoGraphicProjectionMatrix;
+    float4x4 orthographicProjectionMatrix;
 
     float zoomX = renderInfo->zoom;
     float zoomY = zoomX * (renderInfo->winResX/renderInfo->winResY);
     float zPlane = renderInfo->far - renderInfo->near;
-    float clipPlane1 = -1 * (2/zPlane);
+    float clipPlane1 = 2/zPlane;
     float clipPlane2 = -1 * ((renderInfo->far + renderInfo->near)/zPlane);
 
-    orthoGraphicProjectionMatrix = float4x4(
-        float4(zoomX, 0, 0, 0), float4(0, zoomY, 0, 0), float4(0, 0, clipPlane1, 0), float4(0, 0, clipPlane2, 1)
+    orthographicProjectionMatrix = float4x4(
+        float4(zoomX, 0, 0, 0), float4(0, zoomY, 0, 0), float4(0, 0, clipPlane1, clipPlane2), float4(0, 0, 0, 1)
     );
 
-    return transform4x4(cameraSpaceVector, orthoGraphicProjectionMatrix);
+    return transform4x4(cameraSpaceVector, orthographicProjectionMatrix);
+}
+
+float4 perspectiveProjection(float4 cameraSpaceVector, constant RenderInfo* renderInfo) {
+    
+    float4x4 perspectiveProjectionMatrix;
+    
+    float zoomX = renderInfo->zoom;
+    float zoomY = zoomX * (renderInfo->winResX/renderInfo->winResY);
+    float zPlane = renderInfo->far - renderInfo->near;
+    float clipPlane1 = -1 * ((renderInfo->far + renderInfo->near)/zPlane);
+    float clipPlane2 = -1 * ((2 * renderInfo->far * renderInfo->near)/zPlane);
+    
+    perspectiveProjectionMatrix = float4x4(
+       float4(zoomX, 0, 0, 0), float4(0, zoomY, 0, 0), float4(0, 0, clipPlane1, -1), float4(0, 0, clipPlane2, 0));
+    
+    return transform4x4(cameraSpaceVector, perspectiveProjectionMatrix);
 }
 
 float3 rotate3D(float3 vector, float3 angles) {
