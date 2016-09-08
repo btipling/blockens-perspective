@@ -63,8 +63,6 @@ class CubeRenderer: Renderer {
                 yPos: frameInfo.yPos,
                 zPos: frameInfo.zPos)
         
-        print("CubeRotation: \(cubeInfo)")
-        
         let contents = cubeInfoBuffer.contents()
         let pointer = UnsafeMutablePointer<CubeInfo>(contents)
         pointer.initializeFrom(&cubeInfo, count: 1)

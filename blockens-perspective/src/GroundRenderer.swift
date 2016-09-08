@@ -32,9 +32,9 @@ class GroundRenderer: Renderer {
         GroundVertexBuffer = renderUtils.createRectangleVertexBuffer(device, bufferLabel: "Ground vertices")
         
         let groundInfo = GroundInfo(
-            rotation: [0.5, 0.0, 0.0],
-            scale: [3.5, 3.5, 1.0],
-            position: [0.0, -1.0, 0.0])
+            rotation: [1.1, 0.0, 0.0],
+            scale: [2.0, 2.0, 1.0],
+            position: [0.0, -0.5, 2.0])
         
         let floatSize = sizeof(Float)
         let float3Size = floatSize * 4
@@ -43,6 +43,7 @@ class GroundRenderer: Renderer {
         groundInfoBuffer = device.newBufferWithLength(uniformsStructSize, options: [])
         groundInfoBuffer.label = "ground rotation"
         
+        print("FrameInfo: \(frameInfo)")
         
         let pointer = groundInfoBuffer.contents()
         memcpy(pointer, groundInfo.rotation, float3Size)

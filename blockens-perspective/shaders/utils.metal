@@ -218,7 +218,7 @@ float4x4 matrixProduct4x4(float4x4 m1, float4x4 m2) {
 
 float3 scaleVector(float3 vector, float3 scale) {
     
-    float3x3 scaleMatrix = float3x3( float3(scale.x, 0, 0), float3(0, scale.y, 0), float3(0, scale.z, 0) );
+    float3x3 scaleMatrix = float3x3( float3(scale.x, 0, 0), float3(0, scale.y, 0), float3(0, 0, scale.z) );
     return transform3x3(vector, scaleMatrix);
 }
 
@@ -226,14 +226,16 @@ float4 orthoGraphicProjection(float4 cameraSpaceVector, constant RenderInfo* ren
 
     float4x4 orthographicProjectionMatrix;
 
+    float near = renderInfo->near;
+    float far = renderInfo->far;
     float zoomX = renderInfo->zoom;
     float zoomY = zoomX * (renderInfo->winResX/renderInfo->winResY);
-    float zPlane = renderInfo->far - renderInfo->near;
-    float clipPlane1 = 2/zPlane;
-    float clipPlane2 = -1 * ((renderInfo->far + renderInfo->near)/zPlane);
+    float zRange = far - near;
+    
+    float sDepth = 1/zRange;
 
     orthographicProjectionMatrix = float4x4(
-        float4(zoomX, 0, 0, 0), float4(0, zoomY, 0, 0), float4(0, 0, clipPlane1, clipPlane2), float4(0, 0, 0, 1)
+        float4(zoomX, 0, 0, 0), float4(0, zoomY, 0, 0), float4(0, 0, sDepth, -1 * near * sDepth), float4(0, 0, 0, 1)
     );
 
     return transform4x4(cameraSpaceVector, orthographicProjectionMatrix);
@@ -243,14 +245,16 @@ float4 perspectiveProjection(float4 cameraSpaceVector, constant RenderInfo* rend
     
     float4x4 perspectiveProjectionMatrix;
     
+    float near = renderInfo->near;
+    float far = renderInfo->far;
     float zoomX = renderInfo->zoom;
     float zoomY = zoomX * (renderInfo->winResX/renderInfo->winResY);
-    float zPlane = renderInfo->far - renderInfo->near;
-    float clipPlane1 = -1 * ((renderInfo->far + renderInfo->near)/zPlane);
-    float clipPlane2 = -1 * ((2 * renderInfo->far * renderInfo->near)/zPlane);
+    float zRange = far - near;
+    
+    float zFar = far / zRange;
     
     perspectiveProjectionMatrix = float4x4(
-       float4(zoomX, 0, 0, 0), float4(0, zoomY, 0, 0), float4(0, 0, clipPlane1, -1), float4(0, 0, clipPlane2, 0));
+       float4(zoomX, 0, 0, 0), float4(0, zoomY, 0, 0), float4(0, 0, zFar, -1 * near * zFar), float4(0, 0, 1, 0));
     
     return transform4x4(cameraSpaceVector, perspectiveProjectionMatrix);
 }

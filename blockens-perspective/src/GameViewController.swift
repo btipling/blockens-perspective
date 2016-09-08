@@ -77,43 +77,43 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         switch event.keyCode {
 
             case A_KEY:
-                frameInfo.rotateX = round((frameInfo.rotateX - ROTATION_CHANGE_MODIFIER) * 10)/10
+                frameInfo.rotateX = frameInfo.rotateX - ROTATION_CHANGE_MODIFIER
                 break
             case D_KEY:
-                frameInfo.rotateX = round((frameInfo.rotateX + ROTATION_CHANGE_MODIFIER) * 10)/10
+                frameInfo.rotateX = frameInfo.rotateX + ROTATION_CHANGE_MODIFIER
                 break
             case S_KEY:
-                frameInfo.rotateY = round((frameInfo.rotateY - ROTATION_CHANGE_MODIFIER) * 10)/10
+                frameInfo.rotateY = frameInfo.rotateY - ROTATION_CHANGE_MODIFIER
                 break
             case W_KEY:
-                frameInfo.rotateY = round((frameInfo.rotateY + ROTATION_CHANGE_MODIFIER) * 10)/10
+                frameInfo.rotateY = frameInfo.rotateY + ROTATION_CHANGE_MODIFIER
                 break
 
             case B_KEY:
-                frameInfo.rotateZ = round((frameInfo.rotateZ - ROTATION_CHANGE_MODIFIER) * 10)/10
+                frameInfo.rotateZ = frameInfo.rotateZ - ROTATION_CHANGE_MODIFIER
                 break
             case F_KEY:
-                frameInfo.rotateZ = round((frameInfo.rotateZ + ROTATION_CHANGE_MODIFIER) * 10)/10
+                frameInfo.rotateZ = frameInfo.rotateZ + ROTATION_CHANGE_MODIFIER
                 break
 
             case LEFT_KEY:
-                frameInfo.xPos = round((frameInfo.xPos - POS_CHANGE_MODIFIER) * 10)/10
+                frameInfo.xPos = frameInfo.xPos - POS_CHANGE_MODIFIER
                 break
             case RIGHT_KEY:
-                frameInfo.xPos = round((frameInfo.xPos + POS_CHANGE_MODIFIER) * 10)/10
+                frameInfo.xPos = frameInfo.xPos + POS_CHANGE_MODIFIER
                 break
             case DOWN_KEY:
-                frameInfo.yPos = round((frameInfo.yPos - POS_CHANGE_MODIFIER) * 10)/10
+                frameInfo.yPos = frameInfo.yPos - POS_CHANGE_MODIFIER
                 break
             case UP_KEY:
-                frameInfo.yPos = round((frameInfo.yPos + POS_CHANGE_MODIFIER) * 10)/10
+                frameInfo.yPos = frameInfo.yPos + POS_CHANGE_MODIFIER
                 break
 
             case O_KEY:
-                frameInfo.zPos = round((frameInfo.zPos + POS_CHANGE_MODIFIER) * 10)/10
+                frameInfo.zPos = frameInfo.zPos + POS_CHANGE_MODIFIER
                 break
             case I_KEY:
-                frameInfo.zPos = round((frameInfo.zPos - POS_CHANGE_MODIFIER) * 10)/10
+                frameInfo.zPos = frameInfo.zPos - POS_CHANGE_MODIFIER
                 break
 
             case PLUS_KEY:
@@ -145,12 +145,11 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
                 print(event.keyCode)
                 break
         }
-        print("Before: \(frameInfo)")
+        
         frameInfo.rotateX = frameInfo.rotateX % 360.0;
         frameInfo.rotateY = frameInfo.rotateY % 360.0;
         frameInfo.rotateZ = frameInfo.rotateZ % 360.0;
-        print("After \(frameInfo)")
-
+        print("Frameinfo: \(frameInfo)")
         cube.update(frameInfo)
         renderUtils.setRenderInfoWithFrameInfo(frameInfo)
 
@@ -162,15 +161,15 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
                 viewWidth: 0,
                 viewHeight: 0,
                 viewDiffRatio: 0.0,
-                rotateX: 2.2,
-                rotateY: 3.9,
-                rotateZ: 1.0,
+                rotateX: 5.5,
+                rotateY: 0.7,
+                rotateZ: 1.4,
                 xPos: 0.0,
                 yPos: 0.0,
-                zPos: 1.9,
-                zoom: 0.2,
-                near: -19.7,
-                far: 19.0
+                zPos: 4.0,
+                zoom: 1,
+                near: 0.1,
+                far: 100.0
         )
         registerViewDimensions(view)
     }

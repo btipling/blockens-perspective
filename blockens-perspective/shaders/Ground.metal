@@ -26,7 +26,7 @@ vertex VertextOut GroundVertex(uint vid [[ vertex_id ]],
     float3 scaleVertex = scaleVector(positionVertex, groundInfo->scale);
     float3 transformedPositionVertex = rotate3D(scaleVertex, groundInfo->rotation);
     float4 translatedVertex = translationMatrix(transformedPositionVertex, groundInfo->position);
-    float4 screenCoordinates = orthoGraphicProjection(translatedVertex, renderInfo);
+    float4 screenCoordinates = perspectiveProjection(translatedVertex, renderInfo);
 
     outVertex.position = screenCoordinates;
 
@@ -35,5 +35,5 @@ vertex VertextOut GroundVertex(uint vid [[ vertex_id ]],
 
 fragment float4 GroundFragment(VertextOut inFrag [[stage_in]]) {
     
-    return rgbaToNormalizedGPUColors(183, 132, 2);
+    return rgbaToNormalizedGPUColors(78, 183, 2);
 }
