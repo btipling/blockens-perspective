@@ -98,11 +98,13 @@ float4x4 scale4x4(float scalar, float4x4 m) {
     return result;
 }
 
-float4 transform4x4(float4x4 m, float4 vector) {
+float4 transform4x4(float4 vector, float4x4 m) {
+//float4 transform4x4(float4x4 m, float4 vector) {
     float4 result;
 
     for (int i = 0; i < 4; i++) {
-        result[i] = dotProduct4(rowToVector(m, i), vector);
+        result[i] = dotProduct4(vector, m[i]);
+        // result[i] = dotProduct4(rowToVector(m, i), vector);
     }
 
     return result;
@@ -151,7 +153,7 @@ float4x4 perspectiveProjection(constant RenderInfo* renderInfo) {
     float zFar = far / zRange;
     
     return float4x4(
-       float4(zoomX, 0, 0, 0), float4(0, zoomY, 0, 0), float4(0, 0, zFar, 1), float4(0, 0, -1 * near * zFar, 0)
+       float4(zoomX, 0, 0, 0), float4(0, zoomY, 0, 0), float4(0, 0, zFar, -1 * near * zFar), float4(0, 0, 1, 0)
     );
 }
 

@@ -35,13 +35,13 @@ vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
     // ## Setup matrices.
     
     float4x4 perspectiveMatrix = perspectiveProjection(renderInfo);
-    float4x4 objectTransformationMatrix_ = objectTransformationMatrix(scale, rotation, translation);
-    
-    // ## Do the matrix multiplications.
-    float4x4 transformMatrix = matrixProduct4x4(perspectiveMatrix, objectTransformationMatrix_);
+//    float4x4 objectTransformationMatrix_ = objectTransformationMatrix(scale, rotation, translation);
+//    
+//    // ## Do the matrix multiplications.
+//    float4x4 transformMatrix = matrixProduct4x4(perspectiveMatrix, objectTransformationMatrix_);
     
     // Perspective projection.
-    float4 screenCoordinates = transform4x4(perspectiveMatrix, positionVertex);
+    float4 screenCoordinates = transform4x4(positionVertex, perspectiveMatrix);
     
     // Set up the output.
     uint face = vid / 6;

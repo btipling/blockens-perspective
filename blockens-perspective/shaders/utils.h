@@ -39,7 +39,8 @@ float4 toUnitVector4(float4 vector);
 float distance4(float4 from, float4 to);
 
 float4x4 scale4x4(float scalar, float4x4 m);
-float4 transform4x4(float4x4 m, float4 vector);
+float4 transform4x4(float4 vector, float4x4 m);
+//float4 transform4x4(float4x4 m, float4 vector);
 float4x4 matrixProduct4x4(float4x4 m1, float4x4 m2);
 
 float4x4 orthoGraphicProjection(constant RenderInfo* renderInfo);

@@ -24,23 +24,24 @@ vertex VertextOut GroundVertex(uint vid [[ vertex_id ]],
     // ## Setup vectors.
     
     float4 positionVertex = toFloat4(position[vid]);
-    
-    float4 scale = toFloat4(groundInfo->scale);
-    float4 rotation = toFloat4(groundInfo->rotation);
-    float4 translation = toFloat4(groundInfo->position);
-  
-    // ## Setup matrices.
-    
-    float4x4 perspectiveMatrix = perspectiveProjection(renderInfo);
-    float4x4 objectTransformationMatrix_ = objectTransformationMatrix(scale, rotation, translation);
-    
-    // ## Do the matrix multiplications.
-    float4x4 transformMatrix = matrixProduct4x4(perspectiveMatrix, objectTransformationMatrix_);
-    
-    // Perspective projection.
-    float4 screenCoordinates = transform4x4(transformMatrix, positionVertex);
-    
-    outVertex.position = screenCoordinates;
+//    
+//    float4 scale = toFloat4(groundInfo->scale);
+//    float4 rotation = toFloat4(groundInfo->rotation);
+//    float4 translation = toFloat4(groundInfo->position);
+//  
+//    // ## Setup matrices.
+//    
+//    float4x4 perspectiveMatrix = perspectiveProjection(renderInfo);
+//    float4x4 objectTransformationMatrix_ = objectTransformationMatrix(scale, rotation, translation);
+//    
+//    // ## Do the matrix multiplications.
+//    float4x4 transformMatrix = matrixProduct4x4(perspectiveMatrix, objectTransformationMatrix_);
+//    
+//    // Perspective projection.
+//    float4 screenCoordinates = transform4x4(transformMatrix, positionVertex);
+//    
+//    outVertex.position = screenCoordinates;
+    outVertex.position = positionVertex;
 
     return outVertex;
 }
