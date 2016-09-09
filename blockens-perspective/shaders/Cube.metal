@@ -25,12 +25,12 @@ vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
 
     CubeOut outVertex;
 
-    float3 positionVertex = position[vid];
-    float3 worldVector = float3(cubeInfo->xPos, cubeInfo->yPos, cubeInfo->zPos);
+    float4 positionVertex = toFloat4(position[vid]);
+    float4 worldVector = float4(cubeInfo->xPos, cubeInfo->yPos, cubeInfo->zPos, 1.0);
 
-    float3 cubeRotationVertex = float3(cubeInfo->xRotation, cubeInfo->yRotation, cubeInfo->zRotation);
+    float4 cubeRotationVertex = float4(cubeInfo->xRotation, cubeInfo->yRotation, cubeInfo->zRotation, 1.0);
 
-    float3 transformedPositionVertex = rotate3D(positionVertex, cubeRotationVertex);
+    float4 transformedPositionVertex = rotate3D(positionVertex, cubeRotationVertex);
     float4 translatedVertex = translationMatrix(transformedPositionVertex, worldVector);
     float4 screenCoordinates = perspectiveProjection(translatedVertex, renderInfo);
     uint face = vid / 6;

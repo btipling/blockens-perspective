@@ -21,11 +21,11 @@ vertex VertextOut GroundVertex(uint vid [[ vertex_id ]],
     
     VertextOut outVertex;
     
-    float3 positionVertex = position[vid];
+    float4 positionVertex = toFloat4(position[vid]);
 
-    float3 scaleVertex = scaleVector(positionVertex, groundInfo->scale);
-    float3 transformedPositionVertex = rotate3D(scaleVertex, groundInfo->rotation);
-    float4 translatedVertex = translationMatrix(transformedPositionVertex, groundInfo->position);
+    float4 scaleVertex = scaleVector(positionVertex, toFloat4(groundInfo->scale));
+    float4 transformedPositionVertex = rotate3D(scaleVertex, toFloat4(groundInfo->rotation));
+    float4 translatedVertex = translationMatrix(transformedPositionVertex, toFloat4(groundInfo->position));
     float4 screenCoordinates = perspectiveProjection(translatedVertex, renderInfo);
 
     outVertex.position = screenCoordinates;

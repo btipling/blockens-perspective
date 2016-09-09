@@ -7,7 +7,7 @@ import Foundation
 import Cocoa
 
 let ROTATION_CHANGE_MODIFIER: Float32 = 0.1;
-let POS_CHANGE_MODIFIER: Float32 = 0.01;
+let POS_CHANGE_MODIFIER: Float32 = 0.1;
 let ZOOM_CHANGE_MODIFIER: Float32 = 0.01;
 
 struct FrameInfo {
