@@ -88,7 +88,7 @@ float distance4(float4 from, float4 to) {
     return vectorMagnitude4(vector);
 }
 
-float4x4 scale4x4(float scalar, float3x3 m) {
+float4x4 scale4x4(float scalar, float4x4 m) {
     float4x4 result;
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; i++) {
@@ -98,11 +98,13 @@ float4x4 scale4x4(float scalar, float3x3 m) {
     return result;
 }
 
-float4 transform4x4(float4 vector, float4x4 matrix) {
+float4 transform4x4(float4 vector, float4x4 m) {
+//float4 transform4x4(float4x4 m, float4 vector) {
     float4 result;
 
     for (int i = 0; i < 4; i++) {
-        result[i] = dotProduct4(vector, matrix[i]);
+        result[i] = dotProduct4(vector, m[i]);
+        // result[i] = dotProduct4(rowToVector(m, i), vector);
     }
 
     return result;
@@ -180,7 +182,36 @@ float4x4 rotateZ(float4 angles) {
 }
 
 float4x4 translationMatrix(float4 transVector) {
-    return float4x4( float4(1, 0, 0, transVector.x), float4(0, 1, 0, transVector.y), float4(0, 0, 1, transVector.z), float4(0, 0, 0, 1));
+    return float4x4( float4(1, 0, 0, 0), float4(0, 1, 0, 0), float4(0, 0, 1, 0), float4(transVector.x, transVector.y, transVector.z, 1));
+}
+
+
+
+float4x4 objectTransformationMatrix(float4 scale, float4 rotation, float4 translation) {
+    
+    // ## Setup matrices.
+    float4x4 scaleMatrix = scaleVector(scale);
+    
+    float4x4 rotationXMatrix = rotateX(rotation);
+    float4x4 rotationYMatrix = rotateY(rotation);
+    float4x4 rotationZMatrix = rotateZ(rotation);
+    
+    float4x4 translationMatrix_ = translationMatrix(translation);
+    
+    // ## Combine the matrices.
+    
+    // Translate.
+    float4x4 objectTransformationMatrix_ = translationMatrix_;
+    
+    // Rotate.
+    objectTransformationMatrix_ = matrixProduct4x4(objectTransformationMatrix_, rotationXMatrix);
+    objectTransformationMatrix_ = matrixProduct4x4(objectTransformationMatrix_, rotationYMatrix);
+    objectTransformationMatrix_ = matrixProduct4x4(objectTransformationMatrix_, rotationZMatrix);
+    
+    // Scale.
+    objectTransformationMatrix_ = matrixProduct4x4(objectTransformationMatrix_, scaleMatrix);
+    
+    return objectTransformationMatrix_;
 }
 
 float4 toFloat4(float3 position) {
@@ -189,4 +220,14 @@ float4 toFloat4(float3 position) {
 
 float4 identityVector() {
     return float4(1, 1, 1, 1);
+}
+
+float4 rowToVector(float4x4 m, int row) {
+    float4 result;
+    
+    for (int i = 0; i < 4; i++) {
+        result[i] = m[i][row];
+    }
+    
+    return result;
 }
