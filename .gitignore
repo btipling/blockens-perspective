@@ -66,4 +66,4 @@ fastlane/test_output
 
 # Added by me
 .idea/workspace.xml
-# UserInterfaceState.xcuserstate
+UserInterfaceState.xcuserstate
