@@ -27,30 +27,21 @@ vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
 
     // ## Set up vectors.
     float4 positionVertex = toFloat4(position[vid]);
-    float4 worldVector = float4(cubeInfo->xPos, cubeInfo->yPos, cubeInfo->zPos, 1.0);
-    float4 cubeRotationVertex = float4(cubeInfo->xRotation, cubeInfo->yRotation, cubeInfo->zRotation, 1.0);
-
-    // ## Setup matrices.
-    float4x4 rotationXMatrix = rotateX(cubeRotationVertex);
-    float4x4 rotationYMatrix = rotateY(cubeRotationVertex);
-    float4x4 rotationZMatrix = rotateZ(cubeRotationVertex);
     
-    float4x4 translationMatrix_ = translationMatrix(worldVector);
+    float4 scale = identityVector();
+    float4 rotation = float4(cubeInfo->xRotation, cubeInfo->yRotation, cubeInfo->zRotation, 1.0);
+    float4 translation = float4(cubeInfo->xPos, cubeInfo->yPos, cubeInfo->zPos, 1.0);
+    
+    // ## Setup matrices.
+    
     float4x4 perspectiveMatrix = perspectiveProjection(renderInfo);
+    float4x4 objectTransformationMatrix_ = objectTransformationMatrix(scale, rotation, translation);
     
     // ## Do the matrix multiplications.
-    
-    // Rotate.
-    float4 transformationProduct = transform4x4(positionVertex, rotationXMatrix);
-    transformationProduct = transform4x4(transformationProduct, rotationYMatrix);
-    transformationProduct = transform4x4(transformationProduct, rotationZMatrix);
-    
-    // Translate.
-    transformationProduct = transform4x4(transformationProduct, translationMatrix_);
+    float4x4 transformMatrix = matrixProduct4x4(perspectiveMatrix, objectTransformationMatrix_);
     
     // Perspective projection.
-    float4 screenCoordinates = transform4x4(transformationProduct, perspectiveMatrix);
-    
+    float4 screenCoordinates = transform4x4(perspectiveMatrix, positionVertex);
     
     // Set up the output.
     uint face = vid / 6;

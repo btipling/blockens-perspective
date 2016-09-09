@@ -38,8 +38,8 @@ float vectorMagnitude4(float4 vector);
 float4 toUnitVector4(float4 vector);
 float distance4(float4 from, float4 to);
 
-float4x4 scale4x4(float scalar, float3x3 m);
-float4 transform4x4(float4 vector, float4x4 matrix);
+float4x4 scale4x4(float scalar, float4x4 m);
+float4 transform4x4(float4x4 m, float4 vector);
 float4x4 matrixProduct4x4(float4x4 m1, float4x4 m2);
 
 float4x4 orthoGraphicProjection(constant RenderInfo* renderInfo);
@@ -53,8 +53,11 @@ float4x4 rotateZ(float4 angles);
 
 float4x4 translationMatrix(float4 translation);
 
+float4x4 objectTransformationMatrix(float4 scale, float4 rotation, float4 translation);
+
 float4 toFloat4(float3 position);
 float4 identityVector();
+float4 rowToVector(float4x4 m, int row);
 
 
 #endif /* utils_h */
