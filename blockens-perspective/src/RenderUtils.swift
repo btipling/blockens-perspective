@@ -138,7 +138,7 @@ class RenderUtils {
                                     winResY: Float32(frameInfo.viewHeight))
         if (renderInfoBuffer_ != nil) {
             let pointer = renderInfoBuffer_!.contents()
-            let size = rectangleTextureCoords.count * MemoryLayout.size(ofValue: renderInfo)
+            let size = rectangleTextureCoords.count * MemoryLayout<RenderInfo>.size
             memcpy(pointer, &renderInfo, size)
         }
     }
