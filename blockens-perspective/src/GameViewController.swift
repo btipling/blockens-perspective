@@ -15,7 +15,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
 
     var commandQueue: MTLCommandQueue! = nil
 
-    let inflightSemaphore = dispatch_semaphore_create(1)
+    let inflightSemaphore = DispatchSemaphore(value: 1)
 
     var renderers: [Renderer] = Array()
     var cube: CubeController! = nil
@@ -27,7 +27,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
 
         super.viewDidLoad()
 
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let gameWindow = appDelegate.getWindow()
         cube = CubeController()
         gameWindow.addKeyEventCallback(handleKeyEvent)
@@ -65,14 +65,14 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         loadAssets(view)
     }
     
-    func windowDidResize(notification: NSNotification) {
+    func windowDidResize(_ notification: Notification) {
         let view = self.view as! MTKView
         registerViewDimensions(view)
         cube.update(frameInfo)
         renderUtils.setRenderInfoWithFrameInfo(frameInfo)
     }
     
-    func handleKeyEvent(event: NSEvent) {
+    func handleKeyEvent(_ event: NSEvent) {
 
         switch event.keyCode {
 
@@ -146,16 +146,16 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
                 break
         }
         
-        frameInfo.rotateX = frameInfo.rotateX % 360.0;
-        frameInfo.rotateY = frameInfo.rotateY % 360.0;
-        frameInfo.rotateZ = frameInfo.rotateZ % 360.0;
+        frameInfo.rotateX = frameInfo.rotateX.truncatingRemainder(dividingBy: 360.0);
+        frameInfo.rotateY = frameInfo.rotateY.truncatingRemainder(dividingBy: 360.0);
+        frameInfo.rotateZ = frameInfo.rotateZ.truncatingRemainder(dividingBy: 360.0);
         print("Frameinfo: \(frameInfo)")
         cube.update(frameInfo)
         renderUtils.setRenderInfoWithFrameInfo(frameInfo)
 
     }
 
-    func setupFrameInfo(view: MTKView) {
+    func setupFrameInfo(_ view: MTKView) {
         print("Setting up frame info")
         frameInfo = FrameInfo(
                 viewWidth: 0,
@@ -174,7 +174,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         registerViewDimensions(view)
     }
     
-    func registerViewDimensions(view: MTKView) {
+    func registerViewDimensions(_ view: MTKView) {
         print("Registering view dimensions")
         let frame = view.frame
         let width = frame.size.width
@@ -188,8 +188,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         frameInfo.viewDiffRatio = ratio
     }
 
-    func loadAssets(view: MTKView) {
-        commandQueue = device.newCommandQueue()
+    func loadAssets(_ view: MTKView) {
+        commandQueue = device.makeCommandQueue()
         commandQueue.label = "main command queue"
         
         renderUtils.createRenderInfoBuffer(device)
@@ -199,34 +199,34 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         }
     }
 
-    func drawInMTKView(view: MTKView) {
-        dispatch_semaphore_wait(inflightSemaphore, DISPATCH_TIME_FOREVER)
+    func draw(in view: MTKView) {
+        _ = inflightSemaphore.wait(timeout: DispatchTime.distantFuture)
         
-        let commandBuffer = commandQueue.commandBuffer()
+        let commandBuffer = commandQueue.makeCommandBuffer()
         commandBuffer.label = "Frame command buffer"
 
         commandBuffer.addCompletedHandler{ [weak self] commandBuffer in
             if let strongSelf = self {
-                dispatch_semaphore_signal(strongSelf.inflightSemaphore)
+                strongSelf.inflightSemaphore.signal()
             }
             return
         }
 
-        if let renderPassDescriptor = view.currentRenderPassDescriptor, currentDrawable = view.currentDrawable {
+        if let renderPassDescriptor = view.currentRenderPassDescriptor, let currentDrawable = view.currentDrawable {
 
-            let parallelCommandEncoder = commandBuffer.parallelRenderCommandEncoderWithDescriptor(renderPassDescriptor)
+            let parallelCommandEncoder = commandBuffer.makeParallelRenderCommandEncoder(descriptor: renderPassDescriptor)
 
             for renderer in renderers {
-                renderer.render(parallelCommandEncoder.renderCommandEncoder())
+                renderer.render(parallelCommandEncoder.makeRenderCommandEncoder())
             }
 
             parallelCommandEncoder.endEncoding()
-            commandBuffer.presentDrawable(currentDrawable)
+            commandBuffer.present(currentDrawable)
         }
         commandBuffer.commit()
     }
 
-    func mtkView(view: MTKView, drawableSizeWillChange size: CGSize) {
+    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         // Pass through and do nothing.
     }
 }

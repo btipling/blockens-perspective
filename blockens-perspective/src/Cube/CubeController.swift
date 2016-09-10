@@ -7,9 +7,9 @@ import Foundation
 
 class CubeController: RenderController {
 
-    private var _renderer: CubeRenderer! = nil
+    fileprivate var _renderer: CubeRenderer! = nil
 
-    func setRenderUtils(renderUtils: RenderUtils) {
+    func setRenderUtils(_ renderUtils: RenderUtils) {
         _renderer = CubeRenderer(utils: renderUtils)
     }
     
@@ -17,7 +17,7 @@ class CubeController: RenderController {
         return _renderer
     }
 
-    func update(frameInfo: FrameInfo) {
+    func update(_ frameInfo: FrameInfo) {
         _renderer.update(frameInfo);
     }
 }

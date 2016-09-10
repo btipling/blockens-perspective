@@ -7,9 +7,9 @@ import Foundation
 
 class GroundController: RenderController {
     
-    private var _renderer: GroundRenderer! = nil
+    fileprivate var _renderer: GroundRenderer! = nil
     
-    func setRenderUtils(renderUtils: RenderUtils) {
+    func setRenderUtils(_ renderUtils: RenderUtils) {
         _renderer = GroundRenderer(utils: renderUtils)
     }
     

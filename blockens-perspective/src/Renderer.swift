@@ -7,6 +7,6 @@ import Foundation
 import MetalKit
 
 protocol Renderer {
-    func loadAssets(device: MTLDevice, view: MTKView, frameInfo: FrameInfo)
-    func render(renderEncoder: MTLRenderCommandEncoder)
+    func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo)
+    func render(_ renderEncoder: MTLRenderCommandEncoder)
 }

@@ -10,7 +10,6 @@
 		40E64B401D7E1A6E004144A0 /* GroundController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E64B3F1D7E1A6E004144A0 /* GroundController.swift */; };
 		40E64B421D7E1A7B004144A0 /* GroundRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E64B411D7E1A7B004144A0 /* GroundRenderer.swift */; };
 		40E64B441D7E33D3004144A0 /* Ground.metal in Sources */ = {isa = PBXBuildFile; fileRef = 40E64B431D7E33D3004144A0 /* Ground.metal */; };
-		596DD17610E888E2F51122D3 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 596DDA8539DA9FB8CFC085B9 /* Info.plist */; };
 		596DD26812FC658D99CC9622 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 596DD693FFA52B0A437EFF10 /* MainMenu.xib */; };
 		596DD346B1E75871BE2BC75C /* GameWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DD71509758D619368DD8F /* GameWindow.swift */; };
 		596DD3738CD2FDB309C45714 /* CubeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DD1350F3DA099677B40EE /* CubeController.swift */; };
@@ -179,7 +178,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = apphacker;
+				TargetAttributes = {
+					596DD0392731C577F4DC1786 = {
+						LastSwiftMigration = 0800;
+					};
+				};
 			};
 			buildConfigurationList = 596DD7C734C68FF43439ACB5 /* Build configuration list for PBXProject "blockens-perspective" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -203,7 +208,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				596DD17610E888E2F51122D3 /* Info.plist in Resources */,
 				596DD7D7015F85301790101B /* Assets.xcassets in Resources */,
 				596DD26812FC658D99CC9622 /* MainMenu.xib in Resources */,
 			);
@@ -265,8 +269,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -305,6 +311,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.apphacker.blockens-perspective";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -317,6 +324,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.apphacker.blockens-perspective";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -334,8 +342,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -354,6 +364,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
 		};

@@ -60,29 +60,29 @@ let red = rgbaToNormalizedGPUColors(249, g: 82, b: 12)
 let yellow = rgbaToNormalizedGPUColors(249, g: 237, b: 12)
 let cherry = rgbaToNormalizedGPUColors(249, g: 0, b: 75)
 
-func rgbaToNormalizedGPUColors(r: Int, g: Int, b: Int, a: Int = 255) -> [Float32] {
+func rgbaToNormalizedGPUColors(_ r: Int, g: Int, b: Int, a: Int = 255) -> [Float32] {
     return [Float32(r)/255.0, Float32(g)/255.0, Float32(b)/255.0, Float32(a)/255.0]
 }
 
-func getRandomNum(n: Int32) -> Int32 {
+func getRandomNum(_ n: Int32) -> Int32 {
     return Int32(arc4random_uniform(UInt32(n)))
 }
 
-func log_e(n: Double) -> Double {
+func log_e(_ n: Double) -> Double {
     return log(n)/log(M_E)
 }
 
-func flipImage(image: NSImage) -> NSImage {
+func flipImage(_ image: NSImage) -> NSImage {
     var imageBounds = NSZeroRect
     imageBounds.size = image.size
-    let transform = NSAffineTransform()
-    transform.translateXBy(0.0, yBy: imageBounds.height)
-    transform.scaleXBy(1, yBy: -1)
+    var transform = AffineTransform.identity
+    transform.translate(x: 0.0, y: imageBounds.height)
+    transform.scale(x: 1, y: -1)
     let flippedImage = NSImage(size: imageBounds.size)
 
     flippedImage.lockFocus()
-    transform.concat()
-    image.drawInRect(imageBounds, fromRect: NSZeroRect, operation: NSCompositingOperation.CompositeCopy, fraction: 1.0)
+    (transform as NSAffineTransform).concat()
+    image.draw(in: imageBounds, from: NSZeroRect, operation: NSCompositingOperation.copy, fraction: 1.0)
     flippedImage.unlockFocus()
 
     return flippedImage
