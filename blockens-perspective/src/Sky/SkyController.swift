@@ -7,9 +7,9 @@ import Foundation
 
 class SkyController: RenderController {
 
-    private var _renderer: SkyRenderer! = nil
+    fileprivate var _renderer: SkyRenderer! = nil
     
-    func setRenderUtils(renderUtils: RenderUtils) {
+    func setRenderUtils(_ renderUtils: RenderUtils) {
         _renderer = SkyRenderer(utils: renderUtils)
     }
     

@@ -62,7 +62,7 @@ float4 getVectorTo4(float4 from, float4 to) {
 }
 
 float vectorMagnitude4(float4 vector) {
-    float result;
+    float result = 0.0;
     for (int i = 0; i < 4; i++) {
         result += pow(vector[i], 2);
     }

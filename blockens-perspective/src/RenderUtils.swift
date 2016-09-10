@@ -16,7 +16,7 @@ class RenderUtils {
         var winResY: Float32
     }
     
-    private var renderInfoBuffer_: MTLBuffer? = nil;
+    fileprivate var renderInfoBuffer_: MTLBuffer? = nil;
     var depthStencilState: MTLDepthStencilState? = nil
 
     let rectangleVertexData:[Float] = [
@@ -132,18 +132,18 @@ class RenderUtils {
 
     let CONSTANT_BUFFER_SIZE = 1024*1024
     
-    func setRenderInfoWithFrameInfo(frameInfo: FrameInfo) {
+    func setRenderInfoWithFrameInfo(_ frameInfo: FrameInfo) {
         var renderInfo = RenderInfo(zoom: frameInfo.zoom, near: frameInfo.near, far: frameInfo.far,
                                     winResX: Float32(frameInfo.viewWidth),
                                     winResY: Float32(frameInfo.viewHeight))
         if (renderInfoBuffer_ != nil) {
-            let contents = renderInfoBuffer_!.contents()
-            let pointer = UnsafeMutablePointer<RenderInfo>(contents)
-            pointer.initializeFrom(&renderInfo, count: 1)
+            let pointer = renderInfoBuffer_!.contents()
+            let size = rectangleTextureCoords.count * MemoryLayout.size(ofValue: renderInfo)
+            memcpy(pointer, &renderInfo, size)
         }
     }
     
-    func createRenderInfoBuffer(device: MTLDevice) {
+    func createRenderInfoBuffer(_ device: MTLDevice) {
         renderInfoBuffer_ = createSizedBuffer(device, bufferLabel: "Render info")
     }
     
@@ -164,25 +164,25 @@ class RenderUtils {
         return cubeColors.count/3 // Divided by 3 because RGB.
     }
 
-    func loadTexture(device: MTLDevice, name: String) -> MTLTexture {
+    func loadTexture(_ device: MTLDevice, name: String) -> MTLTexture {
         var image = NSImage(named: name)!
         image = flipImage(image)
-        var imageRect:CGRect = CGRectMake(0, 0, image.size.width, image.size.height)
-        let imageRef = image.CGImageForProposedRect(&imageRect, context: nil, hints: nil)!
+        var imageRect:CGRect = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+        let imageRef = image.cgImage(forProposedRect: &imageRect, context: nil, hints: nil)!
         let textureLoader = MTKTextureLoader(device: device)
         var texture: MTLTexture? = nil
         do {
-            texture = try textureLoader.newTextureWithCGImage(imageRef, options: .None)
+            texture = try textureLoader.newTexture(with: imageRef, options: .none)
         } catch {
             print("Got an error trying to texture \(error)")
         }
         return texture!
     }
 
-    func createPipeLineState(vertex: String, fragment: String, device: MTLDevice, view: MTKView) -> MTLRenderPipelineState {
+    func createPipeLineState(_ vertex: String, fragment: String, device: MTLDevice, view: MTKView) -> MTLRenderPipelineState {
         let defaultLibrary = device.newDefaultLibrary()!
-        let vertexProgram = defaultLibrary.newFunctionWithName(vertex)!
-        let fragmentProgram = defaultLibrary.newFunctionWithName(fragment)!
+        let vertexProgram = defaultLibrary.makeFunction(name: vertex)!
+        let fragmentProgram = defaultLibrary.makeFunction(name: fragment)!
 
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexProgram
@@ -192,7 +192,7 @@ class RenderUtils {
 
         var pipelineState: MTLRenderPipelineState! = nil
         do {
-            try pipelineState = device.newRenderPipelineStateWithDescriptor(pipelineStateDescriptor)
+            try pipelineState = device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
         } catch let error {
             print("Failed to create pipeline state, error \(error)")
         }
@@ -200,92 +200,96 @@ class RenderUtils {
         return pipelineState
     }
 
-    func setPipeLineState(renderEncoder: MTLRenderCommandEncoder, pipelineState: MTLRenderPipelineState, name: String) {
+    func setPipeLineState(_ renderEncoder: MTLRenderCommandEncoder, pipelineState: MTLRenderPipelineState, name: String) {
 
         renderEncoder.label = "\(name) render encoder"
         renderEncoder.pushDebugGroup("draw \(name)")
         renderEncoder.setRenderPipelineState(pipelineState)
     }
 
-    func drawPrimitives(renderEncoder: MTLRenderCommandEncoder, vertexCount: Int) {
-        renderEncoder.drawPrimitives(.Triangle, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
+    func drawPrimitives(_ renderEncoder: MTLRenderCommandEncoder, vertexCount: Int) {
+        renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
         renderEncoder.popDebugGroup()
         renderEncoder.endEncoding()
     }
 
-    func createSizedBuffer(device: MTLDevice, bufferLabel: String) -> MTLBuffer {
+    func createSizedBuffer(_ device: MTLDevice, bufferLabel: String) -> MTLBuffer {
 
-        let buffer = device.newBufferWithLength(CONSTANT_BUFFER_SIZE, options: [])
+        let buffer = device.makeBuffer(length: CONSTANT_BUFFER_SIZE, options: [])
         buffer.label = bufferLabel
 
         return buffer
     }
 
-    func createRectangleVertexBuffer(device: MTLDevice, bufferLabel: String) -> MTLBuffer {
+    func createRectangleVertexBuffer(_ device: MTLDevice, bufferLabel: String) -> MTLBuffer {
 
-        let bufferSize = rectangleVertexData.count * sizeofValue(rectangleVertexData[0])
-        let buffer = device.newBufferWithBytes(rectangleVertexData, length: bufferSize, options: [])
+        let bufferSize = rectangleVertexData.count * MemoryLayout.size(ofValue: rectangleVertexData[0])
+        // let buffer = device.makeBuffer(bytes: rectangleVertexData, length: bufferSize, options: [])
+        let buffer = device.makeBuffer(length: bufferSize, options: [])
+        let pointer = buffer.contents()
+        memcpy(pointer, rectangleVertexData, bufferSize)
         buffer.label = bufferLabel
 
         return buffer
     }
 
-    func createCubeVertexBuffer(device: MTLDevice, bufferLabel: String) -> MTLBuffer {
+    func createCubeVertexBuffer(_ device: MTLDevice, bufferLabel: String) -> MTLBuffer {
 
-        let bufferSize = cubeVertexData.count * sizeofValue(cubeVertexData[0])
-        let buffer = device.newBufferWithBytes(cubeVertexData, length: bufferSize, options: [])
+        let bufferSize = cubeVertexData.count * MemoryLayout.size(ofValue: cubeVertexData[0])
+        let buffer = device.makeBuffer(bytes: cubeVertexData, length: bufferSize, options: [])
         buffer.label = bufferLabel
 
         return buffer
     }
 
-    func createRectangleTextureCoordsBuffer(device: MTLDevice, bufferLabel: String) -> MTLBuffer {
+    func createRectangleTextureCoordsBuffer(_ device: MTLDevice, bufferLabel: String) -> MTLBuffer {
 
-        let bufferSize = rectangleTextureCoords.count * sizeofValue(rectangleTextureCoords[0])
-        let buffer = device.newBufferWithBytes(rectangleTextureCoords, length: bufferSize, options: [])
+        let bufferSize = rectangleTextureCoords.count * MemoryLayout.size(ofValue: rectangleTextureCoords[0])
+        let buffer = device.makeBuffer(bytes: rectangleTextureCoords, length: bufferSize, options: [])
+        
         buffer.label = bufferLabel
 
         return buffer
     }
 
-    func createBufferFromIntArray(device: MTLDevice, count: Int, bufferLabel: String) -> MTLBuffer {
-        let bufferSize = sizeofValue(Array<Int32>(count: count, repeatedValue: 0))
-        let buffer = device.newBufferWithLength(bufferSize, options: [])
+    func createBufferFromIntArray(_ device: MTLDevice, count: Int, bufferLabel: String) -> MTLBuffer {
+        let bufferSize = MemoryLayout.size(ofValue: Array<Int32>(repeating: 0, count: count))
+        let buffer = device.makeBuffer(length: bufferSize, options: [])
         buffer.label = bufferLabel
 
         return buffer
     }
 
-    func createBufferFromFloatArray(device: MTLDevice, count: Int, bufferLabel: String) -> MTLBuffer {
-        let bufferSize = sizeofValue(Array<Float32>(count: count, repeatedValue: 0))
-        let buffer = device.newBufferWithLength(bufferSize, options: [])
+    func createBufferFromFloatArray(_ device: MTLDevice, count: Int, bufferLabel: String) -> MTLBuffer {
+        let bufferSize = MemoryLayout.size(ofValue: Array<Float32>(repeating: 0, count: count))
+        let buffer = device.makeBuffer(length: bufferSize, options: [])
         buffer.label = bufferLabel
 
         return buffer
     }
 
-    func updateBufferFromIntArray(buffer: MTLBuffer, data: [Int32]) {
-        let contents = buffer.contents()
-        let pointer = UnsafeMutablePointer<Int32>(contents)
-        pointer.initializeFrom(data)
+    func updateBufferFromIntArray(_ buffer: MTLBuffer, data: [Int32]) {
+        let pointer = buffer.contents()
+        let bufferSize = data.count * MemoryLayout.size(ofValue: data[0])
+        memcpy(pointer, data, bufferSize)
     }
 
-    func updateBufferFromFloatArray(buffer: MTLBuffer, data: [Float32]) {
-        let contents = buffer.contents()
-        let pointer = UnsafeMutablePointer<Float32>(contents)
-        pointer.initializeFrom(data)
+    func updateBufferFromFloatArray(_ buffer: MTLBuffer, data: [Float32]) {
+        let pointer = buffer.contents()
+        let bufferSize = data.count * MemoryLayout.size(ofValue: data[0])
+        memcpy(pointer, data, bufferSize)
     }
     
-    func depthStencilState (device: MTLDevice) {
+    func depthStencilState (_ device: MTLDevice) {
         let depthStateDescriptor = MTLDepthStencilDescriptor()
-        depthStateDescriptor.depthWriteEnabled = true
-        depthStateDescriptor.depthCompareFunction = MTLCompareFunction.Greater
-        depthStencilState = device.newDepthStencilStateWithDescriptor(depthStateDescriptor)
+        depthStateDescriptor.isDepthWriteEnabled = true
+        depthStateDescriptor.depthCompareFunction = MTLCompareFunction.greater
+        depthStencilState = device.makeDepthStencilState(descriptor: depthStateDescriptor)
     }
     
-    func setup3D(renderEncoder: MTLRenderCommandEncoder) {
-        renderEncoder.setCullMode(MTLCullMode.Back)
-        renderEncoder.setFrontFacingWinding(MTLWinding.Clockwise)
+    func setup3D(_ renderEncoder: MTLRenderCommandEncoder) {
+        renderEncoder.setCullMode(MTLCullMode.back)
+        renderEncoder.setFrontFacing(MTLWinding.clockwise)
         if (depthStencilState != nil) {
             renderEncoder.setDepthStencilState(depthStencilState!)
         }

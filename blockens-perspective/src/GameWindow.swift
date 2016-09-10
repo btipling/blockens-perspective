@@ -11,9 +11,9 @@ class GameWindow: NSWindow {
 
     var keyEventListeners = Array<Callback>()
 
-    override func keyDown(event: NSEvent) {
-        if event.modifierFlags.contains(NSEventModifierFlags.CommandKeyMask) {
-            super.keyDown(event)
+    override func keyDown(with event: NSEvent) {
+        if event.modifierFlags.contains(NSEventModifierFlags.command) {
+            super.keyDown(with: event)
             return
         }
         for callback in keyEventListeners {
@@ -21,7 +21,7 @@ class GameWindow: NSWindow {
         }
     }
 
-    func addKeyEventCallback(callback: Callback) {
+    func addKeyEventCallback(_ callback: @escaping Callback) {
         keyEventListeners.append(callback)
     }
 

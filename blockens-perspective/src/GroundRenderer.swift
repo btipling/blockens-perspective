@@ -27,7 +27,7 @@ class GroundRenderer: Renderer {
         renderUtils = utils
     }
     
-    func loadAssets(device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
+    func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
         pipelineState = renderUtils.createPipeLineState("GroundVertex", fragment: "GroundFragment", device: device, view: view)
         GroundVertexBuffer = renderUtils.createRectangleVertexBuffer(device, bufferLabel: "Ground vertices")
         
@@ -36,11 +36,11 @@ class GroundRenderer: Renderer {
             scale: [2.0, 2.0, 1.0],
             position: [0.0, -0.5, 2.0])
         
-        let floatSize = sizeof(Float)
+        let floatSize = MemoryLayout<Float>.size
         let float3Size = floatSize * 4
         let uniformsStructSize = float3Size * 3;
         
-        groundInfoBuffer = device.newBufferWithLength(uniformsStructSize, options: [])
+        groundInfoBuffer = device.makeBuffer(length: uniformsStructSize, options: [])
         groundInfoBuffer.label = "ground rotation"
         
         print("FrameInfo: \(frameInfo)")
@@ -55,13 +55,13 @@ class GroundRenderer: Renderer {
     }
     
     
-    func render(renderEncoder: MTLRenderCommandEncoder) {
+    func render(_ renderEncoder: MTLRenderCommandEncoder) {
         
         renderUtils.setPipeLineState(renderEncoder, pipelineState: pipelineState, name: "Ground")
         renderUtils.setup3D(renderEncoder)
         
-        for (i, vertexBuffer) in [GroundVertexBuffer, groundInfoBuffer, renderUtils.renderInfoBuffer()].enumerate() {
-            renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, atIndex: i)
+        for (i, vertexBuffer) in [GroundVertexBuffer, groundInfoBuffer, renderUtils.renderInfoBuffer()].enumerated() {
+            renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: i)
         }
         
         renderUtils.drawPrimitives(renderEncoder, vertexCount: renderUtils.numVerticesInARectangle())

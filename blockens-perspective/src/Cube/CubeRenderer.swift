@@ -29,19 +29,20 @@ class CubeRenderer: Renderer {
         renderUtils = utils
     }
 
-    func loadAssets(device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
+    func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
         
         pipelineState = renderUtils.createPipeLineState("cubeVertex", fragment: "cubeFragment", device: device, view: view)
         cubeVertexBuffer = renderUtils.createCubeVertexBuffer(device, bufferLabel: "cube vertices")
 
-        let bufferSize = sizeof(Float32) * renderUtils.cubeColors.count
-        colorBuffer = device.newBufferWithLength(bufferSize, options: [])
+        
+        let floatSize = MemoryLayout<Float>.size
+        let bufferSize = floatSize * renderUtils.cubeColors.count
+        colorBuffer = device.makeBuffer(length: bufferSize, options: [])
         colorBuffer.label = "cube colors"
-
-        let contents = colorBuffer.contents()
-        let pointer = UnsafeMutablePointer<Float32>(contents)
-        pointer.initializeFrom(renderUtils.cubeColors)
-
+        // put renderUtils.cubeColors into colorBuffer
+        let pointer = colorBuffer.contents()
+        memcpy(pointer, renderUtils.cubeColors, bufferSize)
+        
         cubeInfoBuffer = renderUtils.createSizedBuffer(device, bufferLabel: "cube rotation")
 
         updateCubeRotation(frameInfo)
@@ -49,11 +50,11 @@ class CubeRenderer: Renderer {
         print("loading cube assets done")
     }
 
-    func update(frameInfo: FrameInfo) {
+    func update(_ frameInfo: FrameInfo) {
         updateCubeRotation(frameInfo)
     }
 
-    private func updateCubeRotation(frameInfo: FrameInfo) {
+    fileprivate func updateCubeRotation(_ frameInfo: FrameInfo) {
         
         var cubeInfo = CubeInfo(
                 xRotation: frameInfo.rotateX,
@@ -63,17 +64,17 @@ class CubeRenderer: Renderer {
                 yPos: frameInfo.yPos,
                 zPos: frameInfo.zPos)
         
-        let contents = cubeInfoBuffer.contents()
-        let pointer = UnsafeMutablePointer<CubeInfo>(contents)
-        pointer.initializeFrom(&cubeInfo, count: 1)
+        let pointer = cubeInfoBuffer.contents()
+        let size = MemoryLayout<CubeInfo>.size
+        memcpy(pointer, &cubeInfo, size)
     }
 
 
-    func render(renderEncoder: MTLRenderCommandEncoder) {
+    func render(_ renderEncoder: MTLRenderCommandEncoder) {
         renderUtils.setPipeLineState(renderEncoder, pipelineState: pipelineState, name: "cube")
         renderUtils.setup3D(renderEncoder)
-        for (i, vertexBuffer) in [cubeVertexBuffer, colorBuffer, cubeInfoBuffer, renderUtils.renderInfoBuffer()].enumerate() {
-            renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, atIndex: i)
+        for (i, vertexBuffer) in [cubeVertexBuffer, colorBuffer, cubeInfoBuffer, renderUtils.renderInfoBuffer()].enumerated() {
+            renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: i)
         }
 
         renderUtils.drawPrimitives(renderEncoder, vertexCount: renderUtils.numVerticesInACube())

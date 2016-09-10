@@ -6,6 +6,6 @@
 import Foundation
 
 protocol RenderController {
-    func setRenderUtils(renderUtils: RenderUtils)
+    func setRenderUtils(_ renderUtils: RenderUtils)
     func renderer() -> Renderer
 }
