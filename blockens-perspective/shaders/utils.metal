@@ -114,7 +114,9 @@ float4x4 matrixProduct4x4(float4x4 m1, float4x4 m2) {
 
     for (int i = 0; i < 4; i++) {
         float4 rowM1 = float4(m1[0][i], m1[1][i], m1[2][i], m1[3][i]);
-        result[i] = dotProduct4(rowM1, m2[i]);
+        for (int j = 0; j < 4; j++) {
+            result[j][i] = dotProduct4(rowM1, m2[j]);
+        }
     }
 
     return result;

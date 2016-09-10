@@ -38,19 +38,25 @@ vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
     float4x4 translationMatrix_ = translationMatrix(worldVector);
     float4x4 perspectiveMatrix = perspectiveProjection(renderInfo);
     
-    // ## Do the matrix multiplications.
     
-    // Rotate.
-    float4 transformationProduct = transform4x4(positionVertex, rotationXMatrix);
-    transformationProduct = transform4x4(transformationProduct, rotationYMatrix);
-    transformationProduct = transform4x4(transformationProduct, rotationZMatrix);
+    // ## Build the final transformation matrix by multiplying the matrices together, matrices are associative: ABC == A(BC).
+    // Rotation matrices * translation * perspective = RTP
+    // Then multiply the vector by v(RTP)
     
-    // Translate.
-    transformationProduct = transform4x4(transformationProduct, translationMatrix_);
+    float4x4 R;
+    R = matrixProduct4x4(rotationXMatrix, rotationYMatrix);
+    R = matrixProduct4x4(R, rotationZMatrix);
     
-    // Perspective projection.
-    float4 screenCoordinates = transform4x4(transformationProduct, perspectiveMatrix);
+    float4x4 RT;
     
+    RT = matrixProduct4x4(R, translationMatrix_);
+    
+    float4x4 RTP;
+    
+    RTP = matrixProduct4x4(RT, perspectiveMatrix);
+    
+    // Final transformation, v(RTP):
+    float4 screenCoordinates = transform4x4(positionVertex, RTP);
     
     // Set up the output.
     uint face = vid / 6;
