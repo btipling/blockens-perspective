@@ -90,6 +90,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     }
     
     func handleKeyEvent(_ event: NSEvent) {
+        
+        let cameraTranslation = frameInfo.cameraTranslation
 
         switch event.keyCode {
 
@@ -153,6 +155,32 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             case CLOSE_ALL_KEY:
                 frameInfo.far += POS_CHANGE_MODIFIER
                 break
+            
+            
+            case W_KEY:
+                let newY = cameraTranslation[1] + CAMERA_CHANGE_MODIFIER
+                frameInfo.cameraTranslation = [cameraTranslation[0], newY, cameraTranslation[2]]
+                break
+            case S_KEY:
+                let newY = cameraTranslation[1] - CAMERA_CHANGE_MODIFIER
+                frameInfo.cameraTranslation = [cameraTranslation[0], newY, cameraTranslation[2]]
+                break
+            case A_KEY:
+                let newX = cameraTranslation[0] + CAMERA_CHANGE_MODIFIER
+                frameInfo.cameraTranslation = [newX, cameraTranslation[1], cameraTranslation[2]]
+                break
+            case D_KEY:
+                let newX = cameraTranslation[0] -  CAMERA_CHANGE_MODIFIER
+                frameInfo.cameraTranslation = [newX, cameraTranslation[1], cameraTranslation[2]]
+                break
+            case Q_KEY:
+                let newZ = cameraTranslation[2] + CAMERA_CHANGE_MODIFIER
+                frameInfo.cameraTranslation = [cameraTranslation[0], cameraTranslation[1], newZ]
+                break
+            case E_KEY:
+                let newZ = cameraTranslation[2] -  CAMERA_CHANGE_MODIFIER
+                frameInfo.cameraTranslation = [cameraTranslation[0], cameraTranslation[1], newZ]
+                break
 
             case P_KEY:
                 break
@@ -185,7 +213,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
                 zoom: 1,
                 near: 0.1,
                 far: 100.0,
-                cameraRotation: [0.0, 0.0, 0.0]
+                cameraRotation: [0.0, 0.0],
+                cameraTranslation: [0.0, 0.0, 0.0]
         )
         registerViewDimensions(view)
     }

@@ -9,6 +9,7 @@ import Cocoa
 let ROTATION_CHANGE_MODIFIER: Float32 = 0.1;
 let POS_CHANGE_MODIFIER: Float32 = 0.1;
 let ZOOM_CHANGE_MODIFIER: Float32 = 0.01;
+let CAMERA_CHANGE_MODIFIER: Float32 = 0.1;
 
 struct FrameInfo {
     var viewWidth: Int32
@@ -24,6 +25,7 @@ struct FrameInfo {
     var near: Float32
     var far: Float32
     var cameraRotation: [Float32]
+    var cameraTranslation: [Float32]
 }
 
 let A_KEY: UInt16 = 0
@@ -40,6 +42,8 @@ let P_KEY: UInt16 = 35
 let N_KEY: UInt16 = 45
 let I_KEY: UInt16 = 34
 let O_KEY: UInt16 = 31
+let Q_KEY: UInt16 = 12
+let E_KEY: UInt16 = 14
 
 
 let PLUS_KEY: UInt16 = 24
