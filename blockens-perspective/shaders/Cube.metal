@@ -26,37 +26,15 @@ vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
     CubeOut outVertex;
 
     // ## Set up vectors.
-    float4 positionVertex = toFloat4(position[vid]);
-    float4 worldVector = float4(cubeInfo->xPos, cubeInfo->yPos, cubeInfo->zPos, 1.0);
-    float4 cubeRotationVertex = float4(cubeInfo->xRotation, cubeInfo->yRotation, cubeInfo->zRotation, 1.0);
+    ModelViewData modelViewData = {
+        .positionVertex = toFloat4(position[vid]),
+        .scale = identityVector(),
+        .rotationVertex = float4(cubeInfo->xRotation, cubeInfo->yRotation, cubeInfo->zRotation, 1.0),
+        .translationVertex = float4(cubeInfo->xPos, cubeInfo->yPos, cubeInfo->zPos, 1.0),
+        .renderInfo = renderInfo
+    };
 
-    // ## Setup matrices.
-    float4x4 rotationXMatrix = rotateX(cubeRotationVertex);
-    float4x4 rotationYMatrix = rotateY(cubeRotationVertex);
-    float4x4 rotationZMatrix = rotateZ(cubeRotationVertex);
-    
-    float4x4 translationMatrix_ = translationMatrix(worldVector);
-    float4x4 perspectiveMatrix = perspectiveProjection(renderInfo);
-    
-    
-    // ## Build the final transformation matrix by multiplying the matrices together, matrices are associative: ABC == A(BC).
-    // Rotation matrices * translation * perspective = RTP
-    // Then multiply the vector by v(RTP)
-    
-    float4x4 R;
-    R = matrixProduct4x4(rotationXMatrix, rotationYMatrix);
-    R = matrixProduct4x4(R, rotationZMatrix);
-    
-    float4x4 RT;
-    
-    RT = matrixProduct4x4(R, translationMatrix_);
-    
-    float4x4 RTP;
-    
-    RTP = matrixProduct4x4(RT, perspectiveMatrix);
-    
-    // Final transformation, v(RTP):
-    float4 screenCoordinates = transform4x4(positionVertex, RTP);
+    float4 screenCoordinates = toScreenCoordinates(modelViewData);
     
     // Set up the output.
     uint face = vid / 6;

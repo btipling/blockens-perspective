@@ -20,38 +20,17 @@ vertex VertextOut GroundVertex(uint vid [[ vertex_id ]],
                                constant RenderInfo* renderInfo [[ buffer(2) ]]) {
     
     VertextOut outVertex;
-    
-    float4 positionVertex = toFloat4(position[vid]);
-    float4 scale = toFloat4(groundInfo->scale);
-    float4 rotation = toFloat4(groundInfo->rotation);
-    float4 translation = toFloat4(groundInfo->position);
   
-    // ## Setup matrices.
+    // ## Set up vectors.
+    ModelViewData modelViewData = {
+        .positionVertex = toFloat4(position[vid]),
+        .scale = toFloat4(groundInfo->scale),
+        .rotationVertex = toFloat4(groundInfo->rotation),
+        .translationVertex = toFloat4(groundInfo->position),
+        .renderInfo = renderInfo
+    };
     
-    float4x4 scaleMatrix = scaleVector(scale);
-    
-    float4x4 rotationXMatrix = rotateX(rotation);
-    float4x4 rotationYMatrix = rotateY(rotation);
-    float4x4 rotationZMatrix = rotateZ(rotation);
-    
-    float4x4 translationMatrix_ = translationMatrix(translation);
-    float4x4 perspectiveMatrix = perspectiveProjection(renderInfo);
-    
-    // ## Do the matrix multiplications.
-    
-    // Scale.
-    float4 transformationProduct = transform4x4(positionVertex, scaleMatrix);
-    
-    // Rotate.
-    transformationProduct = transform4x4(transformationProduct, rotationXMatrix);
-    transformationProduct = transform4x4(transformationProduct, rotationYMatrix);
-    transformationProduct = transform4x4(transformationProduct, rotationZMatrix);
-    
-    // Translate.
-    transformationProduct = transform4x4(transformationProduct, translationMatrix_);
-    
-    // Perspective projection.
-    float4 screenCoordinates = transform4x4(transformationProduct, perspectiveMatrix);
+    float4 screenCoordinates = toScreenCoordinates(modelViewData);
     
     outVertex.position = screenCoordinates;
 

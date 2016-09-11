@@ -192,3 +192,37 @@ float4 toFloat4(float3 position) {
 float4 identityVector() {
     return float4(1, 1, 1, 1);
 }
+
+float4 toScreenCoordinates(ModelViewData modelViewData) {
+    
+    // ## Setup matrices.
+    
+    float4x4 scaleMatrix = scaleVector(modelViewData.scale);
+    
+    float4x4 rotationXMatrix = rotateX(modelViewData.rotationVertex);
+    float4x4 rotationYMatrix = rotateY(modelViewData.rotationVertex);
+    float4x4 rotationZMatrix = rotateZ(modelViewData.rotationVertex);
+    
+    float4x4 translationMatrix_ = translationMatrix(modelViewData.translationVertex);
+    float4x4 perspectiveMatrix = perspectiveProjection(modelViewData.renderInfo);
+    
+    // ## Build the final transformation matrix by multiplying the matrices together, matrices are associative: ABC == A(BC).
+    // Scale * rotation matrices * translation * perspective = SRTP
+    // Then multiply the vector by v(SRTP)
+    
+    float4x4 SR;
+    SR = matrixProduct4x4(scaleMatrix, rotationXMatrix);
+    SR = matrixProduct4x4(SR, rotationYMatrix);
+    SR = matrixProduct4x4(SR, rotationZMatrix);
+    
+    float4x4 SRT;
+    
+    SRT = matrixProduct4x4(SR, translationMatrix_);
+    
+    float4x4 SRTP;
+    
+    SRTP = matrixProduct4x4(SRT, perspectiveMatrix);
+    
+    // Final transformation, v(SRTP):
+    return transform4x4(modelViewData.positionVertex, SRTP);
+}

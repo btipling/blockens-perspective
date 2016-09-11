@@ -24,6 +24,14 @@ struct RenderInfo {
     float winResY;
 };
 
+struct ModelViewData {
+    float4 positionVertex;
+    float4 scale;
+    float4 rotationVertex;
+    float4 translationVertex;
+    constant RenderInfo* renderInfo;
+};
+
 float4 rgbaToNormalizedGPUColors(int r, int g, int b);
 
 float3 crossProduct(float3 a, float3 b);
@@ -55,6 +63,8 @@ float4x4 translationMatrix(float4 translation);
 
 float4 toFloat4(float3 position);
 float4 identityVector();
+
+float4 toScreenCoordinates(ModelViewData modelViewData);
 
 
 #endif /* utils_h */

@@ -45,6 +45,9 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         view.device = device
         view.sampleCount = 4
         
+        let trackingArea = NSTrackingArea(rect: view.frame, options: [NSTrackingAreaOptions.mouseMoved, NSTrackingAreaOptions.activeAlways], owner: self, userInfo: nil)
+        view.addTrackingArea(trackingArea)
+        
         // Setup some initial render state.
         setupFrameInfo(view)
         renderUtils.depthStencilState(device)
@@ -65,6 +68,12 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         loadAssets(view)
     }
     
+    override func mouseMoved(with event: NSEvent) {
+        let xMovement = event.deltaX
+        let yMovement = event.deltaY
+        print("mouse moved (\(xMovement), \(yMovement))")
+    }
+    
     func windowDidResize(_ notification: Notification) {
         let view = self.view as! MTKView
         registerViewDimensions(view)
@@ -76,23 +85,23 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
 
         switch event.keyCode {
 
-            case A_KEY:
+            case Z_KEY:
                 frameInfo.rotateX = frameInfo.rotateX - ROTATION_CHANGE_MODIFIER
                 break
-            case D_KEY:
+            case X_KEY:
                 frameInfo.rotateX = frameInfo.rotateX + ROTATION_CHANGE_MODIFIER
                 break
-            case S_KEY:
+            case C_KEY:
                 frameInfo.rotateY = frameInfo.rotateY - ROTATION_CHANGE_MODIFIER
                 break
-            case W_KEY:
+            case V_KEY:
                 frameInfo.rotateY = frameInfo.rotateY + ROTATION_CHANGE_MODIFIER
                 break
 
             case B_KEY:
                 frameInfo.rotateZ = frameInfo.rotateZ - ROTATION_CHANGE_MODIFIER
                 break
-            case F_KEY:
+            case N_KEY:
                 frameInfo.rotateZ = frameInfo.rotateZ + ROTATION_CHANGE_MODIFIER
                 break
 
@@ -138,8 +147,6 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
                 break
 
             case P_KEY:
-                break
-            case N_KEY:
                 break
             default:
                 print(event.keyCode)
