@@ -23,6 +23,7 @@ struct FrameInfo {
     var zoom: Float32
     var near: Float32
     var far: Float32
+    var cameraRotation: [Float32]
 }
 
 let A_KEY: UInt16 = 0

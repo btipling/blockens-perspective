@@ -199,6 +199,12 @@ float4 identityVector() {
 
 float4 toScreenCoordinates(ModelViewData modelViewData) {
     
+    // ## Setup camera vectors
+    float2 cameraRotationXY = float2(modelViewData.renderInfo->cameraRotation);
+    float4 cameraRotation = toFloat4(float3(cameraRotationXY.x, cameraRotationXY.y, 0.0));
+    
+    float4 cameraTranslation = toFloat4(float3(modelViewData.renderInfo->cameraTranslation));
+    
     // ## Setup matrices.
     
     float4x4 scaleMatrix = scaleVector(modelViewData.scale);
@@ -207,12 +213,19 @@ float4 toScreenCoordinates(ModelViewData modelViewData) {
     float4x4 rotationYMatrix = rotateY(modelViewData.rotationVertex);
     float4x4 rotationZMatrix = rotateZ(modelViewData.rotationVertex);
     
-    float4x4 translationMatrix_ = translationMatrix(modelViewData.translationVertex);
+    float4x4 objectTranslationMatrix = translationMatrix(modelViewData.translationVertex);
+    
+    float4x4 cameraRotationXMatrix = rotateX(cameraRotation);
+    float4x4 cameraRotationYMatrix = rotateY(cameraRotation);
+    
+    float4x4 cameraTranslationMatrix = translationMatrix(cameraTranslation);
+    
     float4x4 perspectiveMatrix = perspectiveProjection(modelViewData.renderInfo);
     
     // ## Build the final transformation matrix by multiplying the matrices together, matrices are associative: ABC == A(BC).
     // Scale * rotation matrices * translation * perspective = SRTP
-    // Then multiply the vector by v(SRTP)
+    // Camera translation * Camera rotation matrices = CTCR
+    // Then multiply the vector by v(SRTP(CTCR))
     
     float4x4 SR;
     SR = matrixProduct4x4(scaleMatrix, rotationXMatrix);
@@ -221,12 +234,26 @@ float4 toScreenCoordinates(ModelViewData modelViewData) {
     
     float4x4 SRT;
     
-    SRT = matrixProduct4x4(SR, translationMatrix_);
+    SRT = matrixProduct4x4(SR, objectTranslationMatrix);
     
     float4x4 SRTP;
     
     SRTP = matrixProduct4x4(SRT, perspectiveMatrix);
     
-    // Final transformation, v(SRTP):
-    return transform4x4(modelViewData.positionVertex, SRTP);
+    float4x4 CR;
+    
+    CR = matrixProduct4x4(cameraRotationXMatrix, cameraRotationYMatrix);
+    
+    float4x4 CTCR;
+    
+    CTCR = matrixProduct4x4(cameraTranslationMatrix, CR);
+    
+    // Combine object and camera:
+    
+    float4x4 SRTP_CTCR;
+    
+    SRTP_CTCR = matrixProduct4x4(SRTP, CTCR);
+    
+    // Final transformation, v(SRTP(CTCR)):
+    return transform4x4(modelViewData.positionVertex, SRTP_CTCR);
 }

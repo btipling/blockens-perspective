@@ -22,7 +22,7 @@ struct RenderInfo {
     float far;
     packed_float2 winResolution;
     packed_float2 cameraRotation;
-    packed_float3 cameraPosition;
+    packed_float3 cameraTranslation;
 };
 
 struct ModelViewData {

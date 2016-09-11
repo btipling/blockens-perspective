@@ -69,9 +69,17 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     }
     
     override func mouseMoved(with event: NSEvent) {
-        let xMovement = event.deltaX
-        let yMovement = event.deltaY
-        print("mouse moved (\(xMovement), \(yMovement))")
+        let xMovement = event.deltaX/100.0
+        let yMovement = event.deltaY/100.0
+        let cameraRotation = frameInfo.cameraRotation
+        let completeCircle: Float32 = 0.0
+        var newX: Float32 = completeCircle + cameraRotation[0] - Float32(xMovement)
+        var newY: Float32 = completeCircle + cameraRotation[1] - Float32(yMovement)
+//        print("mouse moved (\(xMovement), \(yMovement))")
+        frameInfo.cameraRotation = [newX, newY]
+        cube.update(frameInfo)
+        print("new frameInfo \(frameInfo)")
+        renderUtils.setRenderInfoWithFrameInfo(frameInfo)
     }
     
     func windowDidResize(_ notification: Notification) {
@@ -176,7 +184,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
                 zPos: 4.0,
                 zoom: 1,
                 near: 0.1,
-                far: 100.0
+                far: 100.0,
+                cameraRotation: [0.0, 0.0, 0.0]
         )
         registerViewDimensions(view)
     }

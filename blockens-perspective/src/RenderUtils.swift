@@ -14,7 +14,7 @@ class RenderUtils {
         var far: Float32
         var winResolution: [Float32]
         var cameraRotation: [Float32]
-        var cameraPosition: [Float32]
+        var cameraTranslation: [Float32]
     }
     
     fileprivate var renderInfoBuffer_: MTLBuffer? = nil;
@@ -140,7 +140,7 @@ class RenderUtils {
                 far: frameInfo.far,
                 winResolution: [Float32(frameInfo.viewWidth), Float32(frameInfo.viewHeight)],
                 cameraRotation: [0.0, 0.0],
-                cameraPosition: [0.0, 0.0, 0.0])
+                cameraTranslation: frameInfo.cameraRotation)
         if (renderInfoBuffer_ != nil) {
             let pointer = renderInfoBuffer_!.contents()
             
@@ -157,9 +157,9 @@ class RenderUtils {
             offset += floatSize
             memcpy(pointer + offset, renderInfo.winResolution, packedFloat2Size)
             offset += packedFloat2Size
-            memcpy(pointer + offset, renderInfo.cameraPosition, packedFloat2Size)
+            memcpy(pointer + offset, renderInfo.cameraRotation, packedFloat2Size)
             offset += packedFloat2Size
-            memcpy(pointer + offset, renderInfo.cameraPosition, packedFloat3Size)
+            memcpy(pointer + offset, renderInfo.cameraTranslation, packedFloat3Size)
 
         }
     }
@@ -181,7 +181,11 @@ class RenderUtils {
     }
     
     func alignBufferSize(bufferSize: Int, alignment: Int) -> Int {
-        return bufferSize + (alignment - (bufferSize % alignment))
+        let alignmentError = bufferSize % alignment;
+        if (alignmentError == 0) {
+            return bufferSize
+        }
+        return bufferSize + (alignment - alignmentError)
     }
     
     func renderInfoBuffer() -> MTLBuffer {
