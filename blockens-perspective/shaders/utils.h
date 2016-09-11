@@ -20,8 +20,9 @@ struct RenderInfo {
     float zoom;
     float near;
     float far;
-    float winResX;
-    float winResY;
+    packed_float2 winResolution;
+    packed_float2 cameraRotation;
+    packed_float3 cameraPosition;
 };
 
 struct ModelViewData {

@@ -12,8 +12,9 @@ class RenderUtils {
         var zoom: Float32
         var near: Float32
         var far: Float32
-        var winResX: Float32
-        var winResY: Float32
+        var winResolution: [Float32]
+        var cameraRotation: [Float32]
+        var cameraPosition: [Float32]
     }
     
     fileprivate var renderInfoBuffer_: MTLBuffer? = nil;
@@ -133,18 +134,54 @@ class RenderUtils {
     let CONSTANT_BUFFER_SIZE = 1024*1024
     
     func setRenderInfoWithFrameInfo(_ frameInfo: FrameInfo) {
-        var renderInfo = RenderInfo(zoom: frameInfo.zoom, near: frameInfo.near, far: frameInfo.far,
-                                    winResX: Float32(frameInfo.viewWidth),
-                                    winResY: Float32(frameInfo.viewHeight))
+        var renderInfo = RenderInfo(
+                zoom: frameInfo.zoom,
+                near: frameInfo.near,
+                far: frameInfo.far,
+                winResolution: [Float32(frameInfo.viewWidth), Float32(frameInfo.viewHeight)],
+                cameraRotation: [0.0, 0.0],
+                cameraPosition: [0.0, 0.0, 0.0])
         if (renderInfoBuffer_ != nil) {
             let pointer = renderInfoBuffer_!.contents()
-            let size = MemoryLayout<RenderInfo>.size
-            memcpy(pointer, &renderInfo, size)
+            
+            // Memory layout for shader types:
+            let floatSize = MemoryLayout<Float>.size
+            let packedFloat2Size = floatSize * 2
+            let packedFloat3Size = floatSize * 3
+            
+            memcpy(pointer, &renderInfo.zoom, floatSize)
+            var offset = floatSize
+            memcpy(pointer + offset, &renderInfo.near, floatSize)
+            offset += floatSize
+            memcpy(pointer + offset, &renderInfo.far, floatSize)
+            offset += floatSize
+            memcpy(pointer + offset, renderInfo.winResolution, packedFloat2Size)
+            offset += packedFloat2Size
+            memcpy(pointer + offset, renderInfo.cameraPosition, packedFloat2Size)
+            offset += packedFloat2Size
+            memcpy(pointer + offset, renderInfo.cameraPosition, packedFloat3Size)
+
         }
     }
     
     func createRenderInfoBuffer(_ device: MTLDevice) {
-        renderInfoBuffer_ = createSizedBuffer(device, bufferLabel: "Render info")
+        
+        // Setup memory layout.
+        let floatSize = MemoryLayout<Float>.size
+        let packedFloat2Size = floatSize * 2
+        let packedFloat3Size = floatSize * 3
+        
+        var minBufferSize = floatSize * 3 // zoom, far, near
+        minBufferSize += packedFloat2Size * 2 // winResolultion, cameraRotation,
+        minBufferSize += packedFloat3Size // cameraPosition
+        let bufferSize = alignBufferSize(bufferSize: minBufferSize, alignment: floatSize)
+        
+        renderInfoBuffer_ = device.makeBuffer(length: bufferSize, options: [])
+
+    }
+    
+    func alignBufferSize(bufferSize: Int, alignment: Int) -> Int {
+        return bufferSize + (alignment - (bufferSize % alignment))
     }
     
     func renderInfoBuffer() -> MTLBuffer {

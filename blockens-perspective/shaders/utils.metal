@@ -128,11 +128,13 @@ float4x4 scaleVector(float4 scale) {
 }
 
 float4x4 orthoGraphicProjection(constant RenderInfo* renderInfo) {
+    
+    float2 resolution = float2(renderInfo->winResolution);
 
     float near = renderInfo->near;
     float far = renderInfo->far;
     float zoomX = renderInfo->zoom;
-    float zoomY = zoomX * (renderInfo->winResX/renderInfo->winResY);
+    float zoomY = zoomX * (resolution.x/resolution.y);
     float zRange = far - near;
     
     float sDepth = 1/zRange;
@@ -144,10 +146,12 @@ float4x4 orthoGraphicProjection(constant RenderInfo* renderInfo) {
 
 float4x4 perspectiveProjection(constant RenderInfo* renderInfo) {
     
+    float2 resolution = float2(renderInfo->winResolution);
+    
     float near = renderInfo->near;
     float far = renderInfo->far;
     float zoomX = renderInfo->zoom;
-    float zoomY = zoomX * (renderInfo->winResX/renderInfo->winResY);
+    float zoomY = zoomX * (resolution.x/resolution.y);
     float zRange = far - near;
     
     float zFar = far / zRange;
