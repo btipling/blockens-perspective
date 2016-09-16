@@ -20,21 +20,21 @@ class SkyRenderer: Renderer {
 
     func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
 
-        pipelineState = renderUtils.createPipeLineState("skyVertex", fragment: "skyFragment", device: device, view: view)
-        skyVertexBuffer = renderUtils.createRectangleVertexBuffer(device, bufferLabel: "sky vertices")
+        pipelineState = renderUtils.createPipeLineState(vertex: "skyVertex", fragment: "skyFragment", device: device, view: view)
+        skyVertexBuffer = renderUtils.createRectangleVertexBuffer(device: device, bufferLabel: "sky vertices")
 
         print("loading sky assets done")
     }
 
     func render(_ renderEncoder: MTLRenderCommandEncoder) {
 
-        renderUtils.setPipeLineState(renderEncoder, pipelineState: pipelineState, name: "sky")
+        renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "sky")
 
         for (i, vertexBuffer) in [skyVertexBuffer].enumerated() {
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: i)
         }
 
-        renderUtils.drawPrimitives(renderEncoder, vertexCount: renderUtils.numVerticesInARectangle())
+        renderUtils.drawPrimitives(renderEncoder: renderEncoder, vertexCount: renderUtils.numVerticesInARectangle())
 
     }
 }

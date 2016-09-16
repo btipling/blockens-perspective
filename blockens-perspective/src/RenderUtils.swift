@@ -133,14 +133,14 @@ class RenderUtils {
 
     let CONSTANT_BUFFER_SIZE = 1024*1024
     
-    func setRenderInfoWithFrameInfo(_ frameInfo: FrameInfo) {
+    func setRenderInfo(frameInfo: FrameInfo) {
         var renderInfo = RenderInfo(
                 zoom: frameInfo.zoom,
                 near: frameInfo.near,
                 far: frameInfo.far,
                 winResolution: [Float32(frameInfo.viewWidth), Float32(frameInfo.viewHeight)],
-                cameraRotation: [0.0, 0.0],
-                cameraTranslation: frameInfo.cameraRotation)
+                cameraRotation: frameInfo.cameraRotation,
+                cameraTranslation: frameInfo.cameraTranslation)
         if (renderInfoBuffer_ != nil) {
             let pointer = renderInfoBuffer_!.contents()
             
@@ -164,7 +164,7 @@ class RenderUtils {
         }
     }
     
-    func createRenderInfoBuffer(_ device: MTLDevice) {
+    func createRenderInfoBuffer(device: MTLDevice) {
         
         // Setup memory layout.
         let floatSize = MemoryLayout<Float>.size
@@ -205,7 +205,7 @@ class RenderUtils {
         return cubeColors.count/3 // Divided by 3 because RGB.
     }
 
-    func loadTexture(_ device: MTLDevice, name: String) -> MTLTexture {
+    func loadTexture(device: MTLDevice, name: String) -> MTLTexture {
         var image = NSImage(named: name)!
         image = flipImage(image)
         var imageRect:CGRect = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
@@ -220,7 +220,7 @@ class RenderUtils {
         return texture!
     }
 
-    func createPipeLineState(_ vertex: String, fragment: String, device: MTLDevice, view: MTKView) -> MTLRenderPipelineState {
+    func createPipeLineState(vertex: String, fragment: String, device: MTLDevice, view: MTKView) -> MTLRenderPipelineState {
         let defaultLibrary = device.newDefaultLibrary()!
         let vertexProgram = defaultLibrary.makeFunction(name: vertex)!
         let fragmentProgram = defaultLibrary.makeFunction(name: fragment)!
@@ -241,15 +241,19 @@ class RenderUtils {
         return pipelineState
     }
 
-    func setPipeLineState(_ renderEncoder: MTLRenderCommandEncoder, pipelineState: MTLRenderPipelineState, name: String) {
+    func setPipeLineState(renderEncoder: MTLRenderCommandEncoder, pipelineState: MTLRenderPipelineState, name: String) {
 
         renderEncoder.label = "\(name) render encoder"
         renderEncoder.pushDebugGroup("draw \(name)")
         renderEncoder.setRenderPipelineState(pipelineState)
     }
 
-    func drawPrimitives(_ renderEncoder: MTLRenderCommandEncoder, vertexCount: Int) {
+    func drawPrimitives(renderEncoder: MTLRenderCommandEncoder, vertexCount: Int) {
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
+        finishDrawing(renderEncoder: renderEncoder)
+    }
+    
+    func finishDrawing(renderEncoder: MTLRenderCommandEncoder) {
         renderEncoder.popDebugGroup()
         renderEncoder.endEncoding()
     }
@@ -262,10 +266,9 @@ class RenderUtils {
         return buffer
     }
 
-    func createRectangleVertexBuffer(_ device: MTLDevice, bufferLabel: String) -> MTLBuffer {
+    func createRectangleVertexBuffer(device: MTLDevice, bufferLabel: String) -> MTLBuffer {
 
         let bufferSize = rectangleVertexData.count * MemoryLayout.size(ofValue: rectangleVertexData[0])
-        // let buffer = device.makeBuffer(bytes: rectangleVertexData, length: bufferSize, options: [])
         let buffer = device.makeBuffer(length: bufferSize, options: [])
         let pointer = buffer.contents()
         memcpy(pointer, rectangleVertexData, bufferSize)
@@ -274,7 +277,7 @@ class RenderUtils {
         return buffer
     }
 
-    func createCubeVertexBuffer(_ device: MTLDevice, bufferLabel: String) -> MTLBuffer {
+    func createCubeVertexBuffer(device: MTLDevice, bufferLabel: String) -> MTLBuffer {
 
         let bufferSize = cubeVertexData.count * MemoryLayout.size(ofValue: cubeVertexData[0])
         let buffer = device.makeBuffer(bytes: cubeVertexData, length: bufferSize, options: [])
@@ -283,7 +286,7 @@ class RenderUtils {
         return buffer
     }
 
-    func createRectangleTextureCoordsBuffer(_ device: MTLDevice, bufferLabel: String) -> MTLBuffer {
+    func createRectangleTextureCoordsBuffer(device: MTLDevice, bufferLabel: String) -> MTLBuffer {
 
         let bufferSize = rectangleTextureCoords.count * MemoryLayout.size(ofValue: rectangleTextureCoords[0])
         let buffer = device.makeBuffer(bytes: rectangleTextureCoords, length: bufferSize, options: [])
@@ -293,7 +296,7 @@ class RenderUtils {
         return buffer
     }
 
-    func createBufferFromIntArray(_ device: MTLDevice, count: Int, bufferLabel: String) -> MTLBuffer {
+    func createBufferFromIntArray(device: MTLDevice, count: Int, bufferLabel: String) -> MTLBuffer {
         let bufferSize = MemoryLayout.size(ofValue: Array<Int32>(repeating: 0, count: count))
         let buffer = device.makeBuffer(length: bufferSize, options: [])
         buffer.label = bufferLabel
@@ -301,7 +304,7 @@ class RenderUtils {
         return buffer
     }
 
-    func createBufferFromFloatArray(_ device: MTLDevice, count: Int, bufferLabel: String) -> MTLBuffer {
+    func createBufferFromFloatArray(device: MTLDevice, count: Int, bufferLabel: String) -> MTLBuffer {
         let bufferSize = MemoryLayout.size(ofValue: Array<Float32>(repeating: 0, count: count))
         let buffer = device.makeBuffer(length: bufferSize, options: [])
         buffer.label = bufferLabel
@@ -309,26 +312,26 @@ class RenderUtils {
         return buffer
     }
 
-    func updateBufferFromIntArray(_ buffer: MTLBuffer, data: [Int32]) {
+    func updateBufferFromIntArray(buffer: MTLBuffer, data: [Int32]) {
         let pointer = buffer.contents()
         let bufferSize = data.count * MemoryLayout.size(ofValue: data[0])
         memcpy(pointer, data, bufferSize)
     }
 
-    func updateBufferFromFloatArray(_ buffer: MTLBuffer, data: [Float32]) {
+    func updateBufferFromFloatArray(buffer: MTLBuffer, data: [Float32]) {
         let pointer = buffer.contents()
         let bufferSize = data.count * MemoryLayout.size(ofValue: data[0])
         memcpy(pointer, data, bufferSize)
     }
     
-    func depthStencilState (_ device: MTLDevice) {
+    func depthStencilState (device: MTLDevice) {
         let depthStateDescriptor = MTLDepthStencilDescriptor()
         depthStateDescriptor.isDepthWriteEnabled = true
         depthStateDescriptor.depthCompareFunction = MTLCompareFunction.greater
         depthStencilState = device.makeDepthStencilState(descriptor: depthStateDescriptor)
     }
     
-    func setup3D(_ renderEncoder: MTLRenderCommandEncoder) {
+    func setup3D(renderEncoder: MTLRenderCommandEncoder) {
         renderEncoder.setCullMode(MTLCullMode.back)
         renderEncoder.setFrontFacing(MTLWinding.clockwise)
         if (depthStencilState != nil) {
