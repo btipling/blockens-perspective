@@ -199,11 +199,11 @@ float4 identityVector() {
 
 float4 toScreenCoordinates(ModelViewData modelViewData) {
     
-    // ## Setup camera vectors
-    float2 cameraRotationXY = float2(modelViewData.renderInfo->cameraRotation);
-    float4 cameraRotation = toFloat4(float3(cameraRotationXY.x, cameraRotationXY.y, 0.0));
+    // ## Setup camera vectors cows go live
+    // float2 cameraRotationXY = float2(modelViewData.renderInfo->cameraRotation);
+    // float4 cameraRotation = toFloat4(float3(cameraRotationXY.x, cameraRotationXY.y, 0.0));
     
-    float4 cameraTranslation = toFloat4(float3(modelViewData.renderInfo->cameraTranslation));
+    // float4 cameraTranslation = toFloat4(float3(modelViewData.renderInfo->cameraTranslation));
     
     // ## Setup matrices.
     
@@ -215,10 +215,10 @@ float4 toScreenCoordinates(ModelViewData modelViewData) {
     
     float4x4 objectTranslationMatrix = translationMatrix(modelViewData.translationVertex);
     
-    float4x4 cameraRotationXMatrix = rotateX(cameraRotation);
-    float4x4 cameraRotationYMatrix = rotateY(cameraRotation);
+    // float4x4 cameraRotationXMatrix = rotateX(cameraRotation);
+    // float4x4 cameraRotationYMatrix = rotateY(cameraRotation);
     
-    float4x4 cameraTranslationMatrix = translationMatrix(cameraTranslation);
+    // float4x4 cameraTranslationMatrix = translationMatrix(cameraTranslation);
     
     float4x4 perspectiveMatrix = perspectiveProjection(modelViewData.renderInfo);
     
@@ -242,18 +242,18 @@ float4 toScreenCoordinates(ModelViewData modelViewData) {
     
     float4x4 CR;
     
-    CR = matrixProduct4x4(cameraRotationXMatrix, cameraRotationYMatrix);
+    // CR = matrixProduct4x4(cameraRotationXMatrix, cameraRotationYMatrix);
     
     float4x4 CTCR;
     
-    CTCR = matrixProduct4x4(cameraTranslationMatrix, CR);
+    // CTCR = matrixProduct4x4(cameraTranslationMatrix, CR);
     
     // Combine object and camera:
     
     float4x4 SRTP_CTCR;
     
-    SRTP_CTCR = matrixProduct4x4(SRTP, CTCR);
+    //SRTP_CTCR = matrixProduct4x4(SRTP, CTCR);
     
     // Final transformation, v(SRTP(CTCR)):
-    return transform4x4(modelViewData.positionVertex, SRTP_CTCR);
+    return transform4x4(modelViewData.positionVertex, SRTP);
 }

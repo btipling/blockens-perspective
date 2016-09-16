@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		404E7BE61D8C194E007B9D0F /* CrossHairsRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404E7BE51D8C194E007B9D0F /* CrossHairsRenderer.swift */; };
+		404E7BE81D8C195D007B9D0F /* CrossHairsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404E7BE71D8C195D007B9D0F /* CrossHairsController.swift */; };
+		404E7BEA1D8C198D007B9D0F /* CrossHairs.metal in Sources */ = {isa = PBXBuildFile; fileRef = 404E7BE91D8C198D007B9D0F /* CrossHairs.metal */; };
 		40E64B401D7E1A6E004144A0 /* GroundController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E64B3F1D7E1A6E004144A0 /* GroundController.swift */; };
 		40E64B421D7E1A7B004144A0 /* GroundRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E64B411D7E1A7B004144A0 /* GroundRenderer.swift */; };
 		40E64B441D7E33D3004144A0 /* Ground.metal in Sources */ = {isa = PBXBuildFile; fileRef = 40E64B431D7E33D3004144A0 /* Ground.metal */; };
@@ -30,6 +33,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		404E7BE51D8C194E007B9D0F /* CrossHairsRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrossHairsRenderer.swift; sourceTree = "<group>"; };
+		404E7BE71D8C195D007B9D0F /* CrossHairsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrossHairsController.swift; sourceTree = "<group>"; };
+		404E7BE91D8C198D007B9D0F /* CrossHairs.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = CrossHairs.metal; sourceTree = "<group>"; };
 		40E64B3F1D7E1A6E004144A0 /* GroundController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroundController.swift; sourceTree = "<group>"; };
 		40E64B411D7E1A7B004144A0 /* GroundRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroundRenderer.swift; sourceTree = "<group>"; };
 		40E64B431D7E33D3004144A0 /* Ground.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Ground.metal; sourceTree = "<group>"; };
@@ -66,6 +72,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		404E7BE41D8C18FA007B9D0F /* CrossHairs */ = {
+			isa = PBXGroup;
+			children = (
+				404E7BE51D8C194E007B9D0F /* CrossHairsRenderer.swift */,
+				404E7BE71D8C195D007B9D0F /* CrossHairsController.swift */,
+			);
+			name = CrossHairs;
+			sourceTree = "<group>";
+		};
 		40E64B3E1D7E1A43004144A0 /* Ground */ = {
 			isa = PBXGroup;
 			children = (
@@ -111,6 +126,7 @@
 				596DDBF4F807336EDB86EBB8 /* RendererController.swift */,
 				596DD487FA02D6C3E5D44C7A /* RenderUtils.swift */,
 				596DD1C9EF7B9A6114F21ED0 /* utils.swift */,
+				404E7BE41D8C18FA007B9D0F /* CrossHairs */,
 				596DD58380A3326D3BE992E3 /* Cube */,
 				40E64B3E1D7E1A43004144A0 /* Ground */,
 				596DD1A9B919E746DAA4295B /* Sky */,
@@ -126,6 +142,7 @@
 				596DDF76465D421FA5A59446 /* utils.metal */,
 				596DD1912B9EB22332E369CC /* Cube.metal */,
 				40E64B431D7E33D3004144A0 /* Ground.metal */,
+				404E7BE91D8C198D007B9D0F /* CrossHairs.metal */,
 			);
 			path = shaders;
 			sourceTree = "<group>";
@@ -220,6 +237,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				404E7BEA1D8C198D007B9D0F /* CrossHairs.metal in Sources */,
 				596DDC5E027C9509CA68960F /* Shaders.metal in Sources */,
 				596DDDAF64E0833AD5DA7782 /* Sky.metal in Sources */,
 				596DD46F6ADF9DE25D88B586 /* utils.metal in Sources */,
@@ -230,6 +248,7 @@
 				596DDC5BCCFDFE0C5304FAB9 /* AppDelegate.swift in Sources */,
 				596DDF9DA312D49961BD799C /* Renderer.swift in Sources */,
 				40E64B421D7E1A7B004144A0 /* GroundRenderer.swift in Sources */,
+				404E7BE81D8C195D007B9D0F /* CrossHairsController.swift in Sources */,
 				596DDB70DE8BC4A1BF45BD03 /* RendererController.swift in Sources */,
 				596DDA3141FB697E508AB7B4 /* utils.swift in Sources */,
 				596DDFF20F0981C889BA83C0 /* SkyRenderer.swift in Sources */,
@@ -237,6 +256,7 @@
 				596DD42720830726C72D0BEF /* RenderUtils.swift in Sources */,
 				596DDB79F7A7A8CA2B08EC51 /* CubeRenderer.swift in Sources */,
 				596DD3738CD2FDB309C45714 /* CubeController.swift in Sources */,
+				404E7BE61D8C194E007B9D0F /* CrossHairsRenderer.swift in Sources */,
 				596DD346B1E75871BE2BC75C /* GameWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

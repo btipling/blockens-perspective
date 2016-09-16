@@ -31,8 +31,8 @@ class CubeRenderer: Renderer {
 
     func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
         
-        pipelineState = renderUtils.createPipeLineState("cubeVertex", fragment: "cubeFragment", device: device, view: view)
-        cubeVertexBuffer = renderUtils.createCubeVertexBuffer(device, bufferLabel: "cube vertices")
+        pipelineState = renderUtils.createPipeLineState(vertex: "cubeVertex", fragment: "cubeFragment", device: device, view: view)
+        cubeVertexBuffer = renderUtils.createCubeVertexBuffer(device: device, bufferLabel: "cube vertices")
 
         
         let floatSize = MemoryLayout<Float>.size
@@ -71,13 +71,13 @@ class CubeRenderer: Renderer {
 
 
     func render(_ renderEncoder: MTLRenderCommandEncoder) {
-        renderUtils.setPipeLineState(renderEncoder, pipelineState: pipelineState, name: "cube")
-        renderUtils.setup3D(renderEncoder)
+        renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "cube")
+        renderUtils.setup3D(renderEncoder: renderEncoder)
         for (i, vertexBuffer) in [cubeVertexBuffer, colorBuffer, cubeInfoBuffer, renderUtils.renderInfoBuffer()].enumerated() {
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: i)
         }
 
-        renderUtils.drawPrimitives(renderEncoder, vertexCount: renderUtils.numVerticesInACube())
+        renderUtils.drawPrimitives(renderEncoder: renderEncoder, vertexCount: renderUtils.numVerticesInACube())
 
     }
 }
