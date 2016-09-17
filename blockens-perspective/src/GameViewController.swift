@@ -44,6 +44,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         view.delegate = self
         view.device = device
         view.sampleCount = 4
+        view.depthStencilPixelFormat = .depth32Float_stencil8
         
         let trackingArea = NSTrackingArea(rect: view.frame, options: [NSTrackingAreaOptions.mouseMoved, NSTrackingAreaOptions.activeAlways], owner: self, userInfo: nil)
         view.addTrackingArea(trackingArea)
@@ -54,10 +55,10 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
 
         // Add render controllers, order matters.
         let renderControllers: [RenderController] = [
-                SkyController(),
-                GroundController(),
-                cube,
-                CrossHairsController(),
+            SkyController(),
+            GroundController(),
+            cube,
+            CrossHairsController(),
         ]
         
         // Collect renderers and provide renderUtils to controllers.
@@ -260,13 +261,14 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
 
         if let renderPassDescriptor = view.currentRenderPassDescriptor, let currentDrawable = view.currentDrawable {
 
-            let parallelCommandEncoder = commandBuffer.makeParallelRenderCommandEncoder(descriptor: renderPassDescriptor)
-
+            //let parallelCommandEncoder = commandBuffer.makeParallelRenderCommandEncoder(descriptor: renderPassDescriptor)
+            let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
+            renderUtils.setup3D(renderEncoder: renderEncoder)
             for renderer in renderers {
-                renderer.render(parallelCommandEncoder.makeRenderCommandEncoder())
+                renderer.render(renderEncoder)
             }
 
-            parallelCommandEncoder.endEncoding()
+            renderEncoder.endEncoding()
             commandBuffer.present(currentDrawable)
         }
         commandBuffer.commit()

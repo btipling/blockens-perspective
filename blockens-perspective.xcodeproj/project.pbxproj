@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		404A07B61D8CB9B500B8CD1B /* CameraRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404A07B51D8CB9B500B8CD1B /* CameraRenderer.swift */; };
+		404A07B81D8CB9C100B8CD1B /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404A07B71D8CB9C100B8CD1B /* CameraController.swift */; };
+		404A07BA1D8CBA5900B8CD1B /* Camera.metal in Sources */ = {isa = PBXBuildFile; fileRef = 404A07B91D8CBA5900B8CD1B /* Camera.metal */; };
+		404A07BC1D8CBA6800B8CD1B /* CameraVector.metal in Sources */ = {isa = PBXBuildFile; fileRef = 404A07BB1D8CBA6800B8CD1B /* CameraVector.metal */; };
+		404A07BE1D8CBA8F00B8CD1B /* CameraVectorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404A07BD1D8CBA8F00B8CD1B /* CameraVectorController.swift */; };
+		404A07C01D8CBA9700B8CD1B /* CameraVectorRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404A07BF1D8CBA9700B8CD1B /* CameraVectorRenderer.swift */; };
 		404E7BE61D8C194E007B9D0F /* CrossHairsRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404E7BE51D8C194E007B9D0F /* CrossHairsRenderer.swift */; };
 		404E7BE81D8C195D007B9D0F /* CrossHairsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404E7BE71D8C195D007B9D0F /* CrossHairsController.swift */; };
 		404E7BEA1D8C198D007B9D0F /* CrossHairs.metal in Sources */ = {isa = PBXBuildFile; fileRef = 404E7BE91D8C198D007B9D0F /* CrossHairs.metal */; };
@@ -33,6 +39,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		404A07B51D8CB9B500B8CD1B /* CameraRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraRenderer.swift; sourceTree = "<group>"; };
+		404A07B71D8CB9C100B8CD1B /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		404A07B91D8CBA5900B8CD1B /* Camera.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Camera.metal; sourceTree = "<group>"; };
+		404A07BB1D8CBA6800B8CD1B /* CameraVector.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = CameraVector.metal; sourceTree = "<group>"; };
+		404A07BD1D8CBA8F00B8CD1B /* CameraVectorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraVectorController.swift; sourceTree = "<group>"; };
+		404A07BF1D8CBA9700B8CD1B /* CameraVectorRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraVectorRenderer.swift; sourceTree = "<group>"; };
 		404E7BE51D8C194E007B9D0F /* CrossHairsRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrossHairsRenderer.swift; sourceTree = "<group>"; };
 		404E7BE71D8C195D007B9D0F /* CrossHairsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrossHairsController.swift; sourceTree = "<group>"; };
 		404E7BE91D8C198D007B9D0F /* CrossHairs.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = CrossHairs.metal; sourceTree = "<group>"; };
@@ -72,6 +84,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		404A07B41D8CB98000B8CD1B /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				404A07BD1D8CBA8F00B8CD1B /* CameraVectorController.swift */,
+				404A07BF1D8CBA9700B8CD1B /* CameraVectorRenderer.swift */,
+				404A07B71D8CB9C100B8CD1B /* CameraController.swift */,
+				404A07B51D8CB9B500B8CD1B /* CameraRenderer.swift */,
+			);
+			name = Camera;
+			sourceTree = "<group>";
+		};
 		404E7BE41D8C18FA007B9D0F /* CrossHairs */ = {
 			isa = PBXGroup;
 			children = (
@@ -126,6 +149,7 @@
 				596DDBF4F807336EDB86EBB8 /* RendererController.swift */,
 				596DD487FA02D6C3E5D44C7A /* RenderUtils.swift */,
 				596DD1C9EF7B9A6114F21ED0 /* utils.swift */,
+				404A07B41D8CB98000B8CD1B /* Camera */,
 				404E7BE41D8C18FA007B9D0F /* CrossHairs */,
 				596DD58380A3326D3BE992E3 /* Cube */,
 				40E64B3E1D7E1A43004144A0 /* Ground */,
@@ -137,6 +161,8 @@
 		596DD7D06295D8F70BB473BB /* shaders */ = {
 			isa = PBXGroup;
 			children = (
+				404A07BB1D8CBA6800B8CD1B /* CameraVector.metal */,
+				404A07B91D8CBA5900B8CD1B /* Camera.metal */,
 				596DD71252DC62F6946FB9A2 /* Sky.metal */,
 				596DDA5DB18DAFE007088EA9 /* utils.h */,
 				596DDF76465D421FA5A59446 /* utils.metal */,
@@ -238,20 +264,26 @@
 			buildActionMask = 2147483647;
 			files = (
 				404E7BEA1D8C198D007B9D0F /* CrossHairs.metal in Sources */,
+				404A07B81D8CB9C100B8CD1B /* CameraController.swift in Sources */,
+				404A07C01D8CBA9700B8CD1B /* CameraVectorRenderer.swift in Sources */,
 				596DDC5E027C9509CA68960F /* Shaders.metal in Sources */,
 				596DDDAF64E0833AD5DA7782 /* Sky.metal in Sources */,
 				596DD46F6ADF9DE25D88B586 /* utils.metal in Sources */,
 				596DD46793DCDF17FC7CB954 /* Cube.metal in Sources */,
+				404A07BA1D8CBA5900B8CD1B /* Camera.metal in Sources */,
 				40E64B441D7E33D3004144A0 /* Ground.metal in Sources */,
 				40E64B401D7E1A6E004144A0 /* GroundController.swift in Sources */,
 				596DDCCE8F426D3D180A5E6E /* GameViewController.swift in Sources */,
+				404A07BC1D8CBA6800B8CD1B /* CameraVector.metal in Sources */,
 				596DDC5BCCFDFE0C5304FAB9 /* AppDelegate.swift in Sources */,
+				404A07B61D8CB9B500B8CD1B /* CameraRenderer.swift in Sources */,
 				596DDF9DA312D49961BD799C /* Renderer.swift in Sources */,
 				40E64B421D7E1A7B004144A0 /* GroundRenderer.swift in Sources */,
 				404E7BE81D8C195D007B9D0F /* CrossHairsController.swift in Sources */,
 				596DDB70DE8BC4A1BF45BD03 /* RendererController.swift in Sources */,
 				596DDA3141FB697E508AB7B4 /* utils.swift in Sources */,
 				596DDFF20F0981C889BA83C0 /* SkyRenderer.swift in Sources */,
+				404A07BE1D8CBA8F00B8CD1B /* CameraVectorController.swift in Sources */,
 				596DD40E6ADAC37AA664253D /* SkyController.swift in Sources */,
 				596DD42720830726C72D0BEF /* RenderUtils.swift in Sources */,
 				596DDB79F7A7A8CA2B08EC51 /* CubeRenderer.swift in Sources */,

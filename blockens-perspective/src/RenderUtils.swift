@@ -230,6 +230,8 @@ class RenderUtils {
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat
         pipelineStateDescriptor.sampleCount = view.sampleCount
+        pipelineStateDescriptor.depthAttachmentPixelFormat = view.depthStencilPixelFormat
+        pipelineStateDescriptor.stencilAttachmentPixelFormat = view.depthStencilPixelFormat
 
         var pipelineState: MTLRenderPipelineState! = nil
         do {
@@ -255,7 +257,6 @@ class RenderUtils {
     
     func finishDrawing(renderEncoder: MTLRenderCommandEncoder) {
         renderEncoder.popDebugGroup()
-        renderEncoder.endEncoding()
     }
 
     func createSizedBuffer(_ device: MTLDevice, bufferLabel: String) -> MTLBuffer {
@@ -327,15 +328,15 @@ class RenderUtils {
     func depthStencilState (device: MTLDevice) {
         let depthStateDescriptor = MTLDepthStencilDescriptor()
         depthStateDescriptor.isDepthWriteEnabled = true
-        depthStateDescriptor.depthCompareFunction = MTLCompareFunction.greater
+        depthStateDescriptor.depthCompareFunction = .less
         depthStencilState = device.makeDepthStencilState(descriptor: depthStateDescriptor)
     }
     
     func setup3D(renderEncoder: MTLRenderCommandEncoder) {
+        
+        renderEncoder.setDepthStencilState(depthStencilState!)
+        
         renderEncoder.setCullMode(MTLCullMode.back)
         renderEncoder.setFrontFacing(MTLWinding.clockwise)
-        if (depthStencilState != nil) {
-            renderEncoder.setDepthStencilState(depthStencilState!)
-        }
     }
 }

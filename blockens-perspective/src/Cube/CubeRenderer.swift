@@ -72,7 +72,6 @@ class CubeRenderer: Renderer {
 
     func render(_ renderEncoder: MTLRenderCommandEncoder) {
         renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "cube")
-        renderUtils.setup3D(renderEncoder: renderEncoder)
         for (i, vertexBuffer) in [cubeVertexBuffer, colorBuffer, cubeInfoBuffer, renderUtils.renderInfoBuffer()].enumerated() {
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: i)
         }
