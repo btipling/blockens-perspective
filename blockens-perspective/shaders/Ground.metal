@@ -8,15 +8,9 @@
 
 #include "utils.h"
 
-struct GroundInfo {
-    float3 rotation;
-    float3 scale;
-    float3 position;
-};
-
 vertex VertextOut GroundVertex(uint vid [[ vertex_id ]],
                                constant packed_float3* position  [[ buffer(0) ]],
-                               constant GroundInfo* groundInfo [[ buffer(1)]],
+                               constant Object3DInfo* groundInfo [[ buffer(1)]],
                                constant RenderInfo* renderInfo [[ buffer(2) ]]) {
     
     VertextOut outVertex;

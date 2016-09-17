@@ -261,7 +261,6 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
 
         if let renderPassDescriptor = view.currentRenderPassDescriptor, let currentDrawable = view.currentDrawable {
 
-            //let parallelCommandEncoder = commandBuffer.makeParallelRenderCommandEncoder(descriptor: renderPassDescriptor)
             let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
             renderUtils.setup3D(renderEncoder: renderEncoder)
             for renderer in renderers {

@@ -10,12 +10,9 @@ import Foundation
 import MetalKit
 
 struct CameraInfo {
-    var xRotation: Float32
-    var yRotation: Float32
-    var zRotation: Float32
-    var xPos: Float32
-    var yPos: Float32
-    var zPos: Float32
+    var rotation: [Float32]
+    var scale: [Float32]
+    var position: [Float32]
 }
 
 class CameraRenderer: Renderer {
@@ -42,7 +39,6 @@ class CameraRenderer: Renderer {
         let bufferSize = floatSize * renderUtils.cubeColors.count
         colorBuffer = device.makeBuffer(length: bufferSize, options: [])
         colorBuffer.label = "Camera colors"
-        // put renderUtils.CameraColors into colorBuffer
         let pointer = colorBuffer.contents()
         memcpy(pointer, renderUtils.cubeColors, bufferSize)
         
@@ -60,12 +56,9 @@ class CameraRenderer: Renderer {
     fileprivate func updateCameraRotation(_ frameInfo: FrameInfo) {
         
         var cameraInfo = CameraInfo(
-            xRotation: frameInfo.rotateX,
-            yRotation: frameInfo.rotateY,
-            zRotation: frameInfo.rotateZ,
-            xPos: frameInfo.xPos,
-            yPos: frameInfo.yPos,
-            zPos: frameInfo.zPos)
+            rotation: frameInfo.cameraRotation,
+            scale: [0.5, 0.5, 0.5],
+            position: frameInfo.cameraTranslation)
         
         let pointer = CameraInfoBuffer.contents()
         let size = MemoryLayout<CameraInfo>.size

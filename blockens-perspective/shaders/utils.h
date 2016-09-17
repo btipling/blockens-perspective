@@ -33,6 +33,12 @@ struct ModelViewData {
     constant RenderInfo* renderInfo;
 };
 
+struct Object3DInfo {
+    float3 rotation;
+    float3 scale;
+    float3 position;
+};
+
 float4 rgbaToNormalizedGPUColors(int r, int g, int b);
 
 float3 crossProduct(float3 a, float3 b);

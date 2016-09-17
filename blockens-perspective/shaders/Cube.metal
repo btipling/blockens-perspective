@@ -8,19 +8,10 @@
 
 #include "utils.h"
 
-struct CubeInfo {
-    float xRotation;
-    float yRotation;
-    float zRotation;
-    float xPos;
-    float yPos;
-    float zPos;
-};
-
 vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
                                      constant packed_float3* position  [[ buffer(0) ]],
                                      constant packed_float3* colors  [[ buffer(1) ]],
-                                     constant CubeInfo* cubeInfo [[ buffer(2)]],
+                                     constant Object3DInfo* cubeInfo [[ buffer(2)]],
                                      constant RenderInfo* renderInfo [[ buffer(3) ]]) {
 
     CubeOut outVertex;
@@ -28,9 +19,9 @@ vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
     // ## Set up vectors.
     ModelViewData modelViewData = {
         .positionVertex = toFloat4(position[vid]),
-        .scale = identityVector(),
-        .rotationVertex = float4(cubeInfo->xRotation, cubeInfo->yRotation, cubeInfo->zRotation, 1.0),
-        .translationVertex = float4(cubeInfo->xPos, cubeInfo->yPos, cubeInfo->zPos, 1.0),
+        .scale = toFloat4(cubeInfo->scale),
+        .rotationVertex = toFloat4(cubeInfo->rotation),
+        .translationVertex = toFloat4(cubeInfo->position),
         .renderInfo = renderInfo
     };
 

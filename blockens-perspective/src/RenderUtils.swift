@@ -17,6 +17,17 @@ class RenderUtils {
         var cameraTranslation: [Float32]
     }
     
+    struct Object3DInfo {
+        var rotation: [Float32]
+        var scale: [Float32]
+        var position: [Float32]
+    }
+    
+    let floatSize: Int;
+    let float3Size: Int;
+    let object3DInfoSize: Int;
+    
+    
     fileprivate var renderInfoBuffer_: MTLBuffer? = nil;
     var depthStencilState: MTLDepthStencilState? = nil
 
@@ -132,6 +143,12 @@ class RenderUtils {
     ];
 
     let CONSTANT_BUFFER_SIZE = 1024*1024
+    
+    init() {
+        floatSize = MemoryLayout<Float>.size
+        float3Size = floatSize * 4
+        object3DInfoSize = float3Size * 3;
+    }
     
     func setRenderInfo(frameInfo: FrameInfo) {
         var renderInfo = RenderInfo(
@@ -312,7 +329,13 @@ class RenderUtils {
 
         return buffer
     }
-
+    
+    func createObject3DInfoBuffer(device: MTLDevice, label: String) -> MTLBuffer {
+        let buffer = device.makeBuffer(length: object3DInfoSize, options: [])
+        buffer.label = "ground rotation"
+        return buffer
+    }
+    
     func updateBufferFromIntArray(buffer: MTLBuffer, data: [Int32]) {
         let pointer = buffer.contents()
         let bufferSize = data.count * MemoryLayout.size(ofValue: data[0])
@@ -323,6 +346,13 @@ class RenderUtils {
         let pointer = buffer.contents()
         let bufferSize = data.count * MemoryLayout.size(ofValue: data[0])
         memcpy(pointer, data, bufferSize)
+    }
+    
+    func updateObject3DInfoBuffer(object: Object3DInfo, buffer: MTLBuffer) {
+        let pointer = buffer.contents()
+        memcpy(pointer, object.rotation, float3Size)
+        memcpy(pointer + float3Size, object.scale, float3Size)
+        memcpy(pointer + (float3Size * 2), object.position, float3Size)
     }
     
     func depthStencilState (device: MTLDevice) {
@@ -339,4 +369,6 @@ class RenderUtils {
         renderEncoder.setCullMode(MTLCullMode.back)
         renderEncoder.setFrontFacing(MTLWinding.clockwise)
     }
+    
+    
 }

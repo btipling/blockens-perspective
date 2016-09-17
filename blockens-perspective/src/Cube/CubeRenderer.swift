@@ -6,15 +6,6 @@
 import Foundation
 import MetalKit
 
-struct CubeInfo {
-    var xRotation: Float32
-    var yRotation: Float32
-    var zRotation: Float32
-    var xPos: Float32
-    var yPos: Float32
-    var zPos: Float32
-}
-
 class CubeRenderer: Renderer {
 
     let renderUtils: RenderUtils
@@ -43,7 +34,7 @@ class CubeRenderer: Renderer {
         let pointer = colorBuffer.contents()
         memcpy(pointer, renderUtils.cubeColors, bufferSize)
         
-        cubeInfoBuffer = renderUtils.createSizedBuffer(device, bufferLabel: "cube rotation")
+        cubeInfoBuffer = renderUtils.createSizedBuffer(device, bufferLabel: "cube info")
 
         updateCubeRotation(frameInfo)
         
@@ -56,17 +47,12 @@ class CubeRenderer: Renderer {
 
     fileprivate func updateCubeRotation(_ frameInfo: FrameInfo) {
         
-        var cubeInfo = CubeInfo(
-                xRotation: frameInfo.rotateX,
-                yRotation: frameInfo.rotateY,
-                zRotation: frameInfo.rotateZ,
-                xPos: frameInfo.xPos,
-                yPos: frameInfo.yPos,
-                zPos: frameInfo.zPos)
+        let cubeInfo = RenderUtils.Object3DInfo(
+            rotation: [frameInfo.rotateX, frameInfo.rotateY,frameInfo.rotateZ],
+            scale: [1.0, 1.0, 1.0],
+            position: [frameInfo.xPos, frameInfo.yPos, frameInfo.zPos])
         
-        let pointer = cubeInfoBuffer.contents()
-        let size = MemoryLayout<CubeInfo>.size
-        memcpy(pointer, &cubeInfo, size)
+        renderUtils.updateObject3DInfoBuffer(object: cubeInfo, buffer: cubeInfoBuffer)
     }
 
 

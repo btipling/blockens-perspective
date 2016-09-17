@@ -6,12 +6,6 @@
 import Foundation
 import MetalKit
 
-struct GroundInfo {
-    var rotation: [Float32]
-    var scale: [Float32]
-    var position: [Float32]
-}
-
 class GroundRenderer: Renderer {
     
     let renderUtils: RenderUtils
@@ -21,7 +15,7 @@ class GroundRenderer: Renderer {
     var groundInfoBuffer: MTLBuffer! = nil
     var depthStencilState: MTLDepthStencilState! = nil
 
-    var groundInfo: GroundInfo! = nil
+    var groundInfo: RenderUtils.Object3DInfo! = nil
     
     init (utils: RenderUtils) {
         renderUtils = utils
@@ -31,25 +25,16 @@ class GroundRenderer: Renderer {
         pipelineState = renderUtils.createPipeLineState(vertex: "GroundVertex", fragment: "GroundFragment", device: device, view: view)
         GroundVertexBuffer = renderUtils.createRectangleVertexBuffer(device: device, bufferLabel: "Ground vertices")
         
-        let groundInfo = GroundInfo(
+        let groundInfo = RenderUtils.Object3DInfo(
             rotation: [1.4, 0.0, 0.0],
             scale: [100.0, 100.0, 1.0],
             position: [0.0, -5.0, 1.0])
         
-        let floatSize = MemoryLayout<Float>.size
-        let float3Size = floatSize * 4
-        let uniformsStructSize = float3Size * 3;
-        
-        groundInfoBuffer = device.makeBuffer(length: uniformsStructSize, options: [])
-        groundInfoBuffer.label = "ground rotation"
+        groundInfoBuffer = renderUtils.createObject3DInfoBuffer(device: device, label: "ground info buffer")
         
         print("FrameInfo: \(frameInfo)")
         
-        let pointer = groundInfoBuffer.contents()
-        memcpy(pointer, groundInfo.rotation, float3Size)
-        memcpy(pointer + float3Size, groundInfo.scale, float3Size)
-        memcpy(pointer + (float3Size * 2), groundInfo.position, float3Size)
-        
+        renderUtils.updateObject3DInfoBuffer(object: groundInfo, buffer: groundInfoBuffer)
         
         print("loading Ground assets done")
     }
