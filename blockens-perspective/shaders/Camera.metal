@@ -8,19 +8,10 @@
 
 #include "utils.h"
 
-struct CameraInfo {
-    float xRotation;
-    float yRotation;
-    float zRotation;
-    float xPos;
-    float yPos;
-    float zPos;
-};
-
 vertex CubeOut cameraVertex(uint vid [[ vertex_id ]],
                           constant packed_float3* position  [[ buffer(0) ]],
                           constant packed_float3* colors  [[ buffer(1) ]],
-                          constant CameraInfo* CameraInfo [[ buffer(2)]],
+                          constant Object3DInfo* cameraInfo [[ buffer(2)]],
                           constant RenderInfo* renderInfo [[ buffer(3) ]]) {
     
     CubeOut outVertex;
@@ -28,11 +19,12 @@ vertex CubeOut cameraVertex(uint vid [[ vertex_id ]],
     // ## Set up vectors.
     ModelViewData modelViewData = {
         .positionVertex = toFloat4(position[vid]),
-        .scale = identityVector(),
-        .rotationVertex = float4(CameraInfo->xRotation, CameraInfo->yRotation, CameraInfo->zRotation, 1.0),
-        .translationVertex = float4(CameraInfo->xPos, CameraInfo->yPos, CameraInfo->zPos, 1.0),
+        .scale = toFloat4(cameraInfo->scale),
+        .rotationVertex = toFloat4(cameraInfo->rotation),
+        .translationVertex = toFloat4(cameraInfo->position),
         .renderInfo = renderInfo
     };
+
     
     float4 screenCoordinates = toScreenCoordinates(modelViewData);
     
