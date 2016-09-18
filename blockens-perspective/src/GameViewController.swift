@@ -108,15 +108,15 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         activeKey = keyCode
     }
     
-    func modifyCubeRotation(_ dimension: Int, _ modifier: Float32 = 1.0) {
+    private func modifyCubeRotation(_ dimension: Int, _ modifier: Float32 = 1.0) {
         frameInfo.cubeRotation[dimension] = frameInfo.cubeRotation[dimension] - (modifier * ROTATION_CHANGE_MODIFIER)
     }
     
-    func modifyCubePosition(_ dimension: Int, _ modifier: Float32 = 1.0) {
+    private func modifyCubePosition(_ dimension: Int, _ modifier: Float32 = 1.0) {
         frameInfo.cubePosition[dimension] = frameInfo.cubePosition[dimension] - (modifier * POS_CHANGE_MODIFIER)
     }
     
-    func modifyCameraPosition(_ dimension: Int, _ modifier: Float32 = 1.0) {
+    private func modifyCameraPosition(_ dimension: Int, _ modifier: Float32 = 1.0) {
         var new = frameInfo.cameraTranslation
         new[dimension] += modifier * CAMERA_CHANGE_MODIFIER
         frameInfo.cameraTranslation = new
