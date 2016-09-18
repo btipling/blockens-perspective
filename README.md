@@ -1,4 +1,6 @@
-More progress on learning 3D things.
+More progress on learning 3D things with Apple Metal
+
+[![3D Progress](https://img.youtube.com/vi/VPYSyqdmQYI/maxresdefault.jpg)](https://www.youtube.com/watch?v=VPYSyqdmQYI)
 
 Includes:
 
@@ -13,6 +15,4 @@ In progress:
 
 * Camera movement
 
-Current progress:
-<br/>
-[![3D Progress](https://img.youtube.com/vi/VPYSyqdmQYI/0.jpg)](https://www.youtube.com/watch?v=VPYSyqdmQYI)
+
