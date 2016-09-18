@@ -45,9 +45,9 @@ class CameraRenderer: Renderer {
             0.0
         ]
         let cameraInfo = RenderUtils.Object3DInfo(
-            rotation: [0.0, 0.0, 0.0],
+            rotation: cameraRotation,
             scale: [0.5, 0.5, 0.5],
-            position: [1.0, 1.0, 10.0])
+            position: frameInfo.cameraTranslation)
         
         renderUtils.updateObject3DInfoBuffer(object: cameraInfo, buffer: cameraInfoBuffer)
     }
