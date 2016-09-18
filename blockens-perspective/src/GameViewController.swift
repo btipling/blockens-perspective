@@ -19,6 +19,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
 
     var renderers: [Renderer] = Array()
     var cube: CubeController! = nil
+    var camera: CameraController! = nil
     var frameInfo: FrameInfo! = nil
     
     let renderUtils = RenderUtils()
@@ -30,6 +31,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let gameWindow = appDelegate.getWindow()
         cube = CubeController()
+        camera = CameraController()
         gameWindow.addKeyEventCallback(handleKeyEvent)
 
         device = MTLCreateSystemDefaultDevice()
@@ -58,6 +60,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             SkyController(),
             GroundController(),
             cube,
+            camera,
             CrossHairsController(),
         ]
         
