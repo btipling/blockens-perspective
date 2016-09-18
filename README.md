@@ -15,6 +15,4 @@ In progress:
 
 Current progress:
 <br/>
-<div>
 [![3D Progress](https://img.youtube.com/vi/VPYSyqdmQYI/0.jpg)](https://www.youtube.com/watch?v=VPYSyqdmQYI)
-</div>
