@@ -15,6 +15,7 @@ class CubeRenderer: Renderer {
     var cubeVertexBuffer: MTLBuffer! = nil
     var colorBuffer: MTLBuffer! = nil
     var cubeInfoBuffer: MTLBuffer! = nil
+    var cubeInfo: RenderUtils.Object3DInfo! = nil
     
     let colors: [Float32]
     let scale: [Float32]
@@ -40,18 +41,18 @@ class CubeRenderer: Renderer {
 
     func update(rotation: [Float32], position: [Float32]) {
         
-        let cubeInfo = RenderUtils.Object3DInfo(
-            //rotation: [frameInfo.rotateX, frameInfo.rotateY,frameInfo.rotateZ],
+        cubeInfo = RenderUtils.Object3DInfo(
             rotation: rotation,
             scale: scale,
             position: position)
-        //position: [frameInfo.xPos, frameInfo.yPos, frameInfo.zPos])
         
-        renderUtils.updateObject3DInfoBuffer(object: cubeInfo, buffer: cubeInfoBuffer)
     }
 
 
     func render(_ renderEncoder: MTLRenderCommandEncoder) {
+        let objectCopy = cubeInfo
+        renderUtils.updateObject3DInfoBuffer(object: objectCopy!, buffer: cubeInfoBuffer)
+        
         renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "cube")
         for (i, vertexBuffer) in [cubeVertexBuffer, colorBuffer, cubeInfoBuffer, renderUtils.renderInfoBuffer()].enumerated() {
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: i)

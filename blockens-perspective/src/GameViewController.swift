@@ -25,13 +25,13 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     let renderUtils = RenderUtils()
 
     override func viewDidLoad() {
-
+        
         super.viewDidLoad()
-
+        
         let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let gameWindow = appDelegate.getWindow()
         cube = CubeController(colors: renderUtils.cubeColors, scale: [1.0, 1.0, 1.0])
-        camera = CubeController(colors: renderUtils.cameraColors, scale: [0.5, 0.5, 0.5])
+        camera = CubeController(colors: renderUtils.cameraColors, scale: [0.25, 0.25, 0.25])
         gameWindow.addKeyEventCallback(handleKeyEvent)
 
         device = MTLCreateSystemDefaultDevice()
@@ -78,8 +78,9 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         let yMovement = event.deltaY/100.0
         let cameraRotation = frameInfo.cameraRotation
         let completeCircle: Float32 = 0.0
-        let newX: Float32 = completeCircle + cameraRotation[0] - Float32(xMovement)
-        let newY: Float32 = completeCircle + cameraRotation[1] - Float32(yMovement)
+        // The x rotation rotates around the x coordinate, so we use y movement and so on.
+        let newX: Float32 = completeCircle + cameraRotation[0] - Float32(yMovement)
+        let newY: Float32 = completeCircle + cameraRotation[1] - Float32(xMovement)
         frameInfo.cameraRotation = [newX, newY]
         updateAll()
         print("new frameInfo \(frameInfo)")
@@ -87,14 +88,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     }
     
     func updateAll() {
-        
         cube.update(rotation: [frameInfo.rotateX, frameInfo.rotateY,frameInfo.rotateZ], position: [frameInfo.xPos, frameInfo.yPos, frameInfo.zPos])
-        let cameraRotation = [
-            frameInfo.cameraRotation[0],
-            frameInfo.cameraRotation[1],
-            0.0
-        ]
-        camera.update(rotation: cameraRotation, position: frameInfo.cameraTranslation)
+        camera.update(rotation: frameInfo.cameraRotation, position: frameInfo.cameraTranslation)
     }
     
     func windowDidResize(_ notification: Notification) {
@@ -180,11 +175,11 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
                 let newY = cameraTranslation[1] - CAMERA_CHANGE_MODIFIER
                 frameInfo.cameraTranslation = [cameraTranslation[0], newY, cameraTranslation[2]]
                 break
-            case A_KEY:
+            case D_KEY:
                 let newX = cameraTranslation[0] + CAMERA_CHANGE_MODIFIER
                 frameInfo.cameraTranslation = [newX, cameraTranslation[1], cameraTranslation[2]]
                 break
-            case D_KEY:
+            case A_KEY:
                 let newX = cameraTranslation[0] -  CAMERA_CHANGE_MODIFIER
                 frameInfo.cameraTranslation = [newX, cameraTranslation[1], cameraTranslation[2]]
                 break
@@ -204,9 +199,9 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
                 break
         }
         
-        frameInfo.rotateX = frameInfo.rotateX.truncatingRemainder(dividingBy: 360.0);
-        frameInfo.rotateY = frameInfo.rotateY.truncatingRemainder(dividingBy: 360.0);
-        frameInfo.rotateZ = frameInfo.rotateZ.truncatingRemainder(dividingBy: 360.0);
+        frameInfo.rotateX = frameInfo.rotateX.truncatingRemainder(dividingBy: 360.0)
+        frameInfo.rotateY = frameInfo.rotateY.truncatingRemainder(dividingBy: 360.0)
+        frameInfo.rotateZ = frameInfo.rotateZ.truncatingRemainder(dividingBy: 360.0)
         print("Frameinfo: \(frameInfo)")
         updateAll()
         renderUtils.setRenderInfo(frameInfo: frameInfo)
@@ -228,8 +223,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
                 zoom: 1,
                 near: 0.1,
                 far: 100.0,
-                cameraRotation: [0.0, 0.0],
-                cameraTranslation: [1.0, 5.0, 10.0]
+                cameraRotation: [-0.26, 1.3, 0.0],
+                cameraTranslation: [1.0, 2.0, 4.0]
         )
         registerViewDimensions(view)
     }
