@@ -8,22 +8,14 @@
 
 import Foundation
 import MetalKit
-
-struct CameraInfo {
-    var rotation: [Float32]
-    var scale: [Float32]
-    var position: [Float32]
-}
-
 class CameraRenderer: Renderer {
     
     let renderUtils: RenderUtils
     
     var pipelineState: MTLRenderPipelineState! = nil
     
-    var CameraVertexBuffer: MTLBuffer! = nil
-    var colorBuffer: MTLBuffer! = nil
-    var CameraInfoBuffer: MTLBuffer! = nil
+    var cameraVertexBuffer: MTLBuffer! = nil
+    var cameraInfoBuffer: MTLBuffer! = nil
     
     init (utils: RenderUtils) {
         renderUtils = utils
@@ -32,17 +24,10 @@ class CameraRenderer: Renderer {
     func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
         
         pipelineState = renderUtils.createPipeLineState(vertex: "cameraVertex", fragment: "cameraFragment", device: device, view: view)
-        CameraVertexBuffer = renderUtils.createCubeVertexBuffer(device: device, bufferLabel: "Camera vertices")
+        cameraVertexBuffer = renderUtils.createCubeVertexBuffer(device: device, bufferLabel: "Camera vertices")
         
         
-        let floatSize = MemoryLayout<Float>.size
-        let bufferSize = floatSize * renderUtils.cubeColors.count
-        colorBuffer = device.makeBuffer(length: bufferSize, options: [])
-        colorBuffer.label = "Camera colors"
-        let pointer = colorBuffer.contents()
-        memcpy(pointer, renderUtils.cubeColors, bufferSize)
-        
-        CameraInfoBuffer = renderUtils.createSizedBuffer(device, bufferLabel: "Camera rotation")
+        cameraInfoBuffer = renderUtils.createObject3DInfoBuffer(device: device, label: "Camera rotation")
         
         updateCameraRotation(frameInfo)
         
@@ -59,21 +44,19 @@ class CameraRenderer: Renderer {
             frameInfo.cameraRotation[1],
             0.0
         ]
-        var cameraInfo = CameraInfo(
-            rotation: cameraRotation,
+        let cameraInfo = RenderUtils.Object3DInfo(
+            rotation: [0.0, 0.0, 0.0],
             scale: [0.5, 0.5, 0.5],
-            position: frameInfo.cameraTranslation)
+            position: [1.0, 1.0, 10.0])
         
-        let pointer = CameraInfoBuffer.contents()
-        let size = MemoryLayout<CameraInfo>.size
-        memcpy(pointer, &cameraInfo, size)
+        renderUtils.updateObject3DInfoBuffer(object: cameraInfo, buffer: cameraInfoBuffer)
     }
     
     
     func render(_ renderEncoder: MTLRenderCommandEncoder) {
         renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "Camera")
         renderUtils.setup3D(renderEncoder: renderEncoder)
-        for (i, vertexBuffer) in [CameraVertexBuffer, colorBuffer, CameraInfoBuffer, renderUtils.renderInfoBuffer()].enumerated() {
+        for (i, vertexBuffer) in [cameraVertexBuffer, cameraInfoBuffer, renderUtils.renderInfoBuffer()].enumerated() {
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: i)
         }
         

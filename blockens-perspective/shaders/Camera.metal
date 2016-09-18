@@ -10,9 +10,8 @@
 
 vertex CubeOut cameraVertex(uint vid [[ vertex_id ]],
                           constant packed_float3* position  [[ buffer(0) ]],
-                          constant packed_float3* colors  [[ buffer(1) ]],
-                          constant Object3DInfo* cameraInfo [[ buffer(2)]],
-                          constant RenderInfo* renderInfo [[ buffer(3) ]]) {
+                          constant Object3DInfo* cameraInfo [[ buffer(1)]],
+                          constant RenderInfo* renderInfo [[ buffer(2) ]]) {
     
     CubeOut outVertex;
     
@@ -29,14 +28,11 @@ vertex CubeOut cameraVertex(uint vid [[ vertex_id ]],
     float4 screenCoordinates = toScreenCoordinates(modelViewData);
     
     // Set up the output.
-    uint face = vid / 6;
-    float3 color = colors[face];
     outVertex.position = screenCoordinates;
-    outVertex.color = float4(color[0], color[1], color[2], 1.0);
     
     return outVertex;
 }
 
 fragment float4 cameraFragment(CubeOut inFrag [[stage_in]]) {
-    return inFrag.color;
+    return float4(1.0, 0.0, 0.0, 1.0);
 }
