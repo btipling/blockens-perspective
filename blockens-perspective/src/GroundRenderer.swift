@@ -30,7 +30,7 @@ class GroundRenderer: Renderer, RenderController {
         GroundVertexBuffer = renderUtils.createRectangleVertexBuffer(device: device, bufferLabel: "Ground vertices")
         
         let groundInfo = RenderUtils.Object3DInfo(
-            rotation: [1.4, 0.0, 0.0],
+            rotation: [1.6, 0.0, 0.0],
             scale: [100.0, 100.0, 1.0],
             position: [0.0, -5.0, 1.0])
         
