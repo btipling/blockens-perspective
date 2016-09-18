@@ -128,21 +128,16 @@ class RenderUtils {
 
     var cubeColors: [Float32];
     var cameraColors: [Float32];
+    var vectorColors: [Float32];
     
     let CONSTANT_BUFFER_SIZE = 1024*1024
     
     init() {
-        // front
         cubeColors = red
-        // back
         cubeColors += green
-        // left
         cubeColors += orange
-        // right
         cubeColors += purple
-        // top
         cubeColors += yellow
-        // bottom
         cubeColors += cherry
         
         cameraColors = gray1;
@@ -151,7 +146,10 @@ class RenderUtils {
         cameraColors += gray4;
         cameraColors += gray5;
         cameraColors += blueGray;
-
+        
+        vectorColors = red
+        vectorColors += blueGray
+        vectorColors += green
 
         floatSize = MemoryLayout<Float>.size
         float3Size = floatSize * 4

@@ -10,15 +10,6 @@
 import Foundation
 import MetalKit
 
-struct CameraVectorInfo {
-    var xRotation: Float32
-    var yRotation: Float32
-    var zRotation: Float32
-    var xPos: Float32
-    var yPos: Float32
-    var zPos: Float32
-}
-
 class CameraVectorRenderer: Renderer {
     
     let renderUtils: RenderUtils
@@ -36,41 +27,25 @@ class CameraVectorRenderer: Renderer {
     func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
         
         pipelineState = renderUtils.createPipeLineState(vertex: "cameraVectorVertex", fragment: "cameraVectorFragment", device: device, view: view)
+        
+        
         cameraVectorVertexBuffer = renderUtils.createCubeVertexBuffer(device: device, bufferLabel: "cameraVector vertices")
         
         
-        let floatSize = MemoryLayout<Float>.size
-        let bufferSize = floatSize * renderUtils.cubeColors.count
-        colorBuffer = device.makeBuffer(length: bufferSize, options: [])
-        colorBuffer.label = "cameraVector colors"
-        // put renderUtils.cameraVectorColors into colorBuffer
-        let pointer = colorBuffer.contents()
-        memcpy(pointer, renderUtils.cubeColors, bufferSize)
+        colorBuffer = renderUtils.createColorBuffer(device: device, colors: renderUtils.vectorColors, label: "camera vector colors")
         
         cameraVectorInfoBuffer = renderUtils.createSizedBuffer(device, bufferLabel: "cameraVector rotation")
         
-        updatecameraVectorRotation(frameInfo)
+        cameraVectorInfoBuffer = device.makeBuffer(length: renderUtils.float3Size * 3, options: [])
+        cameraVectorInfoBuffer.label = "camera vector buffer"
         
         print("loading cameraVector assets done")
     }
     
-    func update(_ frameInfo: FrameInfo) {
-        updatecameraVectorRotation(frameInfo)
-    }
-    
-    fileprivate func updatecameraVectorRotation(_ frameInfo: FrameInfo) {
-        
-        var cameraVectorInfo = CameraVectorInfo(
-            xRotation: frameInfo.rotateX,
-            yRotation: frameInfo.rotateY,
-            zRotation: frameInfo.rotateZ,
-            xPos: frameInfo.xPos,
-            yPos: frameInfo.yPos,
-            zPos: frameInfo.zPos)
+    func update(cameraRotation: [Float32]) {
         
         let pointer = cameraVectorInfoBuffer.contents()
-        let size = MemoryLayout<CameraVectorInfo>.size
-        memcpy(pointer, &cameraVectorInfo, size)
+        memcpy(pointer, cameraRotation, renderUtils.float3Size)
     }
     
     

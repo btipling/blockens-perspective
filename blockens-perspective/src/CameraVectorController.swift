@@ -21,6 +21,6 @@ class CameraVectorController: RenderController {
     }
     
     func update(_ frameInfo: FrameInfo) {
-        _renderer.update(frameInfo);
+        _renderer.update(cameraRotation: []);
     }
 }
