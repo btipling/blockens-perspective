@@ -16,9 +16,13 @@ class CameraVectorRenderer: Renderer, RenderController {
     
     var pipelineState: MTLRenderPipelineState? = nil
     
-    var cameraVectorVertexBuffer: MTLBuffer? = nil
-    var colorBuffer: MTLBuffer? = nil
-    var cameraVectorInfoBuffer: MTLBuffer? = nil
+    var verticesBuffer: MTLBuffer? = nil
+    
+    let vectorVerticesData: [Float32] = [
+        0.0, 0.0, 0.0,
+        0.0, 0.0, 1.0,
+    ]
+
     
     func setRenderUtils(_ renderUtils: RenderUtils) {
         self.renderUtils = renderUtils
@@ -32,26 +36,21 @@ class CameraVectorRenderer: Renderer, RenderController {
         
         pipelineState = renderUtils.createPipeLineState(vertex: "cameraVectorVertex", fragment: "cameraVectorFragment", device: device, view: view)
         
+        verticesBuffer = createVerticesBuffer(device: device)
         
-        cameraVectorVertexBuffer = renderUtils.createCubeVertexBuffer(device: device, bufferLabel: "cameraVector vertices")
-        
-        
-        colorBuffer = renderUtils.createColorBuffer(device: device, colors: renderUtils.vectorColors, label: "camera vector colors")
-        
-        cameraVectorInfoBuffer = renderUtils.createSizedBuffer(device, bufferLabel: "cameraVector rotation")
-        
-        cameraVectorInfoBuffer = device.makeBuffer(length: renderUtils.float3Size * 3, options: [])
-        cameraVectorInfoBuffer!.label = "camera vector buffer"
-        
-        print("loading cameraVector assets done")
+        print("loading camera vector assets done")
     }
     
-    func update(cameraRotation: [Float32]) {
+    
+    func createVerticesBuffer(device: MTLDevice) -> MTLBuffer {
         
-        if let buffer = cameraVectorInfoBuffer {
-            let pointer = buffer.contents()
-            memcpy(pointer, cameraRotation, renderUtils.float3Size)
-        }
+        let bufferSize = vectorVerticesData.count * MemoryLayout.size(ofValue: vectorVerticesData[0])
+        let buffer = device.makeBuffer(length: bufferSize, options: [])
+        let pointer = buffer.contents()
+        memcpy(pointer, vectorVerticesData, bufferSize)
+        buffer.label = "vector vertices buffer"
+        
+        return buffer
     }
     
     
@@ -59,7 +58,7 @@ class CameraVectorRenderer: Renderer, RenderController {
         if let pipelineState = self.pipelineState {
             renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "cameraVector")
             renderUtils.setup3D(renderEncoder: renderEncoder)
-            for (i, vertexBuffer) in [cameraVectorVertexBuffer, colorBuffer, cameraVectorInfoBuffer, renderUtils.renderInfoBuffer()].enumerated() {
+            for (i, vertexBuffer) in [verticesBuffer, renderUtils.renderInfoBuffer()].enumerated() {
                 renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: i)
             }
             
