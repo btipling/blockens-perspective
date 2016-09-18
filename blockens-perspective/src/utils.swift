@@ -24,7 +24,6 @@ struct FrameInfo {
     var zoom: Float32
     var near: Float32
     var far: Float32
-    var cameraRotation: [Float32]
     var cameraTranslation: [Float32]
 }
 

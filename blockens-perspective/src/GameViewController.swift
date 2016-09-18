@@ -21,7 +21,11 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     var cube: CubeRenderer! = nil
     var camera: CubeRenderer! = nil
     var frameInfo: FrameInfo! = nil
+    
     var activeKey: UInt16? = nil
+    var cameraRotationChange: (Float32, Float32) = (0.0, 0.0)
+    var cameraRotation: [Float32] = [0.0, 0.0, 0.0]
+    
     
     let renderUtils = RenderUtils()
 
@@ -75,29 +79,19 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     }
     
     override func mouseMoved(with event: NSEvent) {
-        let xMovement = event.deltaX/100.0
-        let yMovement = event.deltaY/100.0
-        let cameraRotation = frameInfo.cameraRotation
-        let completeCircle: Float32 = 0.0
-        // The x rotation rotates around the x coordinate, so we use y movement and so on.
-        let newX: Float32 = completeCircle + cameraRotation[0] - Float32(yMovement)
-        let newY: Float32 = completeCircle + cameraRotation[1] - Float32(xMovement)
-        frameInfo.cameraRotation = [newX, newY]
-        updateAll()
-        print("new frameInfo \(frameInfo)")
-        renderUtils.setRenderInfo(frameInfo: frameInfo)
+        cameraRotationChange = (Float32(event.deltaX)/100.0, Float32(event.deltaY)/100.0)
     }
     
     func updateAll() {
         cube.update(rotation: [frameInfo.rotateX, frameInfo.rotateY,frameInfo.rotateZ], position: [frameInfo.xPos, frameInfo.yPos, frameInfo.zPos])
-        camera.update(rotation: frameInfo.cameraRotation, position: frameInfo.cameraTranslation)
+        camera.update(rotation: cameraRotation, position: frameInfo.cameraTranslation)
+        renderUtils.setRenderInfo(frameInfo: frameInfo, cameraRotation: cameraRotation)
     }
     
     func windowDidResize(_ notification: Notification) {
         let view = self.view as! MTKView
         registerViewDimensions(view)
         updateAll()
-        renderUtils.setRenderInfo(frameInfo: frameInfo)
     }
     
     func handleKeyEvent(_ event: NSEvent?) {
@@ -213,15 +207,27 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
                 print(keyCode)
                 break
         }
-        
         frameInfo.rotateX = frameInfo.rotateX.truncatingRemainder(dividingBy: 360.0)
         frameInfo.rotateY = frameInfo.rotateY.truncatingRemainder(dividingBy: 360.0)
-        frameInfo.rotateZ = frameInfo.rotateZ.truncatingRemainder(dividingBy: 360.0)
-        print("Frameinfo: \(frameInfo)")
-        updateAll()
-        renderUtils.setRenderInfo(frameInfo: frameInfo)
 
     }
+    
+    func handleCameraRotation () {
+        
+        let (xMovement, yMovement) = cameraRotationChange
+        
+        if xMovement == 0.0 && yMovement == 0.0 {
+            return
+        }
+        
+        let cameraRotation = self.cameraRotation
+        let completeCircle: Float32 = 0.0
+        // The x rotation rotates around the x coordinate, so we use y movement and so on.
+        let newX: Float32 = completeCircle + cameraRotation[0] - yMovement
+        let newY: Float32 = completeCircle + cameraRotation[1] - xMovement
+        self.cameraRotation = [newX, newY, 0.0]
+    }
+    
 
     func setupFrameInfo(_ view: MTKView) {
         print("Setting up frame info")
@@ -238,7 +244,6 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
                 zoom: 1,
                 near: 0.1,
                 far: 100.0,
-                cameraRotation: [-0.26, 1.3, 0.0],
                 cameraTranslation: [1.0, 2.0, 4.0]
         )
         registerViewDimensions(view)
@@ -263,7 +268,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         commandQueue.label = "main command queue"
         
         renderUtils.createRenderInfoBuffer(device: device)
-        renderUtils.setRenderInfo(frameInfo: frameInfo)
+        renderUtils.setRenderInfo(frameInfo: frameInfo, cameraRotation: cameraRotation)
         for renderer in renderers {
             renderer.loadAssets(device, view: view, frameInfo: frameInfo)
         }
@@ -273,7 +278,13 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     func draw(in view: MTKView) {
         _ = inflightSemaphore.wait(timeout: DispatchTime.distantFuture)
         
-        handleActiveKey()
+        if activeKey != nil {
+            handleActiveKey()
+            
+        } else {
+        }
+        handleCameraRotation()
+        updateAll()
         
         let commandBuffer = commandQueue.makeCommandBuffer()
         commandBuffer.label = "Frame command buffer"

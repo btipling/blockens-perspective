@@ -156,13 +156,13 @@ class RenderUtils {
         object3DInfoSize = float3Size * 3;
     }
     
-    func setRenderInfo(frameInfo: FrameInfo) {
+    func setRenderInfo(frameInfo: FrameInfo, cameraRotation: [Float32]) {
         var renderInfo = RenderInfo(
                 zoom: frameInfo.zoom,
                 near: frameInfo.near,
                 far: frameInfo.far,
                 winResolution: [Float32(frameInfo.viewWidth), Float32(frameInfo.viewHeight)],
-                cameraRotation: frameInfo.cameraRotation,
+                cameraRotation: [0.0, 0.0],
                 cameraTranslation: frameInfo.cameraTranslation)
         if (renderInfoBuffer_ != nil) {
             let pointer = renderInfoBuffer_!.contents()
@@ -180,7 +180,7 @@ class RenderUtils {
             offset += floatSize
             memcpy(pointer + offset, renderInfo.winResolution, packedFloat2Size)
             offset += packedFloat2Size
-            memcpy(pointer + offset, renderInfo.cameraRotation, packedFloat2Size)
+            memcpy(pointer + offset, [0.0, 0.0], packedFloat2Size)
             offset += packedFloat2Size
             memcpy(pointer + offset, renderInfo.cameraTranslation, packedFloat3Size)
 
