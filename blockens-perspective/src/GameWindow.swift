@@ -5,7 +5,7 @@
 
 import Cocoa
 
-typealias Callback = (NSEvent) -> ()
+typealias Callback = (NSEvent?) -> ()
 
 class GameWindow: NSWindow {
 
@@ -18,6 +18,12 @@ class GameWindow: NSWindow {
         }
         for callback in keyEventListeners {
             callback(event)
+        }
+    }
+    
+    override func keyUp(with event: NSEvent) {
+        for callback in keyEventListeners {
+            callback(nil)
         }
     }
 

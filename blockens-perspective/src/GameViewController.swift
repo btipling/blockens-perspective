@@ -21,6 +21,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     var cube: CubeRenderer! = nil
     var camera: CubeRenderer! = nil
     var frameInfo: FrameInfo! = nil
+    var activeKey: UInt16? = nil
     
     let renderUtils = RenderUtils()
 
@@ -99,11 +100,25 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         renderUtils.setRenderInfo(frameInfo: frameInfo)
     }
     
-    func handleKeyEvent(_ event: NSEvent) {
+    func handleKeyEvent(_ event: NSEvent?) {
+        
+        guard let keyCode = event?.keyCode else {
+            activeKey = nil
+            return
+        }
+        
+        activeKey = keyCode
+    }
+    
+    func handleActiveKey() {
+        
+        guard let keyCode = activeKey else {
+            return
+        }
         
         let cameraTranslation = frameInfo.cameraTranslation
 
-        switch event.keyCode {
+        switch keyCode {
 
             case Z_KEY:
                 frameInfo.rotateX = frameInfo.rotateX - ROTATION_CHANGE_MODIFIER
@@ -195,7 +210,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             case P_KEY:
                 break
             default:
-                print(event.keyCode)
+                print(keyCode)
                 break
         }
         
@@ -257,6 +272,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
 
     func draw(in view: MTKView) {
         _ = inflightSemaphore.wait(timeout: DispatchTime.distantFuture)
+        
+        handleActiveKey()
         
         let commandBuffer = commandQueue.makeCommandBuffer()
         commandBuffer.label = "Frame command buffer"
