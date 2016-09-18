@@ -19,7 +19,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
 
     var renderers: [Renderer] = Array()
     var cube: CubeController! = nil
-    var camera: CameraController! = nil
+    var camera: CubeController! = nil
     var frameInfo: FrameInfo! = nil
     
     let renderUtils = RenderUtils()
@@ -30,8 +30,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
 
         let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let gameWindow = appDelegate.getWindow()
-        cube = CubeController()
-        camera = CameraController()
+        cube = CubeController(colors: renderUtils.cubeColors, scale: [1.0, 1.0, 1.0])
+        camera = CubeController(colors: renderUtils.cameraColors, scale: [0.5, 0.5, 0.5])
         gameWindow.addKeyEventCallback(handleKeyEvent)
 
         device = MTLCreateSystemDefaultDevice()
@@ -87,8 +87,14 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     }
     
     func updateAll() {
-        camera.update(frameInfo)
-        cube.update(frameInfo)
+        
+        cube.update(rotation: [frameInfo.rotateX, frameInfo.rotateY,frameInfo.rotateZ], position: [frameInfo.xPos, frameInfo.yPos, frameInfo.zPos])
+        let cameraRotation = [
+            frameInfo.cameraRotation[0],
+            frameInfo.cameraRotation[1],
+            0.0
+        ]
+        camera.update(rotation: cameraRotation, position: frameInfo.cameraTranslation)
     }
     
     func windowDidResize(_ notification: Notification) {
@@ -251,6 +257,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         for renderer in renderers {
             renderer.loadAssets(device, view: view, frameInfo: frameInfo)
         }
+        updateAll()
     }
 
     func draw(in view: MTKView) {

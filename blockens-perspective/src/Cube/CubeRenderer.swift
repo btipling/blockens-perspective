@@ -15,9 +15,15 @@ class CubeRenderer: Renderer {
     var cubeVertexBuffer: MTLBuffer! = nil
     var colorBuffer: MTLBuffer! = nil
     var cubeInfoBuffer: MTLBuffer! = nil
+    
+    let colors: [Float32]
+    let scale: [Float32]
+    
 
-    init (utils: RenderUtils) {
+    init (utils: RenderUtils, colors: [Float32], scale: [Float32]) {
         renderUtils = utils
+        self.colors = colors
+        self.scale = scale
     }
 
     func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
@@ -25,25 +31,21 @@ class CubeRenderer: Renderer {
         pipelineState = renderUtils.createPipeLineState(vertex: "cubeVertex", fragment: "cubeFragment", device: device, view: view)
         cubeVertexBuffer = renderUtils.createCubeVertexBuffer(device: device, bufferLabel: "cube vertices")
 
-        colorBuffer = renderUtils.createColorBuffer(device: device, colors: renderUtils.cubeColors, label: "camera colors")
+        colorBuffer = renderUtils.createColorBuffer(device: device, colors: colors, label: "camera colors")
         
         cubeInfoBuffer = renderUtils.createObject3DInfoBuffer(device: device, label: "cube info")
-
-        updateCubeRotation(frameInfo)
         
         print("loading cube assets done")
     }
 
-    func update(_ frameInfo: FrameInfo) {
-        updateCubeRotation(frameInfo)
-    }
-
-    fileprivate func updateCubeRotation(_ frameInfo: FrameInfo) {
+    func update(rotation: [Float32], position: [Float32]) {
         
         let cubeInfo = RenderUtils.Object3DInfo(
-            rotation: [frameInfo.rotateX, frameInfo.rotateY,frameInfo.rotateZ],
-            scale: [1.0, 1.0, 1.0],
-            position: [frameInfo.xPos, frameInfo.yPos, frameInfo.zPos])
+            //rotation: [frameInfo.rotateX, frameInfo.rotateY,frameInfo.rotateZ],
+            rotation: rotation,
+            scale: scale,
+            position: position)
+        //position: [frameInfo.xPos, frameInfo.yPos, frameInfo.zPos])
         
         renderUtils.updateObject3DInfoBuffer(object: cubeInfo, buffer: cubeInfoBuffer)
     }
