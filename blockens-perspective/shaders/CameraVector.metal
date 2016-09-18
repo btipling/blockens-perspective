@@ -14,11 +14,11 @@ vertex VertextOut cameraVectorVertex(uint vid [[ vertex_id ]],
     VertextOut outVertex;
     
     float3 pos = position[vid];
-    outVertex.position = float4(pos[0], pos[1], 1.0, 1.0);
+    outVertex.position = toFloat4(pos);
     return outVertex;
 }
 
 fragment float4 cameraVectorFragment(VertextOut inFrag [[stage_in]]) {
     
-    return rgbaToNormalizedGPUColors(116, 184, 223);
+    return float4(1.0, 0.0, 0.0, 1.0);
 }

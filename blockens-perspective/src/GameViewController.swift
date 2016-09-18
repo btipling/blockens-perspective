@@ -20,6 +20,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     var renderers: [Renderer] = Array()
     var cube: CubeRenderer! = nil
     var camera: CubeRenderer! = nil
+    var cameraVector: CameraVectorRenderer! = nil
     var frameInfo: FrameInfo! = nil
     
     var activeKey: UInt16? = nil
@@ -37,6 +38,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         let gameWindow = appDelegate.getWindow()
         cube = CubeRenderer(colors: renderUtils.cubeColors, scale: [1.0, 1.0, 1.0])
         camera = CubeRenderer(colors: renderUtils.cameraColors, scale: [0.25, 0.25, 0.25])
+        cameraVector = CameraVectorRenderer()
         gameWindow.addKeyEventCallback(handleKeyEvent)
 
         device = MTLCreateSystemDefaultDevice()
@@ -70,6 +72,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             GroundRenderer(),
             cube,
             camera,
+            cameraVector,
             CrossHairsRenderer(),
         ]
         

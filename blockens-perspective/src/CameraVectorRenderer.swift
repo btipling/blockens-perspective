@@ -20,7 +20,7 @@ class CameraVectorRenderer: Renderer, RenderController {
     
     let vectorVerticesData: [Float32] = [
         0.0, 0.0, 0.0,
-        0.0, 0.0, 1.0,
+        1.0, 0.0, 1.0,
     ]
 
     
@@ -58,11 +58,12 @@ class CameraVectorRenderer: Renderer, RenderController {
         if let pipelineState = self.pipelineState {
             renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "cameraVector")
             renderUtils.setup3D(renderEncoder: renderEncoder)
-            for (i, vertexBuffer) in [verticesBuffer, renderUtils.renderInfoBuffer()].enumerated() {
+            for (i, vertexBuffer) in [verticesBuffer].enumerated() {
                 renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: i)
             }
             
-            renderUtils.drawPrimitives(renderEncoder: renderEncoder, vertexCount: renderUtils.numVerticesInACube())
+            renderEncoder.drawPrimitives(type: .line, vertexStart: 0, vertexCount: 6, instanceCount: 1)
+            renderUtils.finishDrawing(renderEncoder: renderEncoder)
         }
         
     }
