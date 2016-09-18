@@ -69,6 +69,13 @@ let red = rgbaToNormalizedGPUColors(249, g: 82, b: 12)
 let yellow = rgbaToNormalizedGPUColors(249, g: 237, b: 12)
 let cherry = rgbaToNormalizedGPUColors(249, g: 0, b: 75)
 
+let gray1 = rgbaToNormalizedGPUColors(101, g: 101, b: 101)
+let gray2 = rgbaToNormalizedGPUColors(128, g: 128, b: 128)
+let gray3 = rgbaToNormalizedGPUColors(139, g: 139, b: 139)
+let gray4 = rgbaToNormalizedGPUColors(173, g: 173, b: 173)
+let gray5 = rgbaToNormalizedGPUColors(214, g: 214, b: 214)
+let blueGray = rgbaToNormalizedGPUColors(33, g: 85, b: 124)
+
 func rgbaToNormalizedGPUColors(_ r: Int, g: Int, b: Int, a: Int = 255) -> [Float32] {
     return [Float32(r)/255.0, Float32(g)/255.0, Float32(b)/255.0, Float32(a)/255.0]
 }

@@ -126,25 +126,33 @@ class RenderUtils {
         -1.0, -1.0, -1.0,
     ]
 
-    let cubeColors: [Float32] = [
-        // front
-        red[0], red[1], red[2],
-        // back
-        green[0], green[1], green[2],
-        // left
-        orange[0], orange[1], orange[2],
-        // right
-        purple[0], purple[1], purple[2],
-        // top
-        yellow[0], yellow[1], yellow[2],
-        // bottom
-        cherry[0], cherry[1], cherry[2],
-
-    ];
-
+    var cubeColors: [Float32];
+    var cameraColors: [Float32];
+    
     let CONSTANT_BUFFER_SIZE = 1024*1024
     
     init() {
+        // front
+        cubeColors = red
+        // back
+        cubeColors += green
+        // left
+        cubeColors += orange
+        // right
+        cubeColors += purple
+        // top
+        cubeColors += yellow
+        // bottom
+        cubeColors += cherry
+        
+        cameraColors = gray1;
+        cameraColors += gray2;
+        cameraColors += gray3;
+        cameraColors += gray4;
+        cameraColors += gray5;
+        cameraColors += blueGray;
+
+
         floatSize = MemoryLayout<Float>.size
         float3Size = floatSize * 4
         object3DInfoSize = float3Size * 3;
@@ -333,6 +341,17 @@ class RenderUtils {
     func createObject3DInfoBuffer(device: MTLDevice, label: String) -> MTLBuffer {
         let buffer = device.makeBuffer(length: object3DInfoSize, options: [])
         buffer.label = "ground rotation"
+        return buffer
+    }
+    
+    func createColorBuffer(device: MTLDevice, colors: [Float32], label: String) -> MTLBuffer {
+        
+        let floatSize = MemoryLayout<Float>.size
+        let bufferSize = floatSize * colors.count
+        let buffer = device.makeBuffer(length: bufferSize, options: [])
+        buffer.label = label
+        let pointer = buffer.contents()
+        memcpy(pointer, colors, bufferSize)
         return buffer
     }
     

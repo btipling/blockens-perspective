@@ -15,6 +15,7 @@ class CameraRenderer: Renderer {
     var pipelineState: MTLRenderPipelineState! = nil
     
     var cameraVertexBuffer: MTLBuffer! = nil
+    var colorBuffer: MTLBuffer! = nil
     var cameraInfoBuffer: MTLBuffer! = nil
     
     init (utils: RenderUtils) {
@@ -26,6 +27,7 @@ class CameraRenderer: Renderer {
         pipelineState = renderUtils.createPipeLineState(vertex: "cameraVertex", fragment: "cameraFragment", device: device, view: view)
         cameraVertexBuffer = renderUtils.createCubeVertexBuffer(device: device, bufferLabel: "Camera vertices")
         
+        colorBuffer = renderUtils.createColorBuffer(device: device, colors: renderUtils.cameraColors, label: "camera colors")
         
         cameraInfoBuffer = renderUtils.createObject3DInfoBuffer(device: device, label: "Camera rotation")
         

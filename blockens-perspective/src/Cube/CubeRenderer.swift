@@ -25,16 +25,9 @@ class CubeRenderer: Renderer {
         pipelineState = renderUtils.createPipeLineState(vertex: "cubeVertex", fragment: "cubeFragment", device: device, view: view)
         cubeVertexBuffer = renderUtils.createCubeVertexBuffer(device: device, bufferLabel: "cube vertices")
 
+        colorBuffer = renderUtils.createColorBuffer(device: device, colors: renderUtils.cubeColors, label: "camera colors")
         
-        let floatSize = MemoryLayout<Float>.size
-        let bufferSize = floatSize * renderUtils.cubeColors.count
-        colorBuffer = device.makeBuffer(length: bufferSize, options: [])
-        colorBuffer.label = "cube colors"
-        // put renderUtils.cubeColors into colorBuffer
-        let pointer = colorBuffer.contents()
-        memcpy(pointer, renderUtils.cubeColors, bufferSize)
-        
-        cubeInfoBuffer = renderUtils.createSizedBuffer(device, bufferLabel: "cube info")
+        cubeInfoBuffer = renderUtils.createObject3DInfoBuffer(device: device, label: "cube info")
 
         updateCubeRotation(frameInfo)
         
