@@ -12,15 +12,10 @@ let ZOOM_CHANGE_MODIFIER: Float32 = 0.01;
 let CAMERA_CHANGE_MODIFIER: Float32 = 0.1;
 
 struct FrameInfo {
-    var viewWidth: Int32
-    var viewHeight: Int32
+    var viewDimensions: [Float32]
     var viewDiffRatio: Float32
-    var rotateX: Float32
-    var rotateY: Float32
-    var rotateZ: Float32
-    var xPos: Float32
-    var yPos: Float32
-    var zPos: Float32
+    var cubeRotation: [Float32]
+    var cubePosition: [Float32]
     var zoom: Float32
     var near: Float32
     var far: Float32

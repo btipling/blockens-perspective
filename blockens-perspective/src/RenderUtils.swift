@@ -161,7 +161,7 @@ class RenderUtils {
                 zoom: frameInfo.zoom,
                 near: frameInfo.near,
                 far: frameInfo.far,
-                winResolution: [Float32(frameInfo.viewWidth), Float32(frameInfo.viewHeight)],
+                winResolution: frameInfo.viewDimensions,
                 cameraRotation: [0.0, 0.0],
                 cameraTranslation: frameInfo.cameraTranslation)
         if (renderInfoBuffer_ != nil) {

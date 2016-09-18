@@ -53,7 +53,11 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         view.sampleCount = 4
         view.depthStencilPixelFormat = .depth32Float_stencil8
         
-        let trackingArea = NSTrackingArea(rect: view.frame, options: [NSTrackingAreaOptions.mouseMoved, NSTrackingAreaOptions.activeAlways], owner: self, userInfo: nil)
+        let trackingArea = NSTrackingArea(rect: view.frame, options: [
+            NSTrackingAreaOptions.enabledDuringMouseDrag,
+            NSTrackingAreaOptions.mouseMoved,
+            NSTrackingAreaOptions.activeAlways
+            ], owner: self, userInfo: nil)
         view.addTrackingArea(trackingArea)
         
         // Setup some initial render state.
@@ -78,12 +82,12 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         loadAssets(view)
     }
     
-    override func mouseMoved(with event: NSEvent) {
+    override func mouseDragged(with event: NSEvent) {
         cameraRotationChange = (Float32(event.deltaX)/100.0, Float32(event.deltaY)/100.0)
     }
     
     func updateAll() {
-        cube.update(rotation: [frameInfo.rotateX, frameInfo.rotateY,frameInfo.rotateZ], position: [frameInfo.xPos, frameInfo.yPos, frameInfo.zPos])
+        cube.update(rotation: frameInfo.cubeRotation, position: frameInfo.cubePosition)
         camera.update(rotation: cameraRotation, position: frameInfo.cameraTranslation)
         renderUtils.setRenderInfo(frameInfo: frameInfo, cameraRotation: cameraRotation)
     }
@@ -104,111 +108,112 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         activeKey = keyCode
     }
     
+    func modifyCubeRotation(_ dimension: Int, _ modifier: Float32 = 1.0) {
+        frameInfo.cubeRotation[dimension] = frameInfo.cubeRotation[dimension] - (modifier * ROTATION_CHANGE_MODIFIER)
+    }
+    
+    func modifyCubePosition(_ dimension: Int, _ modifier: Float32 = 1.0) {
+        frameInfo.cubePosition[dimension] = frameInfo.cubePosition[dimension] - (modifier * POS_CHANGE_MODIFIER)
+    }
+    
+    func modifyCameraPosition(_ dimension: Int, _ modifier: Float32 = 1.0) {
+        var new = frameInfo.cameraTranslation
+        new[dimension] += modifier * CAMERA_CHANGE_MODIFIER
+        frameInfo.cameraTranslation = new
+    }
+    
     func handleActiveKey() {
         
         guard let keyCode = activeKey else {
             return
         }
-        
-        let cameraTranslation = frameInfo.cameraTranslation
 
         switch keyCode {
 
-            case Z_KEY:
-                frameInfo.rotateX = frameInfo.rotateX - ROTATION_CHANGE_MODIFIER
+        case Z_KEY:
+            modifyCubeRotation(0)
+            break
+        case X_KEY:
+            modifyCubeRotation(0, -1.0)
                 break
-            case X_KEY:
-                frameInfo.rotateX = frameInfo.rotateX + ROTATION_CHANGE_MODIFIER
+        case C_KEY:
+            modifyCubeRotation(1)
                 break
-            case C_KEY:
-                frameInfo.rotateY = frameInfo.rotateY - ROTATION_CHANGE_MODIFIER
+        case V_KEY:
+            modifyCubeRotation(1, -1.0)
                 break
-            case V_KEY:
-                frameInfo.rotateY = frameInfo.rotateY + ROTATION_CHANGE_MODIFIER
+        case B_KEY:
+            modifyCubeRotation(2)
                 break
-
-            case B_KEY:
-                frameInfo.rotateZ = frameInfo.rotateZ - ROTATION_CHANGE_MODIFIER
-                break
-            case N_KEY:
-                frameInfo.rotateZ = frameInfo.rotateZ + ROTATION_CHANGE_MODIFIER
-                break
-
-            case LEFT_KEY:
-                frameInfo.xPos = frameInfo.xPos - POS_CHANGE_MODIFIER
-                break
-            case RIGHT_KEY:
-                frameInfo.xPos = frameInfo.xPos + POS_CHANGE_MODIFIER
-                break
-            case DOWN_KEY:
-                frameInfo.yPos = frameInfo.yPos - POS_CHANGE_MODIFIER
-                break
-            case UP_KEY:
-                frameInfo.yPos = frameInfo.yPos + POS_CHANGE_MODIFIER
+        case N_KEY:
+            modifyCubeRotation(2, -1.0)
                 break
 
-            case O_KEY:
-                frameInfo.zPos = frameInfo.zPos + POS_CHANGE_MODIFIER
+        case LEFT_KEY:
+            modifyCubePosition(0)
                 break
-            case I_KEY:
-                frameInfo.zPos = frameInfo.zPos - POS_CHANGE_MODIFIER
+        case RIGHT_KEY:
+            modifyCubePosition(0, -1.0)
                 break
-
-            case PLUS_KEY:
-                frameInfo.zoom += ZOOM_CHANGE_MODIFIER
+        case DOWN_KEY:
+            modifyCubePosition(1)
                 break
-            case MINUS_KEY:
-                frameInfo.zoom -= ZOOM_CHANGE_MODIFIER
+        case UP_KEY:
+            modifyCubePosition(1, -1.0)
                 break
-
-            case OPEN_BRACKET_KEY:
-                frameInfo.near -= POS_CHANGE_MODIFIER
+        case O_KEY:
+            modifyCubePosition(2)
                 break
-            case CLOSE_BRACKET_KEY:
-                frameInfo.near += POS_CHANGE_MODIFIER
+        case I_KEY:
+            modifyCubePosition(2, -1.0)
                 break
 
-            case OPEN_ALL_KEY:
-                frameInfo.far -= POS_CHANGE_MODIFIER
+        case PLUS_KEY:
+            frameInfo.zoom += ZOOM_CHANGE_MODIFIER
+            break
+        case MINUS_KEY:
+            frameInfo.zoom -= ZOOM_CHANGE_MODIFIER
+            break
+
+        case OPEN_BRACKET_KEY:
+            frameInfo.near -= POS_CHANGE_MODIFIER
+            break
+        case CLOSE_BRACKET_KEY:
+            frameInfo.near += POS_CHANGE_MODIFIER
+            break
+        case OPEN_ALL_KEY:
+            frameInfo.far -= POS_CHANGE_MODIFIER
+            break
+        case CLOSE_ALL_KEY:
+            frameInfo.far += POS_CHANGE_MODIFIER
+            break
+        
+        case W_KEY:
+            modifyCameraPosition(1)
+            break
+        case S_KEY:
+            modifyCameraPosition(1, -1.0)
                 break
-            case CLOSE_ALL_KEY:
-                frameInfo.far += POS_CHANGE_MODIFIER
+        case D_KEY:
+            modifyCameraPosition(0)
                 break
+        case A_KEY:
+            modifyCameraPosition(0, -1.0)
+                break
+        case Q_KEY:
+            modifyCameraPosition(2)
+                break
+        case E_KEY:
             
-            
-            case W_KEY:
-                let newY = cameraTranslation[1] + CAMERA_CHANGE_MODIFIER
-                frameInfo.cameraTranslation = [cameraTranslation[0], newY, cameraTranslation[2]]
-                break
-            case S_KEY:
-                let newY = cameraTranslation[1] - CAMERA_CHANGE_MODIFIER
-                frameInfo.cameraTranslation = [cameraTranslation[0], newY, cameraTranslation[2]]
-                break
-            case D_KEY:
-                let newX = cameraTranslation[0] + CAMERA_CHANGE_MODIFIER
-                frameInfo.cameraTranslation = [newX, cameraTranslation[1], cameraTranslation[2]]
-                break
-            case A_KEY:
-                let newX = cameraTranslation[0] -  CAMERA_CHANGE_MODIFIER
-                frameInfo.cameraTranslation = [newX, cameraTranslation[1], cameraTranslation[2]]
-                break
-            case Q_KEY:
-                let newZ = cameraTranslation[2] + CAMERA_CHANGE_MODIFIER
-                frameInfo.cameraTranslation = [cameraTranslation[0], cameraTranslation[1], newZ]
-                break
-            case E_KEY:
-                let newZ = cameraTranslation[2] -  CAMERA_CHANGE_MODIFIER
-                frameInfo.cameraTranslation = [cameraTranslation[0], cameraTranslation[1], newZ]
-                break
+            modifyCameraPosition(2, -1.0)
+            break
 
-            case P_KEY:
-                break
-            default:
-                print(keyCode)
-                break
+        case P_KEY:
+            break
+        default:
+            print(keyCode)
+            break
         }
-        frameInfo.rotateX = frameInfo.rotateX.truncatingRemainder(dividingBy: 360.0)
-        frameInfo.rotateY = frameInfo.rotateY.truncatingRemainder(dividingBy: 360.0)
 
     }
     
@@ -226,25 +231,21 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         let newX: Float32 = completeCircle + cameraRotation[0] - yMovement
         let newY: Float32 = completeCircle + cameraRotation[1] - xMovement
         self.cameraRotation = [newX, newY, 0.0]
+        cameraRotationChange = (0.0, 0.0)
     }
     
 
     func setupFrameInfo(_ view: MTKView) {
         print("Setting up frame info")
         frameInfo = FrameInfo(
-                viewWidth: 0,
-                viewHeight: 0,
-                viewDiffRatio: 0.0,
-                rotateX: 5.5,
-                rotateY: 0.7,
-                rotateZ: 1.4,
-                xPos: 0.0,
-                yPos: 0.0,
-                zPos: 4.0,
-                zoom: 1,
-                near: 0.1,
-                far: 100.0,
-                cameraTranslation: [1.0, 2.0, 4.0]
+            viewDimensions: [0.0, 0.0],
+            viewDiffRatio: 0.0,
+            cubeRotation: [5.5, 0.7, 1.4],
+            cubePosition: [0.0, 0.0, 4.0],
+            zoom: 1,
+            near: 0.1,
+            far: 100.0,
+            cameraTranslation: [1.0, 2.0, 4.0]
         )
         registerViewDimensions(view)
     }
@@ -258,8 +259,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         let sizeDiff = abs(width - height)
         let ratio: Float = Float(sizeDiff)/Float(maxDimension)
         
-        frameInfo.viewWidth = Int32(width)
-        frameInfo.viewHeight = Int32(height)
+        frameInfo.viewDimensions = [Float32(width), Float32(height)]
         frameInfo.viewDiffRatio = ratio
     }
 
