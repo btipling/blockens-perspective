@@ -6,16 +6,20 @@
 import Foundation
 import MetalKit
 
-class SkyRenderer: Renderer {
+class SkyRenderer: Renderer, RenderController {
 
-    let renderUtils: RenderUtils
+    var renderUtils: RenderUtils!
 
     var pipelineState: MTLRenderPipelineState! = nil
 
     var skyVertexBuffer: MTLBuffer! = nil
-
-    init (utils: RenderUtils) {
-        renderUtils = utils
+    
+    func setRenderUtils(_ renderUtils: RenderUtils) {
+        self.renderUtils = renderUtils
+    }
+    
+    func renderer() -> Renderer {
+        return self
     }
 
     func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {

@@ -18,8 +18,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     let inflightSemaphore = DispatchSemaphore(value: 1)
 
     var renderers: [Renderer] = Array()
-    var cube: CubeController! = nil
-    var camera: CubeController! = nil
+    var cube: CubeRenderer! = nil
+    var camera: CubeRenderer! = nil
     var frameInfo: FrameInfo! = nil
     
     let renderUtils = RenderUtils()
@@ -30,8 +30,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         
         let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let gameWindow = appDelegate.getWindow()
-        cube = CubeController(colors: renderUtils.cubeColors, scale: [1.0, 1.0, 1.0])
-        camera = CubeController(colors: renderUtils.cameraColors, scale: [0.25, 0.25, 0.25])
+        cube = CubeRenderer(colors: renderUtils.cubeColors, scale: [1.0, 1.0, 1.0])
+        camera = CubeRenderer(colors: renderUtils.cameraColors, scale: [0.25, 0.25, 0.25])
         gameWindow.addKeyEventCallback(handleKeyEvent)
 
         device = MTLCreateSystemDefaultDevice()
@@ -57,11 +57,11 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
 
         // Add render controllers, order matters.
         let renderControllers: [RenderController] = [
-            SkyController(),
-            GroundController(),
+            SkyRenderer(),
+            GroundRenderer(),
             cube,
             camera,
-            CrossHairsController(),
+            CrossHairsRenderer(),
         ]
         
         // Collect renderers and provide renderUtils to controllers.

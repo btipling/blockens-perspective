@@ -10,18 +10,22 @@
 import Foundation
 import MetalKit
 
-class CameraVectorRenderer: Renderer {
+class CameraVectorRenderer: Renderer, RenderController {
     
-    let renderUtils: RenderUtils
+    var renderUtils: RenderUtils!
     
-    var pipelineState: MTLRenderPipelineState! = nil
+    var pipelineState: MTLRenderPipelineState? = nil
     
-    var cameraVectorVertexBuffer: MTLBuffer! = nil
-    var colorBuffer: MTLBuffer! = nil
-    var cameraVectorInfoBuffer: MTLBuffer! = nil
+    var cameraVectorVertexBuffer: MTLBuffer? = nil
+    var colorBuffer: MTLBuffer? = nil
+    var cameraVectorInfoBuffer: MTLBuffer? = nil
     
-    init (utils: RenderUtils) {
-        renderUtils = utils
+    func setRenderUtils(_ renderUtils: RenderUtils) {
+        self.renderUtils = renderUtils
+    }
+    
+    func renderer() -> Renderer {
+        return self
     }
     
     func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
@@ -37,26 +41,30 @@ class CameraVectorRenderer: Renderer {
         cameraVectorInfoBuffer = renderUtils.createSizedBuffer(device, bufferLabel: "cameraVector rotation")
         
         cameraVectorInfoBuffer = device.makeBuffer(length: renderUtils.float3Size * 3, options: [])
-        cameraVectorInfoBuffer.label = "camera vector buffer"
+        cameraVectorInfoBuffer!.label = "camera vector buffer"
         
         print("loading cameraVector assets done")
     }
     
     func update(cameraRotation: [Float32]) {
         
-        let pointer = cameraVectorInfoBuffer.contents()
-        memcpy(pointer, cameraRotation, renderUtils.float3Size)
+        if let buffer = cameraVectorInfoBuffer {
+            let pointer = buffer.contents()
+            memcpy(pointer, cameraRotation, renderUtils.float3Size)
+        }
     }
     
     
     func render(_ renderEncoder: MTLRenderCommandEncoder) {
-        renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "cameraVector")
-        renderUtils.setup3D(renderEncoder: renderEncoder)
-        for (i, vertexBuffer) in [cameraVectorVertexBuffer, colorBuffer, cameraVectorInfoBuffer, renderUtils.renderInfoBuffer()].enumerated() {
-            renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: i)
+        if let pipelineState = self.pipelineState {
+            renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "cameraVector")
+            renderUtils.setup3D(renderEncoder: renderEncoder)
+            for (i, vertexBuffer) in [cameraVectorVertexBuffer, colorBuffer, cameraVectorInfoBuffer, renderUtils.renderInfoBuffer()].enumerated() {
+                renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: i)
+            }
+            
+            renderUtils.drawPrimitives(renderEncoder: renderEncoder, vertexCount: renderUtils.numVerticesInACube())
         }
-        
-        renderUtils.drawPrimitives(renderEncoder: renderEncoder, vertexCount: renderUtils.numVerticesInACube())
         
     }
 }

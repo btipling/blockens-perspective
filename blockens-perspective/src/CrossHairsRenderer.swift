@@ -9,7 +9,7 @@
 import Foundation
 import MetalKit
 
-class CrossHairsRenderer: Renderer {
+class CrossHairsRenderer: Renderer, RenderController {
     
     let crossHairsVertexData: [Float32] = [
         
@@ -21,14 +21,18 @@ class CrossHairsRenderer: Renderer {
         
     ]
     
-    let renderUtils: RenderUtils
+    var renderUtils: RenderUtils!
     
     var pipelineState: MTLRenderPipelineState! = nil
     
     var crossHairsVertexBuffer: MTLBuffer! = nil
     
-    init (utils: RenderUtils) {
-        renderUtils = utils
+    func setRenderUtils(_ renderUtils: RenderUtils) {
+        self.renderUtils = renderUtils
+    }
+    
+    func renderer() -> Renderer {
+        return self
     }
     
     func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {

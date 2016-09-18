@@ -6,9 +6,9 @@
 import Foundation
 import MetalKit
 
-class GroundRenderer: Renderer {
+class GroundRenderer: Renderer, RenderController {
     
-    let renderUtils: RenderUtils
+    var renderUtils: RenderUtils!
     
     var pipelineState: MTLRenderPipelineState! = nil
     var GroundVertexBuffer: MTLBuffer! = nil
@@ -17,8 +17,12 @@ class GroundRenderer: Renderer {
 
     var groundInfo: RenderUtils.Object3DInfo! = nil
     
-    init (utils: RenderUtils) {
-        renderUtils = utils
+    func setRenderUtils(_ renderUtils: RenderUtils) {
+        self.renderUtils = renderUtils
+    }
+    
+    func renderer() -> Renderer {
+        return self
     }
     
     func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {

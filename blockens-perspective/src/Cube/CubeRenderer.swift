@@ -6,9 +6,9 @@
 import Foundation
 import MetalKit
 
-class CubeRenderer: Renderer {
+class CubeRenderer: Renderer, RenderController {
 
-    let renderUtils: RenderUtils
+    var renderUtils: RenderUtils!
 
     var pipelineState: MTLRenderPipelineState! = nil
 
@@ -21,10 +21,17 @@ class CubeRenderer: Renderer {
     let scale: [Float32]
     
 
-    init (utils: RenderUtils, colors: [Float32], scale: [Float32]) {
-        renderUtils = utils
+    init (colors: [Float32], scale: [Float32]) {
         self.colors = colors
         self.scale = scale
+    }
+    
+    func setRenderUtils(_ renderUtils: RenderUtils) {
+        self.renderUtils = renderUtils
+    }
+    
+    func renderer() -> Renderer {
+        return self
     }
 
     func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
