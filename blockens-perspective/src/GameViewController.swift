@@ -278,11 +278,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     func draw(in view: MTKView) {
         _ = inflightSemaphore.wait(timeout: DispatchTime.distantFuture)
         
-        if activeKey != nil {
-            handleActiveKey()
-            
-        } else {
-        }
+        
+        handleActiveKey()
         handleCameraRotation()
         updateAll()
         
