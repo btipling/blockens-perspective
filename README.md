@@ -1,4 +1,6 @@
-More progress on learning 3D things with Apple Metal
+# Perspective Projection Experiments with Apple Metal
+
+More progress on learning 3D math and Apple Metal
 
 [![3D Progress](https://img.youtube.com/vi/VPYSyqdmQYI/maxresdefault.jpg)](https://www.youtube.com/watch?v=VPYSyqdmQYI)
 
