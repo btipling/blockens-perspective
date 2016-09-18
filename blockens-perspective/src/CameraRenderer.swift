@@ -31,7 +31,7 @@ class CameraRenderer: Renderer {
     
     func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
         
-        pipelineState = renderUtils.createPipeLineState(vertex: "CameraVertex", fragment: "CameraFragment", device: device, view: view)
+        pipelineState = renderUtils.createPipeLineState(vertex: "cameraVertex", fragment: "cameraFragment", device: device, view: view)
         CameraVertexBuffer = renderUtils.createCubeVertexBuffer(device: device, bufferLabel: "Camera vertices")
         
         
@@ -54,9 +54,13 @@ class CameraRenderer: Renderer {
     }
     
     fileprivate func updateCameraRotation(_ frameInfo: FrameInfo) {
-        
+        let cameraRotation = [
+            frameInfo.cameraRotation[0],
+            frameInfo.cameraRotation[1],
+            0.0
+        ]
         var cameraInfo = CameraInfo(
-            rotation: frameInfo.cameraRotation,
+            rotation: cameraRotation,
             scale: [0.5, 0.5, 0.5],
             position: frameInfo.cameraTranslation)
         

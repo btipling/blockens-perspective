@@ -17,7 +17,7 @@ struct CameraInfo {
     float zPos;
 };
 
-vertex CubeOut CameraVertex(uint vid [[ vertex_id ]],
+vertex CubeOut cameraVertex(uint vid [[ vertex_id ]],
                           constant packed_float3* position  [[ buffer(0) ]],
                           constant packed_float3* colors  [[ buffer(1) ]],
                           constant CameraInfo* CameraInfo [[ buffer(2)]],
@@ -45,6 +45,6 @@ vertex CubeOut CameraVertex(uint vid [[ vertex_id ]],
     return outVertex;
 }
 
-fragment float4 CameraFragment(CubeOut inFrag [[stage_in]]) {
+fragment float4 cameraFragment(CubeOut inFrag [[stage_in]]) {
     return inFrag.color;
 }
