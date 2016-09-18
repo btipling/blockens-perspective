@@ -21,7 +21,7 @@ struct RenderInfo {
     float near;
     float far;
     packed_float2 winResolution;
-    packed_float2 cameraRotation;
+    packed_float3 cameraRotation;
     packed_float3 cameraTranslation;
 };
 

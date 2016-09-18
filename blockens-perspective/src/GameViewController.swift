@@ -25,7 +25,6 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     
     var activeKey: UInt16? = nil
     var cameraRotationChange: (Float32, Float32) = (0.0, 0.0)
-    var cameraRotation: [Float32] = [0.0, 0.0, 0.0]
     
     
     let renderUtils = RenderUtils()
@@ -91,8 +90,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     
     func updateAll() {
         cube.update(rotation: frameInfo.cubeRotation, position: frameInfo.cubePosition)
-        camera.update(rotation: cameraRotation, position: frameInfo.cameraTranslation)
-        renderUtils.setRenderInfo(frameInfo: frameInfo, cameraRotation: cameraRotation)
+        camera.update(rotation: frameInfo.cameraRotation, position: frameInfo.cameraTranslation)
+        renderUtils.setRenderInfo(frameInfo: frameInfo)
     }
     
     func windowDidResize(_ notification: Notification) {
@@ -212,6 +211,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             break
 
         case P_KEY:
+            print(frameInfo)
             break
         default:
             print(keyCode)
@@ -228,12 +228,12 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             return
         }
         
-        let cameraRotation = self.cameraRotation
+        let cameraRotation = frameInfo.cameraRotation
         let completeCircle: Float32 = 0.0
         // The x rotation rotates around the x coordinate, so we use y movement and so on.
         let newX: Float32 = completeCircle + cameraRotation[0] - yMovement
         let newY: Float32 = completeCircle + cameraRotation[1] - xMovement
-        self.cameraRotation = [newX, newY, 0.0]
+        frameInfo.cameraRotation = [newX, newY, 0.0]
         cameraRotationChange = (0.0, 0.0)
     }
     
@@ -248,6 +248,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             zoom: 1,
             near: 0.1,
             far: 100.0,
+            cameraRotation: [0.0, 0.0, 0.0],
             cameraTranslation: [1.0, 2.0, 4.0]
         )
         registerViewDimensions(view)
@@ -271,7 +272,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         commandQueue.label = "main command queue"
         
         renderUtils.createRenderInfoBuffer(device: device)
-        renderUtils.setRenderInfo(frameInfo: frameInfo, cameraRotation: cameraRotation)
+        renderUtils.setRenderInfo(frameInfo: frameInfo)
         for renderer in renderers {
             renderer.loadAssets(device, view: view, frameInfo: frameInfo)
         }

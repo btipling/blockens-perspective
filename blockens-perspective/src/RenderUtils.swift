@@ -156,19 +156,18 @@ class RenderUtils {
         object3DInfoSize = float3Size * 3;
     }
     
-    func setRenderInfo(frameInfo: FrameInfo, cameraRotation: [Float32]) {
+    func setRenderInfo(frameInfo: FrameInfo) {
         var renderInfo = RenderInfo(
                 zoom: frameInfo.zoom,
                 near: frameInfo.near,
                 far: frameInfo.far,
                 winResolution: frameInfo.viewDimensions,
-                cameraRotation: [0.0, 0.0],
+                cameraRotation: frameInfo.cameraRotation,
                 cameraTranslation: frameInfo.cameraTranslation)
         if (renderInfoBuffer_ != nil) {
             let pointer = renderInfoBuffer_!.contents()
             
             // Memory layout for shader types:
-            let floatSize = MemoryLayout<Float>.size
             let packedFloat2Size = floatSize * 2
             let packedFloat3Size = floatSize * 3
             
@@ -180,8 +179,8 @@ class RenderUtils {
             offset += floatSize
             memcpy(pointer + offset, renderInfo.winResolution, packedFloat2Size)
             offset += packedFloat2Size
-            memcpy(pointer + offset, [0.0, 0.0], packedFloat2Size)
-            offset += packedFloat2Size
+            memcpy(pointer + offset, frameInfo.cameraRotation, packedFloat3Size)
+            offset += packedFloat3Size
             memcpy(pointer + offset, renderInfo.cameraTranslation, packedFloat3Size)
 
         }
@@ -195,8 +194,8 @@ class RenderUtils {
         let packedFloat3Size = floatSize * 3
         
         var minBufferSize = floatSize * 3 // zoom, far, near
-        minBufferSize += packedFloat2Size * 2 // winResolultion, cameraRotation,
-        minBufferSize += packedFloat3Size // cameraPosition
+        minBufferSize += packedFloat2Size // winResolultion
+        minBufferSize += packedFloat3Size * 2 // cameraRotation, cameraPosition
         let bufferSize = alignBufferSize(bufferSize: minBufferSize, alignment: floatSize)
         
         renderInfoBuffer_ = device.makeBuffer(length: bufferSize, options: [])

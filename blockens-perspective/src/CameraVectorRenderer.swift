@@ -19,8 +19,17 @@ class CameraVectorRenderer: Renderer, RenderController {
     var verticesBuffer: MTLBuffer? = nil
     
     let vectorVerticesData: [Float32] = [
+        // Direction vector.
         0.0, 0.0, 0.0,
-        1.0, 0.0, 1.0,
+        0.0, 0.0, 1.0,
+        
+        // Up vector.
+        0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        
+        // Side vector.
+        0.0, 0.0, 0.0,
+        1.0, 0.0, 0.0,
     ]
 
     
@@ -44,8 +53,8 @@ class CameraVectorRenderer: Renderer, RenderController {
     
     func createVerticesBuffer(device: MTLDevice) -> MTLBuffer {
         
-        let bufferSize = vectorVerticesData.count * MemoryLayout.size(ofValue: vectorVerticesData[0])
-        let buffer = device.makeBuffer(length: bufferSize, options: [])
+        let bufferSize = vectorVerticesData.count * MemoryLayout<Float32>.size
+        let buffer = device.makeBuffer(length: bufferSize + 100, options: [])
         let pointer = buffer.contents()
         memcpy(pointer, vectorVerticesData, bufferSize)
         buffer.label = "vector vertices buffer"
@@ -57,12 +66,11 @@ class CameraVectorRenderer: Renderer, RenderController {
     func render(_ renderEncoder: MTLRenderCommandEncoder) {
         if let pipelineState = self.pipelineState {
             renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "cameraVector")
-            renderUtils.setup3D(renderEncoder: renderEncoder)
-            for (i, vertexBuffer) in [verticesBuffer].enumerated() {
+            for (i, vertexBuffer) in [verticesBuffer, renderUtils.renderInfoBuffer()].enumerated() {
                 renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: i)
             }
             
-            renderEncoder.drawPrimitives(type: .line, vertexStart: 0, vertexCount: 6, instanceCount: 1)
+            renderEncoder.drawPrimitives(type: .line, vertexStart: 0, vertexCount: 6, instanceCount: 3)
             renderUtils.finishDrawing(renderEncoder: renderEncoder)
         }
         

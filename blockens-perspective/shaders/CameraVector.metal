@@ -9,12 +9,25 @@
 #include "utils.h"
 
 vertex VertextOut cameraVectorVertex(uint vid [[ vertex_id ]],
-                            constant packed_float3* position  [[ buffer(0) ]]) {
+                                     constant packed_float3* position  [[ buffer(0) ]],
+                                     constant RenderInfo* renderInfo [[ buffer(1) ]]) {
     
     VertextOut outVertex;
     
-    float3 pos = position[vid];
-    outVertex.position = toFloat4(pos);
+    float4 screenCoordinates = toFloat4(position[vid]);
+    
+    // ## Set up vectors.
+    ModelViewData modelViewData = {
+        .positionVertex = screenCoordinates,
+        .scale = identityVector(),
+        .rotationVertex = toFloat4(renderInfo->cameraRotation),
+        .translationVertex = toFloat4(renderInfo->cameraTranslation),
+        .renderInfo = renderInfo
+    };
+    
+    screenCoordinates = toScreenCoordinates(modelViewData);
+    
+    outVertex.position = screenCoordinates;
     return outVertex;
 }
 
