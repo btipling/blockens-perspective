@@ -80,17 +80,21 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         let completeCircle: Float32 = 0.0
         let newX: Float32 = completeCircle + cameraRotation[0] - Float32(xMovement)
         let newY: Float32 = completeCircle + cameraRotation[1] - Float32(yMovement)
-//        print("mouse moved (\(xMovement), \(yMovement))")
         frameInfo.cameraRotation = [newX, newY]
-        cube.update(frameInfo)
+        updateAll()
         print("new frameInfo \(frameInfo)")
         renderUtils.setRenderInfo(frameInfo: frameInfo)
+    }
+    
+    func updateAll() {
+        camera.update(frameInfo)
+        cube.update(frameInfo)
     }
     
     func windowDidResize(_ notification: Notification) {
         let view = self.view as! MTKView
         registerViewDimensions(view)
-        cube.update(frameInfo)
+        updateAll()
         renderUtils.setRenderInfo(frameInfo: frameInfo)
     }
     
@@ -198,7 +202,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         frameInfo.rotateY = frameInfo.rotateY.truncatingRemainder(dividingBy: 360.0);
         frameInfo.rotateZ = frameInfo.rotateZ.truncatingRemainder(dividingBy: 360.0);
         print("Frameinfo: \(frameInfo)")
-        cube.update(frameInfo)
+        updateAll()
         renderUtils.setRenderInfo(frameInfo: frameInfo)
 
     }
