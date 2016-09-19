@@ -205,56 +205,76 @@ RotationMatrix getRotationMatrix(float4 rotationVector) {
     return rotationMatrix;
 }
 
-CameraVectors getCameraVectors(float3 cameraRotation, float3 cameraPosition) {
+CameraVectors getCameraVectors(float4 cameraRotation, float4 cameraPosition) {
     
-    float3 direction = float3(0, 0, 1);
-//    
-//    // ## Set up vectors.
-//    ModelViewData modelViewData = {
-//        .positionVertex = screenCoordinates,
-//        .scale = identityVector(),
-//        .rotationVertex = toFloat4(renderInfo->cameraRotation),
-//        .translationVertex = toFloat4(renderInfo->cameraTranslation),
-//        .renderInfo = renderInfo
-//    };
+    float4 direction = float4(0, 0, 1, 1);
+    float4 up = float4(0, 1, 0, 1);
+    float4 side = float4(1, 0, 0, 1);
     
-    CameraVectors cameraVectors;
-    cameraVectors.sideVector = float3();
-    cameraVectors.upVector = float3();
-    cameraVectors.directionVector = float3();
+    RotationMatrix rotationMatrix = getRotationMatrix(cameraRotation);
+    float4x4 objectTranslationMatrix = translationMatrix(cameraPosition);
+    
+    
+    float4x4 combinedRotationMatrix = matrixProduct4x4(rotationMatrix.x, rotationMatrix.y);
+    combinedRotationMatrix = matrixProduct4x4(combinedRotationMatrix, rotationMatrix.z);
+    float4x4 combinedRotTranslationMatrix = matrixProduct4x4(combinedRotationMatrix, objectTranslationMatrix);
+    transform4x4(direction, combinedRotTranslationMatrix);
+    CameraVectors cameraVectors = {
+//    .directionVector = transform4x4(direction, combinedRotTranslationMatrix),
+//    .upVector =  transform4x4(up, combinedRotTranslationMatrix),
+//    .sideVector =  transform4x4(side, combinedRotTranslationMatrix),
+    };
+    
+//    cameraVectors.directionVector = transform4x4(direction, combinedRotTranslationMatrix);
+//    cameraVectors.upVector = transform4x4(up, combinedRotTranslationMatrix);
+//    cameraVectors.sideVector = transform4x4(side, combinedRotTranslationMatrix);
     return cameraVectors;
+}
+
+float4x4 getCameraMatrix(CameraVectors cameraVectors, float4 cameraPosition) {
+    return float4x4(
+                    float4(
+                       cameraVectors.sideVector.x,
+                       cameraVectors.upVector.x,
+                       cameraVectors.directionVector.x,
+                       cameraPosition.x),
+                                                float4(
+                                                   cameraVectors.sideVector.y,
+                                                   cameraVectors.upVector.y,
+                                                   cameraVectors.directionVector.y,
+                                                   cameraPosition.y),
+                                                                                    float4(
+                                                                                       cameraVectors.sideVector.z,
+                                                                                       cameraVectors.upVector.z,
+                                                                                       cameraVectors.directionVector.z,
+                                                                                       cameraPosition.z),
+                                                                                                                        float4(
+                                                                                                                           0.0,
+                                                                                                                           0.0,
+                                                                                                                           0.0,
+                                                                                                                           1.0));
 }
 
 float4 toScreenCoordinates(ModelViewData modelViewData) {
     
-    // ## Setup camera vectors cows go live
+    // ## Setup camera vectors
     
-    
-    // float2 cameraRotationXY = float2(modelViewData.renderInfo->cameraRotation);
-    // float4 cameraRotation = toFloat4(float3(cameraRotationXY.x, cameraRotationXY.y, 0.0));
-    
-    // float4 cameraTranslation = toFloat4(float3(modelViewData.renderInfo->cameraTranslation));
+    float4 cameraPosition = toFloat4(modelViewData.renderInfo->cameraTranslation);
+    CameraVectors cameraVectors = getCameraVectors(toFloat4(modelViewData.renderInfo->cameraRotation), cameraPosition);
     
     
     // ## Setup matrices.
     
     float4x4 scaleMatrix = scaleVector(modelViewData.scale);
-    
     RotationMatrix rotationMatrix = getRotationMatrix(modelViewData.rotationVertex);
-    
     float4x4 objectTranslationMatrix = translationMatrix(modelViewData.translationVertex);
-    
-    // float4x4 cameraRotationXMatrix = rotateX(cameraRotation);
-    // float4x4 cameraRotationYMatrix = rotateY(cameraRotation);
-    
-    // float4x4 cameraTranslationMatrix = translationMatrix(cameraTranslation);
-    
+//    float4x4 cameraMatrix = getCameraMatrix(cameraVectors, cameraPosition);
     float4x4 perspectiveMatrix = perspectiveProjection(modelViewData.renderInfo);
     
     // ## Build the final transformation matrix by multiplying the matrices together, matrices are associative: ABC == A(BC).
     // Scale * rotation matrices * translation * perspective = SRTP
-    // Camera translation * Camera rotation matrices = CTCR
-    // Then multiply the vector by v(SRTP(CTCR))
+    // Camera translation C
+    // Then multiply the vector by v(SRTP(C))
     
     float4x4 SR;
     SR = matrixProduct4x4(scaleMatrix, rotationMatrix.x);
@@ -269,20 +289,7 @@ float4 toScreenCoordinates(ModelViewData modelViewData) {
     
     SRTP = matrixProduct4x4(SRT, perspectiveMatrix);
     
-    float4x4 CR;
-    
-    // CR = matrixProduct4x4(cameraRotationXMatrix, cameraRotationYMatrix);
-    
-    float4x4 CTCR;
-    
-    // CTCR = matrixProduct4x4(cameraTranslationMatrix, CR);
-    
-    // Combine object and camera:
-    
-    float4x4 SRTP_CTCR;
-    
-    //SRTP_CTCR = matrixProduct4x4(SRTP, CTCR);
-    
-    // Final transformation, v(SRTP(CTCR)):
+    // Final non-camera transformation, v(SRTP):
     return transform4x4(modelViewData.positionVertex, SRTP);
+    
 }

@@ -41,9 +41,9 @@ struct Object3DInfo {
 };
 
 struct CameraVectors {
-    float3 sideVector;
-    float3 upVector;
-    float3 directionVector;
+    float4 sideVector;
+    float4 upVector;
+    float4 directionVector;
 };
 
 struct RotationMatrix {
@@ -86,6 +86,7 @@ float4 identityVector();
 
 RotationMatrix getRotationMatrix(float4 rotationVector);
 CameraVectors getCameraVectors(float4 cameraRotation, float4 cameraPosition);
+float4x4 getCameraMatrix(CameraVectors cameraVectors, float4 cameraPosition);
 float4 toScreenCoordinates(ModelViewData modelViewData);
 
 
