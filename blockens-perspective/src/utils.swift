@@ -21,6 +21,7 @@ struct FrameInfo {
     var far: Float32
     var cameraRotation: [Float32]
     var cameraTranslation: [Float32]
+    var useCamera: Bool
 }
 
 let A_KEY: UInt16 = 0
@@ -35,6 +36,7 @@ let B_KEY: UInt16 = 11
 let W_KEY: UInt16 = 13
 let P_KEY: UInt16 = 35
 let N_KEY: UInt16 = 45
+let M_KEY: UInt16 = 46
 let I_KEY: UInt16 = 34
 let O_KEY: UInt16 = 31
 let Q_KEY: UInt16 = 12

@@ -15,6 +15,7 @@ class RenderUtils {
         var winResolution: [Float32]
         var cameraRotation: [Float32]
         var cameraTranslation: [Float32]
+        var useCamera: Bool
     }
     
     struct Object3DInfo {
@@ -163,13 +164,15 @@ class RenderUtils {
                 far: frameInfo.far,
                 winResolution: frameInfo.viewDimensions,
                 cameraRotation: frameInfo.cameraRotation,
-                cameraTranslation: frameInfo.cameraTranslation)
+                cameraTranslation: frameInfo.cameraTranslation,
+                useCamera: frameInfo.useCamera)
         if (renderInfoBuffer_ != nil) {
             let pointer = renderInfoBuffer_!.contents()
             
             // Memory layout for shader types:
             let packedFloat2Size = floatSize * 2
             let packedFloat3Size = floatSize * 3
+            let boolSize = MemoryLayout<Bool>.size
             
             memcpy(pointer, &renderInfo.zoom, floatSize)
             var offset = floatSize
@@ -182,6 +185,8 @@ class RenderUtils {
             memcpy(pointer + offset, frameInfo.cameraRotation, packedFloat3Size)
             offset += packedFloat3Size
             memcpy(pointer + offset, renderInfo.cameraTranslation, packedFloat3Size)
+            offset += packedFloat3Size
+            memcpy(pointer + offset, &renderInfo.useCamera, boolSize)
 
         }
     }
@@ -192,10 +197,12 @@ class RenderUtils {
         let floatSize = MemoryLayout<Float>.size
         let packedFloat2Size = floatSize * 2
         let packedFloat3Size = floatSize * 3
+        let boolSize = MemoryLayout<Bool>.size
         
         var minBufferSize = floatSize * 3 // zoom, far, near
         minBufferSize += packedFloat2Size // winResolultion
         minBufferSize += packedFloat3Size * 2 // cameraRotation, cameraPosition
+        minBufferSize += boolSize // useCamera
         let bufferSize = alignBufferSize(bufferSize: minBufferSize, alignment: floatSize)
         
         renderInfoBuffer_ = device.makeBuffer(length: bufferSize, options: [])

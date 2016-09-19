@@ -107,6 +107,18 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             return
         }
         
+        switch keyCode {
+            
+        case P_KEY:
+            print(frameInfo)
+            return
+        case M_KEY:
+            frameInfo.useCamera = !frameInfo.useCamera
+            return
+        default:
+            break
+        }
+        
         activeKey = keyCode
     }
     
@@ -210,9 +222,6 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             modifyCameraPosition(2, -1.0)
             break
 
-        case P_KEY:
-            print(frameInfo)
-            break
         default:
             print(keyCode)
             break
@@ -248,9 +257,9 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             zoom: 1,
             near: 0.1,
             far: 100.0,
-            cameraRotation: [0.0, 0.0, 0.0],
-            cameraTranslation: [1.0, 2.0, 4.0]
-        )
+            cameraRotation: [0.61, -2.6, 0.0],
+            cameraTranslation: [1.0, 2.0, 4.0],
+            useCamera: false)
         registerViewDimensions(view)
     }
     
@@ -302,6 +311,16 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
             renderUtils.setup3D(renderEncoder: renderEncoder)
             for renderer in renderers {
+                if frameInfo.useCamera  {
+                    if let r = renderer as? CubeRenderer {
+                        if r === camera {
+                            continue
+                        }
+                    }
+                    if renderer is CameraVectorRenderer {
+                        continue
+                    }
+                }
                 renderer.render(renderEncoder)
             }
 
