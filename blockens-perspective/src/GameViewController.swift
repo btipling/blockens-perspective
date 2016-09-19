@@ -231,7 +231,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     
     func handleCameraRotation () {
         
-        let (xMovement, yMovement) = cameraRotationChange
+        var (xMovement, yMovement) = cameraRotationChange
         
         if xMovement == 0.0 && yMovement == 0.0 {
             return
@@ -240,8 +240,13 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         let cameraRotation = frameInfo.cameraRotation
         let completeCircle: Float32 = 0.0
         // The x rotation rotates around the x coordinate, so we use y movement and so on.
-        let newX: Float32 = completeCircle + cameraRotation[0] - yMovement
-        let newY: Float32 = completeCircle + cameraRotation[1] - xMovement
+        if frameInfo.useCamera {
+            yMovement *= -1.0
+        } else {
+            xMovement *= -1.0
+        }
+        let newX: Float32 = completeCircle + cameraRotation[0] + yMovement
+        let newY: Float32 = completeCircle + cameraRotation[1] + xMovement
         frameInfo.cameraRotation = [newX, newY, 0.0]
         cameraRotationChange = (0.0, 0.0)
     }
