@@ -258,12 +258,12 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             viewDimensions: [0.0, 0.0],
             viewDiffRatio: 0.0,
             cubeRotation: [5.5, 0.7, 1.4],
-            cubePosition: [0.0, 0.0, 4.0],
+            cubePosition: [0.0, 0.0, 5.0],
             zoom: 1,
             near: 0.1,
             far: 100.0,
             cameraRotation: [0.61, -2.6, 0.0],
-            cameraTranslation: [1.0, 2.0, 4.0],
+            cameraTranslation: [2.0, 3.0, 7.5],
             useCamera: false)
         registerViewDimensions(view)
     }
