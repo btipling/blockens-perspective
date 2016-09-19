@@ -28,9 +28,10 @@ vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
     float4 screenCoordinates = toScreenCoordinates(modelViewData);
     
     // Set up the output.
+    outVertex.position = screenCoordinates;
+    
     uint face = vid / 6;
     float4 color = colors[face];
-    outVertex.position = screenCoordinates;
     outVertex.color = color;
 
     return outVertex;

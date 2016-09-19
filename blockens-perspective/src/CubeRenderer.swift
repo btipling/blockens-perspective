@@ -37,10 +37,9 @@ class CubeRenderer: Renderer, RenderController {
     func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
         
         pipelineState = renderUtils.createPipeLineState(vertex: "cubeVertex", fragment: "cubeFragment", device: device, view: view)
-        cubeVertexBuffer = renderUtils.createCubeVertexBuffer(device: device, bufferLabel: "cube vertices")
-
-        colorBuffer = renderUtils.createColorBuffer(device: device, colors: colors, label: "camera colors")
         
+        cubeVertexBuffer = renderUtils.createCubeVertexBuffer(device: device, bufferLabel: "cube vertices")
+        colorBuffer = renderUtils.createColorBuffer(device: device, colors: colors, label: "cube colors")
         cubeInfoBuffer = renderUtils.createObject3DInfoBuffer(device: device, label: "cube info")
         
         print("loading cube assets done")

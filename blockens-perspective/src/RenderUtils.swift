@@ -147,9 +147,9 @@ class RenderUtils {
         cameraColors += gray5;
         cameraColors += blueGray;
         
-        vectorColors = red
-        vectorColors += blueGray
-        vectorColors += green
+        vectorColors = blueGray
+        vectorColors += red
+        vectorColors += yellow
 
         floatSize = MemoryLayout<Float>.size
         float3Size = floatSize * 4
@@ -343,7 +343,7 @@ class RenderUtils {
     
     func createColorBuffer(device: MTLDevice, colors: [Float32], label: String) -> MTLBuffer {
         
-        let floatSize = MemoryLayout<Float>.size
+        let floatSize = MemoryLayout<Float32>.size
         let bufferSize = floatSize * colors.count
         let buffer = device.makeBuffer(length: bufferSize, options: [])
         buffer.label = label

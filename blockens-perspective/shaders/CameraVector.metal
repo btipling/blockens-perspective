@@ -8,11 +8,12 @@
 
 #include "utils.h"
 
-vertex VertextOut cameraVectorVertex(uint vid [[ vertex_id ]],
+vertex CubeOut cameraVectorVertex(uint vid [[ vertex_id ]],
                                      constant packed_float3* position  [[ buffer(0) ]],
-                                     constant RenderInfo* renderInfo [[ buffer(1) ]]) {
+                                     constant packed_float4* colors  [[ buffer(1) ]],
+                                     constant RenderInfo* renderInfo [[ buffer(2) ]]) {
     
-    VertextOut outVertex;
+    CubeOut outVertex;
     
     float4 screenCoordinates = toFloat4(position[vid]);
     
@@ -27,11 +28,13 @@ vertex VertextOut cameraVectorVertex(uint vid [[ vertex_id ]],
     
     screenCoordinates = toScreenCoordinates(modelViewData);
     
+    uint face = vid / 2;
+    float4 color = colors[face];
+    outVertex.color = color;
     outVertex.position = screenCoordinates;
     return outVertex;
 }
 
-fragment float4 cameraVectorFragment(VertextOut inFrag [[stage_in]]) {
-    
-    return float4(1.0, 0.0, 0.0, 1.0);
+fragment float4 cameraVectorFragment(CubeOut inFrag [[stage_in]]) {
+    return inFrag.color;
 }
