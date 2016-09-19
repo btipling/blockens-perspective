@@ -40,6 +40,18 @@ struct Object3DInfo {
     float3 position;
 };
 
+struct CameraVectors {
+    float3 sideVector;
+    float3 upVector;
+    float3 directionVector;
+};
+
+struct RotationMatrix {
+    float4x4 x;
+    float4x4 y;
+    float4x4 z;
+};
+
 float4 rgbaToNormalizedGPUColors(int r, int g, int b);
 
 float3 crossProduct(float3 a, float3 b);
@@ -72,6 +84,8 @@ float4x4 translationMatrix(float4 translation);
 float4 toFloat4(float3 position);
 float4 identityVector();
 
+RotationMatrix getRotationMatrix(float4 rotationVector);
+CameraVectors getCameraVectors(float4 cameraRotation, float4 cameraPosition);
 float4 toScreenCoordinates(ModelViewData modelViewData);
 
 

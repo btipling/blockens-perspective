@@ -197,21 +197,50 @@ float4 identityVector() {
     return float4(1, 1, 1, 1);
 }
 
+RotationMatrix getRotationMatrix(float4 rotationVector) {
+    RotationMatrix rotationMatrix;
+    rotationMatrix.x = rotateX(rotationVector);
+    rotationMatrix.y = rotateY(rotationVector);
+    rotationMatrix.z = rotateZ(rotationVector);
+    return rotationMatrix;
+}
+
+CameraVectors getCameraVectors(float3 cameraRotation, float3 cameraPosition) {
+    
+    float3 direction = float3(0, 0, 1);
+//    
+//    // ## Set up vectors.
+//    ModelViewData modelViewData = {
+//        .positionVertex = screenCoordinates,
+//        .scale = identityVector(),
+//        .rotationVertex = toFloat4(renderInfo->cameraRotation),
+//        .translationVertex = toFloat4(renderInfo->cameraTranslation),
+//        .renderInfo = renderInfo
+//    };
+    
+    CameraVectors cameraVectors;
+    cameraVectors.sideVector = float3();
+    cameraVectors.upVector = float3();
+    cameraVectors.directionVector = float3();
+    return cameraVectors;
+}
+
 float4 toScreenCoordinates(ModelViewData modelViewData) {
     
     // ## Setup camera vectors cows go live
+    
+    
     // float2 cameraRotationXY = float2(modelViewData.renderInfo->cameraRotation);
     // float4 cameraRotation = toFloat4(float3(cameraRotationXY.x, cameraRotationXY.y, 0.0));
     
     // float4 cameraTranslation = toFloat4(float3(modelViewData.renderInfo->cameraTranslation));
     
+    
     // ## Setup matrices.
     
     float4x4 scaleMatrix = scaleVector(modelViewData.scale);
     
-    float4x4 rotationXMatrix = rotateX(modelViewData.rotationVertex);
-    float4x4 rotationYMatrix = rotateY(modelViewData.rotationVertex);
-    float4x4 rotationZMatrix = rotateZ(modelViewData.rotationVertex);
+    RotationMatrix rotationMatrix = getRotationMatrix(modelViewData.rotationVertex);
     
     float4x4 objectTranslationMatrix = translationMatrix(modelViewData.translationVertex);
     
@@ -228,9 +257,9 @@ float4 toScreenCoordinates(ModelViewData modelViewData) {
     // Then multiply the vector by v(SRTP(CTCR))
     
     float4x4 SR;
-    SR = matrixProduct4x4(scaleMatrix, rotationXMatrix);
-    SR = matrixProduct4x4(SR, rotationYMatrix);
-    SR = matrixProduct4x4(SR, rotationZMatrix);
+    SR = matrixProduct4x4(scaleMatrix, rotationMatrix.x);
+    SR = matrixProduct4x4(SR, rotationMatrix.y);
+    SR = matrixProduct4x4(SR, rotationMatrix.z);
     
     float4x4 SRT;
     
