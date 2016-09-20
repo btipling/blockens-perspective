@@ -262,8 +262,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             zoom: 1,
             near: 0.1,
             far: 100.0,
-            cameraRotation: [0.61, -2.6, 0.0],
-            cameraTranslation: [2.0, 3.0, 7.5],
+            cameraRotation: [0.0, 0.0, 0.0],
+            cameraTranslation: [0.0, 0.0, 0.0],
             useCamera: false)
         registerViewDimensions(view)
     }
