@@ -16,9 +16,8 @@ Includes:
 * Smoother keyboard movement
 * Mouse handling
 * Fixed math
+* 3D Camera movement with mouse rotation
 
-In progress:
 
-* Camera movement
 
 
