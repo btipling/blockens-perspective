@@ -9,7 +9,8 @@ More progress on learning 3D math and Apple Metal
 
 <br/>
 
-[YouTube video](https://www.youtube.com/watch?v=VPYSyqdmQYI)
+[3D camera movement video](https://www.youtube.com/watch?v=VPYSyqdmQYI)
+[rotation animation video](https://www.youtube.com/watch?v=VPYSyqdmQYI)
 
 Includes:
 
