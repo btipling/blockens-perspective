@@ -37,6 +37,11 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         let gameWindow = appDelegate.getWindow()
         cube = CubeRenderer(colors: renderUtils.cubeColors, scale: [1.0, 1.0, 1.0])
         camera = CubeRenderer(colors: renderUtils.cameraColors, scale: [0.25, 0.25, 0.25])
+        var referenceCubes: [CubeRenderer] = Array()
+        for _ in 0..<100 {
+            let scale = Float32(arc4random_uniform(2) + 1)
+            referenceCubes.append(CubeRenderer(colors: renderUtils.cameraColors, scale: [scale, scale, scale]))
+        }
         cameraVector = CameraVectorRenderer()
         gameWindow.addKeyEventCallback(handleKeyEvent)
 
@@ -66,14 +71,16 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         renderUtils.depthStencilState(device: device)
 
         // Add render controllers, order matters.
-        let renderControllers: [RenderController] = [
+        var renderControllers: [RenderController] = [
             SkyRenderer(),
             GroundRenderer(),
             cube,
             camera,
             cameraVector,
-            CrossHairsRenderer(),
         ]
+        
+        renderControllers = renderControllers + referenceCubes
+        renderControllers.append(CrossHairsRenderer())
         
         // Collect renderers and provide renderUtils to controllers.
         for renderController in renderControllers {
@@ -82,6 +89,16 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         }
         
         loadAssets(view)
+        for referenceCube in referenceCubes {
+            let x = Float32(arc4random_uniform(100)) - 50.0
+            let y = Float32(arc4random_uniform(4)) - 2.0
+            let z = Float32(arc4random_uniform(100)) - 50.0
+            
+            let pitch = Float32(arc4random_uniform(5))
+            let yaw = Float32(arc4random_uniform(5))
+            let roll = Float32(arc4random_uniform(1))
+            referenceCube.update(rotation: [pitch, yaw, roll], position: [x, y, z]);
+        }
     }
     
     override func mouseDragged(with event: NSEvent) {
