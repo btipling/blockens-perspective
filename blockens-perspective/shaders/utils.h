@@ -62,7 +62,9 @@ float3 scaleVector3(float scalar, float3 vector);
 float3 negateVector3(float3 vector);
 float4 negateVector4(float4 vector);
 float3 addVector3(float3 a, float3 b);
+float4 addVector4(float4 a, float4 b);
 float3 subtractVector3(float3 a, float3 b);
+float4 subtractVector4(float4 a, float4 b);
 float3 getVectorTo3(float3 from, float3 to);
 float vectorMagnitude3(float3 vector);
 float3 normalize3(float3 vector);
@@ -88,6 +90,7 @@ float4 identityVector();
 
 RotationMatrix getRotationMatrix(float4 rotationVector);
 float4x4 lookAt(float4 cameraPosition, float4 cameraRotation);
+float4x4 lookAtArcBall(float4 cameraPosition, float4 cameraRotation);
 float4 toScreenCoordinates(ModelViewData modelViewData);
 
 

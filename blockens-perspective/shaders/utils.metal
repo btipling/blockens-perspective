@@ -58,8 +58,24 @@ float3 addVector3(float3 a, float3 b) {
     return result;
 }
 
+float4 addVector4(float4 a, float4 b) {
+    float4 result;
+    for (int i = 0; i < 4; i++) {
+        result[i] = a[i] + b[i];
+    }
+    return result;
+}
+
 float3 subtractVector3(float3 a, float3 b) {
     float3 result;
+    for (int i = 0; i < 3; i++) {
+        result[i] = a[i] - b[i];
+    }
+    return result;
+}
+
+float4 subtractVector4(float4 a, float4 b) {
+    float4 result;
     for (int i = 0; i < 3; i++) {
         result[i] = a[i] - b[i];
     }
@@ -213,8 +229,47 @@ RotationMatrix getRotationMatrix(float4 rotationVector) {
        .z = rotateZ(rotationVector),
     };
 }
-
 float4x4 lookAt(float4 cameraPosition, float4 cameraRotation) {
+    
+    float4 initialUp = float4(0.0, 1.0, 0.0, 1.0);
+    
+    float4 poiFromOrigin = float4(cameraPosition.x, cameraPosition.y, cameraPosition.z + 1000.0, 1.0);
+    
+    
+    float3 eye = float3(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+    float3 poi = float3(poiFromOrigin.x, poiFromOrigin.y, poiFromOrigin.z);
+    float3 up = float3(initialUp.x, initialUp.y, initialUp.z);
+    
+    float3 f = normalize3(subtractVector3(poi, eye));
+    float3 s = normalize3(crossProduct(up, f));
+    float3 u = crossProduct(f, s);
+    
+    
+    float4x4 C = float4x4(
+                          float4(
+                                 s.x,
+                                 s.y,
+                                 s.z,
+                                 0.0),
+                          float4(
+                                 u.x,
+                                 u.y,
+                                 u.z,
+                                 0.0),
+                          float4(
+                                 f.x,
+                                 f.y,
+                                 f.z,
+                                 0.0),
+                          float4(
+                                 0.0,
+                                 0.0,
+                                 0.0,
+                                 1.0));
+    return matrixProduct4x4(C, translationMatrix(negateVector4(cameraPosition)));
+}
+
+float4x4 lookAtArcBall(float4 cameraPosition, float4 cameraRotation) {
     
     float4 eye = float4(cameraPosition.x, cameraPosition.y, cameraPosition.z, 1.0);
    
@@ -268,6 +323,7 @@ float4 toScreenCoordinates(ModelViewData modelViewData) {
     RotationMatrix rotationMatrix = getRotationMatrix(modelViewData.rotationVertex);
     float4x4 objectTranslationMatrix = translationMatrix(modelViewData.translationVertex);
     float4x4 cameraMatrix = lookAt(cameraPosition, toFloat4(modelViewData.renderInfo->cameraRotation));
+    RotationMatrix cameraRotationMatrix = getRotationMatrix(toFloat4(modelViewData.renderInfo->cameraRotation));
     float4x4 perspectiveMatrix = perspectiveProjection(modelViewData.renderInfo);
     
     // ## Build the final transformation matrix by multiplying the matrices together, matrices are associative: ABC == A(BC).
@@ -279,6 +335,7 @@ float4 toScreenCoordinates(ModelViewData modelViewData) {
     SR = matrixProduct4x4(scaleMatrix, rotationMatrix.x);
     SR = matrixProduct4x4(SR, rotationMatrix.y);
     SR = matrixProduct4x4(SR, rotationMatrix.z);
+    
     
     float4x4 SRT;
     
@@ -297,11 +354,16 @@ float4 toScreenCoordinates(ModelViewData modelViewData) {
     
     SRT_C = matrixProduct4x4(SRT, cameraMatrix);
     
-    float4x4 SRTP_C;
+    float4x4 SRT_CR;
     
-    SRTP_C = matrixProduct4x4(SRT_C, perspectiveMatrix);
+    SRT_CR = matrixProduct4x4(SRT_C, cameraRotationMatrix.y);
+    SRT_CR = matrixProduct4x4(SRT_CR, cameraRotationMatrix.x);
     
-    // Final non-camera transformation, v(SRTP(C):
-    return transform4x4(modelViewData.positionVertex, SRTP_C);
+    float4x4 SRTP_CR;
+    
+    SRTP_CR = matrixProduct4x4(SRT_CR, perspectiveMatrix);
+    
+    // Final non-camera transformation, v(SRTP(CR):
+    return transform4x4(modelViewData.positionVertex, SRTP_CR);
     
 }
