@@ -77,6 +77,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             cube,
             camera,
             cameraVector,
+//            DuckRenderer(),
         ]
         
         renderControllers = renderControllers + referenceCubes

@@ -110,7 +110,7 @@ class RenderUtils {
         -1.0, 1.0, -1.0,
 
         // - tf right triangle
-        1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0, 
         1.0, 1.0, -1.0,
         -1.0, 1.0, -1.0,
 
@@ -248,12 +248,13 @@ class RenderUtils {
         }
         return texture!
     }
-
-    func createPipeLineState(vertex: String, fragment: String, device: MTLDevice, view: MTKView) -> MTLRenderPipelineState {
+    
+    func createPipelineStateDescriptor(vertex: String, fragment: String, device: MTLDevice, view: MTKView) -> MTLRenderPipelineDescriptor {
+        
         let defaultLibrary = device.newDefaultLibrary()!
         let vertexProgram = defaultLibrary.makeFunction(name: vertex)!
         let fragmentProgram = defaultLibrary.makeFunction(name: fragment)!
-
+        
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexProgram
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
@@ -261,7 +262,17 @@ class RenderUtils {
         pipelineStateDescriptor.sampleCount = view.sampleCount
         pipelineStateDescriptor.depthAttachmentPixelFormat = view.depthStencilPixelFormat
         pipelineStateDescriptor.stencilAttachmentPixelFormat = view.depthStencilPixelFormat
+        
+        return pipelineStateDescriptor
+    }
 
+    func createPipeLineState(vertex: String, fragment: String, device: MTLDevice, view: MTKView) -> MTLRenderPipelineState {
+        let pipelineStateDescriptor = createPipelineStateDescriptor(vertex: vertex, fragment: fragment, device: device, view: view)
+        return createPipeLineStateWithDescriptor(device: device, pipelineStateDescriptor: pipelineStateDescriptor)
+    }
+
+    
+    func createPipeLineStateWithDescriptor(device: MTLDevice, pipelineStateDescriptor: MTLRenderPipelineDescriptor) -> MTLRenderPipelineState {
         var pipelineState: MTLRenderPipelineState! = nil
         do {
             try pipelineState = device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
