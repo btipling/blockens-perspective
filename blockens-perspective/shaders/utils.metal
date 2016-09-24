@@ -219,7 +219,11 @@ float4 toFloat4(float3 position) {
 }
 
 float4 identityVector() {
-    return float4(1, 1, 1, 1);
+    return float4(1.0, 1.0, 1.0, 1.0);
+}
+
+float4 zeroVector() {
+    return float4(0.0, 0.0, 0.0, 0.0);
 }
 
 RotationMatrix getRotationMatrix(float4 rotationVector) {

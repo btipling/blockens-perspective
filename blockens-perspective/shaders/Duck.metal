@@ -9,7 +9,7 @@
 #include "utils.h"
 
 struct VertexIn {
-    float4 position [[attribute(0)]];
+    float3 position [[attribute(0)]];
 };
 
 vertex VertextOut duckVertex(const VertexIn vertices [[stage_in]],
@@ -20,10 +20,10 @@ vertex VertextOut duckVertex(const VertexIn vertices [[stage_in]],
     
     // ## Set up vectors.
     ModelViewData modelViewData = {
-        .positionVertex = vertices.position,
-        .scale = identityVector(),
-        .rotationVertex = float4(0.0, 0.0, 0.0, 0.0),
-        .translationVertex = float4(0.0, 0.0, 0.0, 0.0),
+        .positionVertex = toFloat4(vertices.position),
+        .scale = float4(10.0, 10.0, 10.0, 1.0),
+        .rotationVertex = zeroVector(),
+        .translationVertex = float4(0.0, 55.0, 0.0, 1.0),
         .renderInfo = renderInfo
     };
     

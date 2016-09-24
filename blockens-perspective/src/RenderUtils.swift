@@ -297,6 +297,15 @@ class RenderUtils {
     
     func drawIndexedPrimitives(renderEncoder: MTLRenderCommandEncoder, meshes: [MTKMesh]) {
         for mesh in meshes {
+            
+            var i = 0
+            for vertexBuffer in mesh.vertexBuffers {
+                renderEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, at: 0)
+                i += 1
+            }
+            renderEncoder.setVertexBuffer(renderInfoBuffer(), offset: 0, at: i)
+
+
             for submesh in mesh.submeshes {
                 renderEncoder.drawIndexedPrimitives(
                     type: submesh.primitiveType,

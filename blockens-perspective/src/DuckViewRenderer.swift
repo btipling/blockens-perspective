@@ -17,7 +17,6 @@ class DuckRenderer: Renderer, RenderController {
     var pipelineState: MTLRenderPipelineState! = nil
     
     var meshes: [MTKMesh]!
-    var DuckVertexBuffer: MTLBuffer! = nil
     let vertexDescriptor: MTLVertexDescriptor = MTLVertexDescriptor()
     
     func setRenderUtils(_ renderUtils: RenderUtils) {
@@ -37,9 +36,12 @@ class DuckRenderer: Renderer, RenderController {
         }
         let assetURL = URL(fileURLWithPath: path!)
         
-        vertexDescriptor.attributes[0].offset = 0
         vertexDescriptor.attributes[0].format = MTLVertexFormat.float3
+        vertexDescriptor.attributes[0].offset = 0
+        vertexDescriptor.attributes[0].bufferIndex = 0
         vertexDescriptor.layouts[0].stride = 12
+        vertexDescriptor.layouts[0].stepRate = 1;
+        vertexDescriptor.layouts[0].stepFunction = MTLVertexStepFunction.perVertex;
         
         pipelineStateDescriptor.vertexDescriptor = vertexDescriptor
         
@@ -61,7 +63,6 @@ class DuckRenderer: Renderer, RenderController {
         let pipelineStateDescriptor = renderUtils.createPipelineStateDescriptor(vertex: "duckVertex", fragment: "duckFragment", device: device, view: view)
         loadDuck(device: device, pipelineStateDescriptor: pipelineStateDescriptor);
         pipelineState = renderUtils.createPipeLineStateWithDescriptor(device: device, pipelineStateDescriptor: pipelineStateDescriptor)
-        DuckVertexBuffer = renderUtils.createRectangleVertexBuffer(device: device, bufferLabel: "Duck vertices")
         
         print("loading Duck assets done")
     }
@@ -70,7 +71,6 @@ class DuckRenderer: Renderer, RenderController {
         
         renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "Duck")
         
-        renderEncoder.setVertexBuffer(renderUtils.renderInfoBuffer(), offset: 0, at: 1)
         
         renderUtils.drawIndexedPrimitives(renderEncoder: renderEncoder, meshes: meshes)
         

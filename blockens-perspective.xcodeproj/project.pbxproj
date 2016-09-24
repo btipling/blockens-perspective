@@ -83,19 +83,19 @@
 		596DD707A44A5C2E8DDA49DD /* src */ = {
 			isa = PBXGroup;
 			children = (
-				401CD7F81D8EF07A002A0050 /* CubeRenderer.swift */,
-				401CD7F91D8EF07A002A0050 /* SkyRenderer.swift */,
-				401CD7FA1D8EF07A002A0050 /* GroundRenderer.swift */,
-				401CD7FB1D8EF07A002A0050 /* CrossHairsRenderer.swift */,
-				401CD7FC1D8EF07A002A0050 /* CameraVectorRenderer.swift */,
 				596DD6F5A7DF142BE342CB0A /* AppDelegate.swift */,
+				401CD7FC1D8EF07A002A0050 /* CameraVectorRenderer.swift */,
+				401CD7FB1D8EF07A002A0050 /* CrossHairsRenderer.swift */,
+				401CD7F81D8EF07A002A0050 /* CubeRenderer.swift */,
+				4096F6301D963CA10000FE28 /* DuckViewRenderer.swift */,
 				596DDEDFB2F17F413AB3C038 /* GameViewController.swift */,
 				596DD71509758D619368DD8F /* GameWindow.swift */,
+				401CD7FA1D8EF07A002A0050 /* GroundRenderer.swift */,
 				596DD1AE74D3D2F6AF581CD5 /* Renderer.swift */,
 				596DDBF4F807336EDB86EBB8 /* RendererController.swift */,
 				596DD487FA02D6C3E5D44C7A /* RenderUtils.swift */,
+				401CD7F91D8EF07A002A0050 /* SkyRenderer.swift */,
 				596DD1C9EF7B9A6114F21ED0 /* utils.swift */,
-				4096F6301D963CA10000FE28 /* DuckViewRenderer.swift */,
 			);
 			path = src;
 			sourceTree = "<group>";
