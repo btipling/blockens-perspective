@@ -295,6 +295,21 @@ class RenderUtils {
         finishDrawing(renderEncoder: renderEncoder)
     }
     
+    func drawIndexedPrimitives(renderEncoder: MTLRenderCommandEncoder, meshes: [MTKMesh]) {
+        for mesh in meshes {
+            for submesh in mesh.submeshes {
+                renderEncoder.drawIndexedPrimitives(
+                    type: submesh.primitiveType,
+                    indexCount: submesh.indexCount,
+                    indexType: submesh.indexType,
+                    indexBuffer: submesh.indexBuffer.buffer,
+                    indexBufferOffset: submesh.indexBuffer.offset)
+            }
+        }
+        finishDrawing(renderEncoder: renderEncoder)
+        
+    }
+    
     func finishDrawing(renderEncoder: MTLRenderCommandEncoder) {
         renderEncoder.popDebugGroup()
     }

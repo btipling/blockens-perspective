@@ -8,13 +8,29 @@
 
 #include "utils.h"
 
-vertex VertextOut duckVertex(uint vid [[ vertex_id ]],
-                            constant packed_float3* position  [[ buffer(0) ]]) {
+struct VertexIn {
+    float4 position [[attribute(0)]];
+};
+
+vertex VertextOut duckVertex(const VertexIn vertices [[stage_in]],
+                             constant RenderInfo* renderInfo [[ buffer(1) ]]) {
     
     VertextOut outVertex;
     
-    float3 pos = position[vid];
-    outVertex.position = float4(pos[0], pos[1], 0.9999, 1.0);
+    
+    // ## Set up vectors.
+    ModelViewData modelViewData = {
+        .positionVertex = vertices.position,
+        .scale = identityVector(),
+        .rotationVertex = float4(0.0, 0.0, 0.0, 0.0),
+        .translationVertex = float4(0.0, 0.0, 0.0, 0.0),
+        .renderInfo = renderInfo
+    };
+    
+    float4 screenCoordinates = toScreenCoordinates(modelViewData);
+    
+    
+    outVertex.position = screenCoordinates;
     return outVertex;
 }
 

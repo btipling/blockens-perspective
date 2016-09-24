@@ -70,11 +70,9 @@ class DuckRenderer: Renderer, RenderController {
         
         renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "Duck")
         
-        for (i, vertexBuffer) in [DuckVertexBuffer].enumerated() {
-            renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: i)
-        }
+        renderEncoder.setVertexBuffer(renderUtils.renderInfoBuffer(), offset: 0, at: 1)
         
-        renderUtils.drawPrimitives(renderEncoder: renderEncoder, vertexCount: renderUtils.numVerticesInARectangle())
+        renderUtils.drawIndexedPrimitives(renderEncoder: renderEncoder, meshes: meshes)
         
     }
 }
