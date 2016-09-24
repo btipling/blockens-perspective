@@ -86,6 +86,7 @@ float4x4 rotateZ(float4 angles);
 float4x4 translationMatrix(float4 translation);
 
 float4 toFloat4(float3 position);
+float4 zeroVector();
 float4 identityVector();
 
 RotationMatrix getRotationMatrix(float4 rotationVector);

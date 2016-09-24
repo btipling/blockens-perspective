@@ -42,7 +42,6 @@ class CubeRenderer: Renderer, RenderController {
         colorBuffer = renderUtils.createColorBuffer(device: device, colors: colors, label: "cube colors")
         cubeInfoBuffer = renderUtils.createObject3DInfoBuffer(device: device, label: "cube info")
         
-        print("loading cube assets done")
     }
 
     func update(rotation: [Float32], position: [Float32]) {

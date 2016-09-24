@@ -110,7 +110,7 @@ class RenderUtils {
         -1.0, 1.0, -1.0,
 
         // - tf right triangle
-        1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0, 
         1.0, 1.0, -1.0,
         -1.0, 1.0, -1.0,
 
@@ -248,12 +248,13 @@ class RenderUtils {
         }
         return texture!
     }
-
-    func createPipeLineState(vertex: String, fragment: String, device: MTLDevice, view: MTKView) -> MTLRenderPipelineState {
+    
+    func createPipelineStateDescriptor(vertex: String, fragment: String, device: MTLDevice, view: MTKView) -> MTLRenderPipelineDescriptor {
+        
         let defaultLibrary = device.newDefaultLibrary()!
         let vertexProgram = defaultLibrary.makeFunction(name: vertex)!
         let fragmentProgram = defaultLibrary.makeFunction(name: fragment)!
-
+        
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexProgram
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
@@ -261,7 +262,17 @@ class RenderUtils {
         pipelineStateDescriptor.sampleCount = view.sampleCount
         pipelineStateDescriptor.depthAttachmentPixelFormat = view.depthStencilPixelFormat
         pipelineStateDescriptor.stencilAttachmentPixelFormat = view.depthStencilPixelFormat
+        
+        return pipelineStateDescriptor
+    }
 
+    func createPipeLineState(vertex: String, fragment: String, device: MTLDevice, view: MTKView) -> MTLRenderPipelineState {
+        let pipelineStateDescriptor = createPipelineStateDescriptor(vertex: vertex, fragment: fragment, device: device, view: view)
+        return createPipeLineStateWithDescriptor(device: device, pipelineStateDescriptor: pipelineStateDescriptor)
+    }
+
+    
+    func createPipeLineStateWithDescriptor(device: MTLDevice, pipelineStateDescriptor: MTLRenderPipelineDescriptor) -> MTLRenderPipelineState {
         var pipelineState: MTLRenderPipelineState! = nil
         do {
             try pipelineState = device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
@@ -282,6 +293,30 @@ class RenderUtils {
     func drawPrimitives(renderEncoder: MTLRenderCommandEncoder, vertexCount: Int) {
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
         finishDrawing(renderEncoder: renderEncoder)
+    }
+    
+    func drawIndexedPrimitives(renderEncoder: MTLRenderCommandEncoder, meshes: [MTKMesh]) {
+        for mesh in meshes {
+            
+            var i = 0
+            for vertexBuffer in mesh.vertexBuffers {
+                renderEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, at: 0)
+                i += 1
+            }
+            renderEncoder.setVertexBuffer(renderInfoBuffer(), offset: 0, at: i)
+
+
+            for submesh in mesh.submeshes {
+                renderEncoder.drawIndexedPrimitives(
+                    type: submesh.primitiveType,
+                    indexCount: submesh.indexCount,
+                    indexType: submesh.indexType,
+                    indexBuffer: submesh.indexBuffer.buffer,
+                    indexBufferOffset: submesh.indexBuffer.offset)
+            }
+        }
+        finishDrawing(renderEncoder: renderEncoder)
+        
     }
     
     func finishDrawing(renderEncoder: MTLRenderCommandEncoder) {

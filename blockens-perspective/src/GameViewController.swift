@@ -77,6 +77,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             cube,
             camera,
             cameraVector,
+            DuckRenderer(),
         ]
         
         renderControllers = renderControllers + referenceCubes
@@ -279,8 +280,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             zoom: 1,
             near: 0.1,
             far: 100.0,
-            cameraRotation: [0.0, 0.0, 0.0],
-            cameraTranslation: [0.0, 0.0, 0.0],
+            cameraRotation: [0.25, 1.86, 0.0],
+            cameraTranslation: [73.5, 0.0, 16.6],
             useCamera: true)
         registerViewDimensions(view)
     }
