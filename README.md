@@ -2,6 +2,8 @@
 
 More progress on learning 3D math and Apple Metal
 
+![Duck model](https://cloud.githubusercontent.com/assets/249641/18813120/3d6eeb16-82a1-11e6-8fc1-f717600ea3de.png)
+
 
 [![3D Progress](https://img.youtube.com/vi/TS2C6CFGYcY/maxresdefault.jpg)](https://www.youtube.com/watch?v=TS2C6CFGYcY)
 
@@ -15,6 +17,7 @@ More progress on learning 3D math and Apple Metal
 
 Includes:
 
+* Loading objects using Model I/O including their materials
 * Perspective projection
 * Multiple objects
 * Depth testing
