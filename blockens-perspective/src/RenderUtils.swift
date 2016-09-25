@@ -18,6 +18,11 @@ class RenderUtils {
         var useCamera: Bool
     }
     
+    struct MaterialUniform {
+        var color: [Float32]
+    };
+
+    
     struct Object3DInfo {
         var rotation: [Float32]
         var scale: [Float32]
@@ -295,18 +300,21 @@ class RenderUtils {
         finishDrawing(renderEncoder: renderEncoder)
     }
     
-    func drawIndexedPrimitives(renderEncoder: MTLRenderCommandEncoder, meshes: [MTKMesh]) {
+    func drawIndexedPrimitives(renderEncoder: MTLRenderCommandEncoder, meshes: [MTKMesh], materials: [MTLBuffer]) {
         for mesh in meshes {
             
             var i = 0
             for vertexBuffer in mesh.vertexBuffers {
-                renderEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, at: 0)
                 i += 1
+                renderEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, at: 0)
             }
-            renderEncoder.setVertexBuffer(renderInfoBuffer(), offset: 0, at: i)
+            renderEncoder.setVertexBuffer(renderInfoBuffer(), offset: 0, at: 1)
+            i += 1
 
-
-            for submesh in mesh.submeshes {
+            for (i, submesh) in mesh.submeshes.enumerated() {
+                let material = materials[i]
+                renderEncoder.setVertexBuffer(material, offset: 0, at: 2)
+                
                 renderEncoder.drawIndexedPrimitives(
                     type: submesh.primitiveType,
                     indexCount: submesh.indexCount,
@@ -317,6 +325,19 @@ class RenderUtils {
         }
         finishDrawing(renderEncoder: renderEncoder)
         
+    }
+    
+    func materialToBuffer(device: MTLDevice, material: MaterialUniform, label: String) -> MTLBuffer {
+        
+        let floatSize = MemoryLayout<Float>.size
+        let packedFloat3Size = floatSize * 3;
+        let bufferSize = packedFloat3Size
+        let buffer = device.makeBuffer(length: bufferSize, options: [])
+        let pointer = buffer.contents()
+        memcpy(pointer, material.color, packedFloat3Size)
+        buffer.label = label
+        
+        return buffer
     }
     
     func finishDrawing(renderEncoder: MTLRenderCommandEncoder) {

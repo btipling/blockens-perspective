@@ -10,13 +10,16 @@
 import Foundation
 import MetalKit
 
+
 class DuckRenderer: Renderer, RenderController {
     
     var renderUtils: RenderUtils!
     
     var pipelineState: MTLRenderPipelineState! = nil
     
-    var meshes: [MTKMesh]!
+    var meshes: [MTKMesh] = Array()
+    var materials: [MTLBuffer] = Array()
+    var submeshes: [MDLSubmesh] = Array()
     let vertexDescriptor: MTLVertexDescriptor = MTLVertexDescriptor()
     
     func setRenderUtils(_ renderUtils: RenderUtils) {
@@ -51,11 +54,45 @@ class DuckRenderer: Renderer, RenderController {
         
         let bufferAllocator = MTKMeshBufferAllocator(device: device)
         let asset = MDLAsset(url: assetURL, vertexDescriptor: desc, bufferAllocator: bufferAllocator)
+        let pointer: UnsafeMutablePointer<NSArray>? = UnsafeMutablePointer<NSArray>.allocate(capacity: 1)
+        let autopointer: AutoreleasingUnsafeMutablePointer<NSArray?>? = AutoreleasingUnsafeMutablePointer<NSArray?>.init(pointer!)
         do {
-            try meshes = MTKMesh.newMeshes(from: asset, device: device, sourceMeshes: nil)
+            try meshes = MTKMesh.newMeshes(from: asset, device: device, sourceMeshes: autopointer)
         } catch let error {
             print("Unable to load mesh for duck: \(error)")
         }
+        let memory_array: NSArray? = pointer!.pointee
+        var model_meshes: [MDLMesh] = Array()
+        for data in memory_array! {
+            model_meshes.append(data as! MDLMesh)
+        }
+        print("mdlmesh \(model_meshes)")
+        for mesh in model_meshes {
+            guard let submeshes_ = mesh.submeshes else {
+                print("no submshes")
+                continue
+            }
+            for submesh_ in submeshes_ {
+                
+                print("submesh is \(submesh_)")
+                let submesh = submesh_ as! MDLSubmesh
+                submeshes.append(submesh)
+                print("submesh's name is \(submesh.name)")
+               
+                let specularColor = submesh.material?.property(with: MDLMaterialSemantic.baseColor)
+                var material = RenderUtils.MaterialUniform(color: [0.0, 0.0, 0.0])
+                if let color = specularColor {
+                    material.color = [Float32(color.float3Value.x), Float32(color.float3Value.y), Float32(color.float3Value.z)]
+                    print("Found diffuse color: \(color.float3Value)")
+                } else {
+                    print("no diffuse")
+                }
+                materials.append(renderUtils.materialToBuffer(device: device, material: material, label: submesh.name))
+                
+
+            }
+        }
+        print("done loading meshe for duck")
     }
     
     func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
@@ -72,7 +109,7 @@ class DuckRenderer: Renderer, RenderController {
         renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "Duck")
         
         
-        renderUtils.drawIndexedPrimitives(renderEncoder: renderEncoder, meshes: meshes)
+        renderUtils.drawIndexedPrimitives(renderEncoder: renderEncoder, meshes: meshes, materials: materials)
         
     }
 }

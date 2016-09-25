@@ -12,18 +12,23 @@ struct VertexIn {
     float3 position [[attribute(0)]];
 };
 
-vertex VertextOut duckVertex(const VertexIn vertices [[stage_in]],
-                             constant RenderInfo* renderInfo [[ buffer(1) ]]) {
+struct Color {
+    packed_float3 color;
+};
+
+vertex CubeOut duckVertex(const VertexIn vertices [[stage_in]],
+                             constant RenderInfo* renderInfo [[ buffer(1) ]],
+                             constant Color* color [[ buffer(2) ]]) {
     
-    VertextOut outVertex;
+    CubeOut outVertex;
     
     
     // ## Set up vectors.
     ModelViewData modelViewData = {
         .positionVertex = toFloat4(vertices.position),
-        .scale = float4(10.0, 10.0, 10.0, 1.0),
+        .scale = float4(5.0, 5.0, 5.0, 1.0),
         .rotationVertex = zeroVector(),
-        .translationVertex = float4(0.0, 55.0, 0.0, 1.0),
+        .translationVertex = float4(0.0, 20.0, 0.0, 1.0),
         .renderInfo = renderInfo
     };
     
@@ -31,10 +36,12 @@ vertex VertextOut duckVertex(const VertexIn vertices [[stage_in]],
     
     
     outVertex.position = screenCoordinates;
+    outVertex.color = toFloat4(color->color);
     return outVertex;
 }
 
-fragment float4 duckFragment(VertextOut inFrag [[stage_in]]) {
+fragment float4 duckFragment(CubeOut inFrag [[stage_in]]) {
     
-    return rgbaToNormalizedGPUColors(255, 184, 223);
+//    return float4(1.0, 1.0, 0.0, 1.0);
+    return inFrag.color;
 }
