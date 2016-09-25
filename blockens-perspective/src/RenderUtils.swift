@@ -303,17 +303,17 @@ class RenderUtils {
     func drawIndexedPrimitives(renderEncoder: MTLRenderCommandEncoder, meshes: [MTKMesh], materials: [MTLBuffer]) {
         for mesh in meshes {
             
-            var i = 0
+            var buffer_index = 0
             for vertexBuffer in mesh.vertexBuffers {
-                i += 1
-                renderEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, at: 0)
+                renderEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, at: buffer_index)
+                buffer_index += 1
             }
-            renderEncoder.setVertexBuffer(renderInfoBuffer(), offset: 0, at: 1)
-            i += 1
+            renderEncoder.setVertexBuffer(renderInfoBuffer(), offset: 0, at: buffer_index)
+            buffer_index += 1
 
             for (i, submesh) in mesh.submeshes.enumerated() {
                 let material = materials[i]
-                renderEncoder.setVertexBuffer(material, offset: 0, at: 2)
+                renderEncoder.setVertexBuffer(material, offset: 0, at: buffer_index)
                 
                 renderEncoder.drawIndexedPrimitives(
                     type: submesh.primitiveType,
