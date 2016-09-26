@@ -5,146 +5,12 @@ float4 rgbaToNormalizedGPUColors(int r, int g, int b) {
     return float4(float(r)/255.0, float(g)/255.0, float(b)/255.0, 1.0);
 }
 
-float3 crossProduct(float3 V, float3 W) {
-    
-    float3 product;
-    
-    product.x = V.y * W.z - W.y * V.z;
-    product.y = V.z * W.x - W.z * V.x;
-    product.z = V.x * W.y - W.x * V.y;
-
-    return product;
-}
-
-float dotProduct4(float4 a, float4 b) {
-    return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
-}
-
-float dotProduct3(float3 a, float3 b) {
-    return a.x * b.x + a.y * b.y + a.z * b.z;
-}
-
-float3 scaleVector3(float scalar, float3 vector) {
-    float3 result;
-    for (int i = 0; i < 3; i++) {
-        result[i] = vector[i] * scalar;
-    }
-    return result;
-}
-
-float3 negateVector3(float3 vector) {
-    float3 result;
-    for (int i = 0; i < 3; i++) {
-        result[i] = vector[i] * -1;
-    }
-    return result;
-
-}
-
-float4 negateVector4(float4 vector) {
-    float4 result;
-    for (int i = 0; i < 4; i++) {
-        result[i] = vector[i] * -1;
-    }
-    return result;
-    
-}
-
-float3 addVector3(float3 a, float3 b) {
-    float3 result;
-    for (int i = 0; i < 3; i++) {
-        result[i] = a[i] + b[i];
-    }
-    return result;
-}
-
-float4 addVector4(float4 a, float4 b) {
-    float4 result;
-    for (int i = 0; i < 4; i++) {
-        result[i] = a[i] + b[i];
-    }
-    return result;
-}
-
-float3 subtractVector3(float3 a, float3 b) {
-    float3 result;
-    for (int i = 0; i < 3; i++) {
-        result[i] = a[i] - b[i];
-    }
-    return result;
-}
-
-float4 subtractVector4(float4 a, float4 b) {
-    float4 result;
-    for (int i = 0; i < 3; i++) {
-        result[i] = a[i] - b[i];
-    }
-    return result;
-}
-
-float3 getVectorTo3(float3 from, float3 to) {
-    return subtractVector3(to, from);
-}
-
-float vectorMagnitude3(float3 vector) {
-    float result = 0.0;
-    for (int i = 0; i < 3; i++) {
-        result += pow(vector[i], 2);
-    }
-    return sqrt(result);
-}
-
-float3 normalize3(float3 vector) {
-    
-    float magnitude = vectorMagnitude3(vector);
-    float3 result;
-    
-    result.x = vector.x/magnitude;
-    result.y = vector.y/magnitude;
-    result.z = vector.z/magnitude;
-    
-    return result;
-}
-
-float distance3(float3 from, float3 to) {
-
-    float3 vector = getVectorTo3(from, to);
-
-    return vectorMagnitude3(vector);
-}
-
-float4x4 scale4x4(float scalar, float3x3 m) {
-    float4x4 result;
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; i++) {
-            result[i][j] = m[i][j] * scalar;
-        }
-    }
-    return result;
-}
-
 float4 transform4x4(float4 vector, float4x4 matrix) {
-    float4 result;
-
-    for (int i = 0; i < 4; i++) {
-        result[i] = dotProduct4(vector, matrix[i]);
-    }
-
-    return result;
+    return vector * matrix;
 }
 
 float4x4 matrixProduct4x4(float4x4 m1, float4x4 m2) {
-
-    float4x4 result;
-
-    for (int i = 0; i < 4; i++) {
-        float4 rowM1 = float4(m1[0][i], m1[1][i], m1[2][i], m1[3][i]);
-        for (int j = 0; j < 4; j++) {
-            result[j][i] = dotProduct4(rowM1, m2[j]);
-        }
-    }
-
-    return result;
+    return m1 * m2;
 }
 
 float4x4 scaleVector(float4 scale) {
@@ -211,7 +77,7 @@ float4x4 rotateZ(float4 angles) {
 }
 
 float4x4 translationMatrix(float4 transVector) {
-    return float4x4( float4(1, 0, 0, transVector.x), float4(0, 1, 0, transVector.y), float4(0, 0, 1, transVector.z), float4(0, 0, 0, 1));
+    return float4x4(float4(1, 0, 0, transVector.x), float4(0, 1, 0, transVector.y), float4(0, 0, 1, transVector.z), float4(0, 0, 0, 1));
 }
 
 float4 toFloat4(float3 position) {
@@ -244,9 +110,9 @@ float4x4 lookAt(float4 cameraPosition, float4 cameraRotation) {
     float3 poi = float3(poiFromOrigin.x, poiFromOrigin.y, poiFromOrigin.z);
     float3 up = float3(initialUp.x, initialUp.y, initialUp.z);
     
-    float3 f = normalize3(subtractVector3(poi, eye));
-    float3 s = normalize3(crossProduct(up, f));
-    float3 u = crossProduct(f, s);
+    float3 f = normalize(poi - eye);
+    float3 s = normalize(cross(up, f));
+    float3 u = cross(f, s);
     
     
     float4x4 C = float4x4(
@@ -270,7 +136,7 @@ float4x4 lookAt(float4 cameraPosition, float4 cameraRotation) {
                                  0.0,
                                  0.0,
                                  1.0));
-    return matrixProduct4x4(C, translationMatrix(negateVector4(cameraPosition)));
+    return matrixProduct4x4(C, translationMatrix(-cameraPosition));
 }
 
 float4x4 lookAtArcBall(float4 cameraPosition, float4 cameraRotation) {
@@ -310,7 +176,7 @@ float4x4 lookAtArcBall(float4 cameraPosition, float4 cameraRotation) {
                                                           0.0,
                                                           0.0,
                                                           1.0));
-   return matrixProduct4x4(C, translationMatrix(negateVector4(eye)));
+   return matrixProduct4x4(C, translationMatrix(-eye));
 }
 
 
