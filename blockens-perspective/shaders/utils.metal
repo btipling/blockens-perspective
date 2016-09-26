@@ -117,21 +117,21 @@ float4x4 lookAt(float4 cameraPosition, float4 cameraRotation) {
                                  s.y,
                                  s.z,
                                  0.0),
-                          float4(
-                                 u.x,
-                                 u.y,
-                                 u.z,
-                                 0.0),
-                          float4(
-                                 f.x,
-                                 f.y,
-                                 f.z,
-                                 0.0),
-                          float4(
-                                 0.0,
-                                 0.0,
-                                 0.0,
-                                 1.0));
+                                      float4(
+                                             u.x,
+                                             u.y,
+                                             u.z,
+                                             0.0),
+                                                  float4(
+                                                         f.x,
+                                                         f.y,
+                                                         f.z,
+                                                         0.0),
+                                                              float4(
+                                                                     0.0,
+                                                                     0.0,
+                                                                     0.0,
+                                                                     1.0));
     return C * translationMatrix(-cameraPosition);
 }
 
@@ -149,7 +149,6 @@ float4x4 lookAtArcBall(float4 cameraPosition, float4 cameraRotation) {
     float3 s = float3(cosYaw, 0, -1.0 * sinYaw);
     float3 u = float3(sinYaw * sinPitch, cosPitch, cosYaw * sinPitch);
     float3 f = float3(sinYaw * cosPitch, -1.0 * sinPitch, cosPitch * cosYaw);
-    
     
     float4x4 C = float4x4(
                 float4(
@@ -201,7 +200,6 @@ float4 toScreenCoordinates(ModelViewData modelViewData) {
     SR = scaleMatrix * rotationMatrix.x;
     SR = SR * rotationMatrix.y;
     SR = SR * rotationMatrix.z;
-    
     
     float4x4 SRT;
     
