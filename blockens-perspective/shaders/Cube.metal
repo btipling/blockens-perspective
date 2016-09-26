@@ -9,8 +9,8 @@
 #include "utils.h"
 
 vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
-                                     constant packed_float3* position  [[ buffer(0) ]],
-                                     constant packed_float4* colors  [[ buffer(1) ]],
+                                     constant float3* position  [[ buffer(0) ]],
+                                     constant float4* colors  [[ buffer(1) ]],
                                      constant Object3DInfo* cubeInfo [[ buffer(2)]],
                                      constant RenderInfo* renderInfo [[ buffer(3) ]]) {
 

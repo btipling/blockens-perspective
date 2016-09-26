@@ -58,78 +58,78 @@ class RenderUtils {
         1.0,  1.0,
     ]
 
-    let cubeVertexData: [Float32] = [
+    let cubeVertexData: [float3] = [
 
         // Front face
         // - ff left triangle
-        -1.0, 1.0, -1.0,
-        1.0, 1.0, -1.0,
-        -1.0, -1.0, -1.0,
+        float3(-1.0, 1.0, -1.0),
+        float3(1.0, 1.0, -1.0),
+        float3(-1.0, -1.0, -1.0),
 
         // - ff right triangle
-        1.0, 1.0, -1.0,
-        1.0, -1.0, -1.0,
-        -1.0, -1.0, -1.0,
+        float3(1.0, 1.0, -1.0),
+        float3(1.0, -1.0, -1.0),
+        float3(-1.0, -1.0, -1.0),
 
 
         // Back face WRONG
         // - bf left triangle
-        1.0, 1.0, 1.0,
-        -1.0, -1.0, 1.0,
-        1.0, -1.0, 1.0,
+        float3(1.0, 1.0, 1.0),
+        float3(-1.0, -1.0, 1.0),
+        float3(1.0, -1.0, 1.0),
 
         // - bf right triangle
-        1.0, 1.0, 1.0,
-        -1.0, 1.0, 1.0,
-        -1.0, -1.0, 1.0,
+        float3(1.0, 1.0, 1.0),
+        float3(-1.0, 1.0, 1.0),
+        float3(-1.0, -1.0, 1.0),
 
 
         // Left face
         // - lf left triangle
-        -1.0, 1.0, 1.0,
-        -1.0, 1.0, -1.0,
-        -1.0, -1.0, 1.0,
+        float3(-1.0, 1.0, 1.0),
+        float3(-1.0, 1.0, -1.0),
+        float3(-1.0, -1.0, 1.0),
 
         // - lf right triangle
-        -1.0, 1.0, -1.0,
-        -1.0, -1.0, -1.0,
-        -1.0, -1.0, 1.0,
+        float3(-1.0, 1.0, -1.0),
+        float3(-1.0, -1.0, -1.0),
+        float3(-1.0, -1.0, 1.0),
 
 
         // Right face
         // - rf left triangle
-        1.0, 1.0, -1.0,
-        1.0, 1.0, 1.0,
-        1.0, -1.0, -1.0,
+        float3(1.0, 1.0, -1.0),
+        float3(1.0, 1.0, 1.0),
+        float3(1.0, -1.0, -1.0),
 
         // - rf right triangle
-        1.0, 1.0, 1.0,
-        1.0, -1.0, 1.0,
-        1.0, -1.0, -1.0,
+        float3(1.0, 1.0, 1.0),
+        float3(1.0, -1.0, 1.0),
+        float3(1.0, -1.0, -1.0),
 
 
         // Top face
         // - tf left triangle
-        -1.0, 1.0, 1.0,
-        1.0, 1.0, 1.0,
-        -1.0, 1.0, -1.0,
+        float3(-1.0, 1.0, 1.0),
+        float3(1.0, 1.0, 1.0),
+        float3(-1.0, 1.0, -1.0),
 
         // - tf right triangle
-        1.0, 1.0, 1.0, 
-        1.0, 1.0, -1.0,
-        -1.0, 1.0, -1.0,
+        float3(1.0, 1.0, 1.0),
+        float3(1.0, 1.0, -1.0),
+        float3(-1.0, 1.0, -1.0),
 
 
         // Bottom face WRONG
         // - bf left triangle
-        1.0, -1.0, 1.0,
-        -1.0, -1.0, -1.0,
-        1.0, -1.0, -1.0,
+        float3(1.0, -1.0, 1.0),
+        float3(-1.0, -1.0, -1.0),
+        float3(1.0, -1.0, -1.0),
 
         // - bf right triangle
-        1.0, -1.0, 1.0,
-        -1.0, -1.0, 1.0,
-        -1.0, -1.0, -1.0,
+        float3(1.0, -1.0, 1.0),
+        float3(-1.0, -1.0, 1.0),
+        float3(-1.0, -1.0, -1.0),
     ]
 
     var cubeColors: [float4];
@@ -234,7 +234,7 @@ class RenderUtils {
     }
 
     func numVerticesInACube() -> Int {
-        return cubeVertexData.count/3
+        return cubeVertexData.count
     }
 
     func numCubeColors() -> Int {
@@ -368,7 +368,7 @@ class RenderUtils {
 
     func createCubeVertexBuffer(device: MTLDevice, bufferLabel: String) -> MTLBuffer {
 
-        let bufferSize = cubeVertexData.count * MemoryLayout<Float32>.size
+        let bufferSize = cubeVertexData.count * MemoryLayout<float3>.size
         let buffer = device.makeBuffer(bytes: cubeVertexData, length: bufferSize, options: [])
         buffer.label = bufferLabel
 
