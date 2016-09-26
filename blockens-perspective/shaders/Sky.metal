@@ -9,7 +9,7 @@
 #include "utils.h"
 
 vertex VertextOut skyVertex(uint vid [[ vertex_id ]],
-                                     constant packed_float3* position  [[ buffer(0) ]]) {
+                                     constant float3* position  [[ buffer(0) ]]) {
 
     VertextOut outVertex;
 

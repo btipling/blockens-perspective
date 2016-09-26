@@ -9,7 +9,7 @@
 #include "utils.h"
 
 vertex VertextOut GroundVertex(uint vid [[ vertex_id ]],
-                               constant packed_float3* position  [[ buffer(0) ]],
+                               constant float3* position  [[ buffer(0) ]],
                                constant Object3DInfo* groundInfo [[ buffer(1)]],
                                constant RenderInfo* renderInfo [[ buffer(2) ]]) {
     

@@ -37,15 +37,15 @@ class RenderUtils {
     fileprivate var renderInfoBuffer_: MTLBuffer? = nil;
     var depthStencilState: MTLDepthStencilState? = nil
 
-    let rectangleVertexData:[Float32] = [
+    let rectangleVertexData:[float3] = [
         
-        -1.0, 1.0, 1.0,
-        1.0, 1.0, 1.0,
-        -1.0, -1.0, 1.0,
+        float3(-1.0, 1.0, 1.0),
+        float3(1.0, 1.0, 1.0),
+        float3(-1.0, -1.0, 1.0),
         
-        1.0, 1.0, 1.0,
-        1.0, -1.0, 1.0,
-        -1.0, -1.0, 1.0,
+        float3(1.0, 1.0, 1.0),
+        float3(1.0, -1.0, 1.0),
+        float3(-1.0, -1.0, 1.0),
     ]
 
     let rectangleTextureCoords:[Float32] = [
@@ -230,7 +230,7 @@ class RenderUtils {
     
     // Divided by 3 below because each pair is x,y,z for a single vertex.
     func numVerticesInARectangle() -> Int {
-        return rectangleVertexData.count/3
+        return rectangleVertexData.count
     }
 
     func numVerticesInACube() -> Int {
@@ -356,7 +356,7 @@ class RenderUtils {
 
     func createRectangleVertexBuffer(device: MTLDevice, bufferLabel: String) -> MTLBuffer {
 
-        let float3Size = MemoryLayout<Float32>.size
+        let float3Size = MemoryLayout<float3>.size
         let bufferSize = rectangleVertexData.count * float3Size
         let buffer = device.makeBuffer(length: bufferSize, options: [])
         let pointer = buffer.contents()
