@@ -12,21 +12,21 @@ class RenderUtils {
         var zoom: Float32
         var near: Float32
         var far: Float32
-        var winResolution: [Float32]
-        var cameraRotation: [Float32]
-        var cameraTranslation: [Float32]
+        var winResolution: float2
+        var cameraRotation: float3
+        var cameraTranslation: float3
         var useCamera: Bool
     }
     
     struct MaterialUniform {
-        var color: [Float32]
+        var color: float3
     };
 
     
     struct Object3DInfo {
-        var rotation: [Float32]
-        var scale: [Float32]
-        var position: [Float32]
+        var rotation: float3
+        var scale: float3
+        var position: float3
     }
     
     let floatSize: Int;
@@ -37,7 +37,7 @@ class RenderUtils {
     fileprivate var renderInfoBuffer_: MTLBuffer? = nil;
     var depthStencilState: MTLDepthStencilState? = nil
 
-    let rectangleVertexData:[Float] = [
+    let rectangleVertexData:[Float32] = [
         
         -1.0, 1.0, 1.0,
         1.0, 1.0, 1.0,
@@ -48,14 +48,14 @@ class RenderUtils {
         -1.0, -1.0, 1.0,
     ]
 
-    let rectangleTextureCoords:[Float] = [
-            0.0,  1.0,
-            0.0,  0.0,
-            1.0,  1.0,
+    let rectangleTextureCoords:[Float32] = [
+        0.0,  1.0,
+        0.0,  0.0,
+        1.0,  1.0,
 
-            0.0,  0.0,
-            1.0,  0.0,
-            1.0,  1.0,
+        0.0,  0.0,
+        1.0,  0.0,
+        1.0,  1.0,
     ]
 
     let cubeVertexData: [Float32] = [
@@ -132,30 +132,32 @@ class RenderUtils {
         -1.0, -1.0, -1.0,
     ]
 
-    var cubeColors: [Float32];
-    var cameraColors: [Float32];
-    var vectorColors: [Float32];
+    var cubeColors: [float4];
+    var cameraColors: [float4];
+    var vectorColors: [float4];
     
     let CONSTANT_BUFFER_SIZE = 1024*1024
     
     init() {
-        cubeColors = red
-        cubeColors += green
-        cubeColors += orange
-        cubeColors += purple
-        cubeColors += yellow
-        cubeColors += cherry
+        cubeColors = [
+            red,
+            green,
+            orange,
+            purple,
+            yellow,
+            cherry,
+        ]
+    
+        cameraColors = [
+            gray1,
+            gray2,
+            gray3,
+            gray4,
+            gray5,
+            blueGray,
+        ]
         
-        cameraColors = gray1;
-        cameraColors += gray2;
-        cameraColors += gray3;
-        cameraColors += gray4;
-        cameraColors += gray5;
-        cameraColors += blueGray;
-        
-        vectorColors = blueGray
-        vectorColors += red
-        vectorColors += yellow
+        vectorColors = [blueGray, red, yellow]
 
         floatSize = MemoryLayout<Float>.size
         float3Size = floatSize * 4
@@ -185,11 +187,11 @@ class RenderUtils {
             offset += floatSize
             memcpy(pointer + offset, &renderInfo.far, floatSize)
             offset += floatSize
-            memcpy(pointer + offset, renderInfo.winResolution, packedFloat2Size)
+            memcpy(pointer + offset, &renderInfo.winResolution, packedFloat2Size)
             offset += packedFloat2Size
-            memcpy(pointer + offset, frameInfo.cameraRotation, packedFloat3Size)
+            memcpy(pointer + offset, &renderInfo.cameraRotation, packedFloat3Size)
             offset += packedFloat3Size
-            memcpy(pointer + offset, renderInfo.cameraTranslation, packedFloat3Size)
+            memcpy(pointer + offset, &renderInfo.cameraTranslation, packedFloat3Size)
             offset += packedFloat3Size
             memcpy(pointer + offset, &renderInfo.useCamera, boolSize)
 
@@ -328,13 +330,13 @@ class RenderUtils {
     }
     
     func materialToBuffer(device: MTLDevice, material: MaterialUniform, label: String) -> MTLBuffer {
-        
+        var material = material
         let floatSize = MemoryLayout<Float>.size
         let packedFloat3Size = floatSize * 3;
         let bufferSize = packedFloat3Size
         let buffer = device.makeBuffer(length: bufferSize, options: [])
         let pointer = buffer.contents()
-        memcpy(pointer, material.color, packedFloat3Size)
+        memcpy(pointer, &material.color, packedFloat3Size)
         buffer.label = label
         
         return buffer
@@ -354,7 +356,8 @@ class RenderUtils {
 
     func createRectangleVertexBuffer(device: MTLDevice, bufferLabel: String) -> MTLBuffer {
 
-        let bufferSize = rectangleVertexData.count * MemoryLayout.size(ofValue: rectangleVertexData[0])
+        let float3Size = MemoryLayout<Float32>.size
+        let bufferSize = rectangleVertexData.count * float3Size
         let buffer = device.makeBuffer(length: bufferSize, options: [])
         let pointer = buffer.contents()
         memcpy(pointer, rectangleVertexData, bufferSize)
@@ -365,7 +368,7 @@ class RenderUtils {
 
     func createCubeVertexBuffer(device: MTLDevice, bufferLabel: String) -> MTLBuffer {
 
-        let bufferSize = cubeVertexData.count * MemoryLayout.size(ofValue: cubeVertexData[0])
+        let bufferSize = cubeVertexData.count * MemoryLayout<Float32>.size
         let buffer = device.makeBuffer(bytes: cubeVertexData, length: bufferSize, options: [])
         buffer.label = bufferLabel
 
@@ -404,9 +407,9 @@ class RenderUtils {
         return buffer
     }
     
-    func createColorBuffer(device: MTLDevice, colors: [Float32], label: String) -> MTLBuffer {
+    func createColorBuffer(device: MTLDevice, colors: [float4], label: String) -> MTLBuffer {
         
-        let floatSize = MemoryLayout<Float32>.size
+        let floatSize = MemoryLayout<float4>.size
         let bufferSize = floatSize * colors.count
         let buffer = device.makeBuffer(length: bufferSize, options: [])
         buffer.label = label
@@ -428,10 +431,11 @@ class RenderUtils {
     }
     
     func updateObject3DInfoBuffer(object: Object3DInfo, buffer: MTLBuffer) {
+        var object = object
         let pointer = buffer.contents()
-        memcpy(pointer, object.rotation, float3Size)
-        memcpy(pointer + float3Size, object.scale, float3Size)
-        memcpy(pointer + (float3Size * 2), object.position, float3Size)
+        memcpy(pointer, &object.rotation, float3Size)
+        memcpy(pointer + float3Size, &object.scale, float3Size)
+        memcpy(pointer + (float3Size * 2), &object.position, float3Size)
     }
     
     func depthStencilState (device: MTLDevice) {

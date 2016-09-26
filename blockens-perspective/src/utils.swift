@@ -5,6 +5,7 @@
 
 import Foundation
 import Cocoa
+import simd
 
 let ROTATION_CHANGE_MODIFIER: Float32 = 0.1;
 let POS_CHANGE_MODIFIER: Float32 = 0.1;
@@ -12,15 +13,15 @@ let ZOOM_CHANGE_MODIFIER: Float32 = 0.01;
 let CAMERA_CHANGE_MODIFIER: Float32 = 0.1;
 
 struct FrameInfo {
-    var viewDimensions: [Float32]
+    var viewDimensions: float2
     var viewDiffRatio: Float32
-    var cubeRotation: [Float32]
-    var cubePosition: [Float32]
+    var cubeRotation: float3
+    var cubePosition: float3
     var zoom: Float32
     var near: Float32
     var far: Float32
-    var cameraRotation: [Float32]
-    var cameraTranslation: [Float32]
+    var cameraRotation: float3
+    var cameraTranslation: float3
     var useCamera: Bool
 }
 
@@ -73,8 +74,8 @@ let gray4 = rgbaToNormalizedGPUColors(173, g: 173, b: 173)
 let gray5 = rgbaToNormalizedGPUColors(214, g: 214, b: 214)
 let blueGray = rgbaToNormalizedGPUColors(33, g: 85, b: 124)
 
-func rgbaToNormalizedGPUColors(_ r: Int, g: Int, b: Int, a: Int = 255) -> [Float32] {
-    return [Float32(r)/255.0, Float32(g)/255.0, Float32(b)/255.0, Float32(a)/255.0]
+func rgbaToNormalizedGPUColors(_ r: Int, g: Int, b: Int, a: Int = 255) -> float4 {
+    return float4(Float32(r)/255.0, Float32(g)/255.0, Float32(b)/255.0, Float32(a)/255.0)
 }
 
 func getRandomNum(_ n: Int32) -> Int32 {

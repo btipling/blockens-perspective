@@ -17,11 +17,11 @@ class CubeRenderer: Renderer, RenderController {
     var cubeInfoBuffer: MTLBuffer! = nil
     var cubeInfo: RenderUtils.Object3DInfo! = nil
     
-    let colors: [Float32]
-    let scale: [Float32]
+    let colors: [float4]
+    let scale: float3
     
 
-    init (colors: [Float32], scale: [Float32]) {
+    init (colors: [float4], scale: float3) {
         self.colors = colors
         self.scale = scale
     }
@@ -44,13 +44,12 @@ class CubeRenderer: Renderer, RenderController {
         
     }
 
-    func update(rotation: [Float32], position: [Float32]) {
+    func update(rotation: float3,position: float3) {
         
         cubeInfo = RenderUtils.Object3DInfo(
             rotation: rotation,
             scale: scale,
             position: position)
-        
     }
 
 

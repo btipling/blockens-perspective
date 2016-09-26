@@ -35,8 +35,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         
         let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let gameWindow = appDelegate.getWindow()
-        cube = CubeRenderer(colors: renderUtils.cubeColors, scale: [1.0, 1.0, 1.0])
-        camera = CubeRenderer(colors: renderUtils.cameraColors, scale: [0.25, 0.25, 0.25])
+        cube = CubeRenderer(colors: renderUtils.cubeColors, scale: float3(1.0, 1.0, 1.0))
+        camera = CubeRenderer(colors: renderUtils.cameraColors, scale: float3(0.25, 0.25, 0.25_))
         var referenceCubes: [CubeRenderer] = Array()
         for _ in 0..<100 {
             let scale = Float32(arc4random_uniform(2) + 1)

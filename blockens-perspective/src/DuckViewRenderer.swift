@@ -80,9 +80,9 @@ class DuckRenderer: Renderer, RenderController {
                 print("submesh's name is \(submesh.name)")
                
                 let specularColor = submesh.material?.property(with: MDLMaterialSemantic.baseColor)
-                var material = RenderUtils.MaterialUniform(color: [0.0, 0.0, 0.0])
+                var material = RenderUtils.MaterialUniform(color: float3(0.0, 0.0, 0.0))
                 if let color = specularColor {
-                    material.color = [Float32(color.float3Value.x), Float32(color.float3Value.y), Float32(color.float3Value.z)]
+                    material.color = float3(color.float3Value.x, color.float3Value.y, color.float3Value.z)
                     print("Found diffuse color: \(color.float3Value)")
                 } else {
                     print("no diffuse")
