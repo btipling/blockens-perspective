@@ -132,7 +132,7 @@ float4x4 lookAt(float4 cameraPosition, float4 cameraRotation) {
                                  0.0,
                                  0.0,
                                  1.0));
-    return matrixProduct4x4(C, translationMatrix(-cameraPosition));
+    return C * translationMatrix(-cameraPosition);
 }
 
 float4x4 lookAtArcBall(float4 cameraPosition, float4 cameraRotation) {
@@ -172,7 +172,7 @@ float4x4 lookAtArcBall(float4 cameraPosition, float4 cameraRotation) {
                                                           0.0,
                                                           0.0,
                                                           1.0));
-   return matrixProduct4x4(C, translationMatrix(-eye));
+   return C * translationMatrix(-eye);
 }
 
 
@@ -198,36 +198,37 @@ float4 toScreenCoordinates(ModelViewData modelViewData) {
     // Then multiply the vector by v(SRTP(C))
     
     float4x4 SR;
-    SR = matrixProduct4x4(scaleMatrix, rotationMatrix.x);
-    SR = matrixProduct4x4(SR, rotationMatrix.y);
-    SR = matrixProduct4x4(SR, rotationMatrix.z);
+    SR = scaleMatrix * rotationMatrix.x;
+    SR = SR * rotationMatrix.y;
+    SR = SR * rotationMatrix.z;
     
     
     float4x4 SRT;
     
-    SRT = matrixProduct4x4(SR, objectTranslationMatrix);
+    SRT = SR * objectTranslationMatrix;
     
     float4x4 SRTP;
     
     if (!modelViewData.renderInfo->useCamera) {
         // Final non-camera transformation, v(SRTP):
         
-        SRTP = matrixProduct4x4(SRT, perspectiveMatrix);
+        SRTP = SRT * perspectiveMatrix;
         return modelViewData.positionVertex * SRTP;
     }
     
     float4x4 SRT_C;
     
-    SRT_C = matrixProduct4x4(SRT, cameraMatrix);
+    SRT_C = SRT * cameraMatrix;
     
     float4x4 SRT_CR;
     
+    // XXX: I am not sure why Metal flips out if these aren't wrapped in what should be an unnecessary function.
     SRT_CR = matrixProduct4x4(SRT_C, cameraRotationMatrix.y);
     SRT_CR = matrixProduct4x4(SRT_CR, cameraRotationMatrix.x);
     
     float4x4 SRTP_CR;
     
-    SRTP_CR = matrixProduct4x4(SRT_CR, perspectiveMatrix);
+    SRTP_CR = SRT_CR * perspectiveMatrix;
     
     // Final non-camera transformation, v(SRTP(CR):
     return modelViewData.positionVertex * SRTP_CR;
