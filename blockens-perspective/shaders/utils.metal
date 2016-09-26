@@ -5,10 +5,6 @@ float4 rgbaToNormalizedGPUColors(int r, int g, int b) {
     return float4(float(r)/255.0, float(g)/255.0, float(b)/255.0, 1.0);
 }
 
-float4 transform4x4(float4 vector, float4x4 matrix) {
-    return vector * matrix;
-}
-
 float4x4 matrixProduct4x4(float4x4 m1, float4x4 m2) {
     return m1 * m2;
 }
@@ -217,7 +213,7 @@ float4 toScreenCoordinates(ModelViewData modelViewData) {
         // Final non-camera transformation, v(SRTP):
         
         SRTP = matrixProduct4x4(SRT, perspectiveMatrix);
-        return transform4x4(modelViewData.positionVertex, SRTP);
+        return modelViewData.positionVertex * SRTP;
     }
     
     float4x4 SRT_C;
@@ -234,6 +230,6 @@ float4 toScreenCoordinates(ModelViewData modelViewData) {
     SRTP_CR = matrixProduct4x4(SRT_CR, perspectiveMatrix);
     
     // Final non-camera transformation, v(SRTP(CR):
-    return transform4x4(modelViewData.positionVertex, SRTP_CR);
+    return modelViewData.positionVertex * SRTP_CR;
     
 }

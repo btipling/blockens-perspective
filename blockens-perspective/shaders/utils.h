@@ -54,7 +54,6 @@ struct RotationMatrix {
 
 float4 rgbaToNormalizedGPUColors(int r, int g, int b);
 
-float4 transform4x4(float4 vector, float4x4 matrix);
 float4x4 matrixProduct4x4(float4x4 m1, float4x4 m2);
 
 float4x4 orthoGraphicProjection(constant RenderInfo* renderInfo);
