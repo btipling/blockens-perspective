@@ -210,9 +210,9 @@ class RenderUtils {
         let packedFloat3Size = MemoryLayout<float3>.size
         let boolSize = MemoryLayout<Bool>.size
         
-        var minBufferSize = floatSize  // zoom, far, near + padding
+        var minBufferSize = floatSize * 3  // zoom, far, near
         minBufferSize += packedFloat2Size // winResolultion
-        minBufferSize += packedFloat3Size * 4 // cameraRotation, cameraPosition + padding
+        minBufferSize += packedFloat3Size * 3 // cameraRotation, cameraPosition + padding
         minBufferSize += boolSize // useCamera
         let bufferSize = alignBufferSize(bufferSize: minBufferSize, alignment: packedFloat3Size)
         
