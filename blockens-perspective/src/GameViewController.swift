@@ -279,7 +279,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             cubePosition: [0.0, 0.0, 5.0],
             zoom: 1,
             near: 0.1,
-            far: 100.0,
+            far: 1000.0,
             cameraRotation: [0.25, 1.86, 0.0],
             cameraTranslation: [73.5, 0.0, 16.6],
             useCamera: true)
