@@ -20,9 +20,9 @@ struct RenderInfo {
     float zoom;
     float near;
     float far;
-    packed_float2 winResolution;
-    packed_float3 cameraRotation;
-    packed_float3 cameraTranslation;
+    float2 winResolution;
+    float3 cameraRotation;
+    float3 cameraTranslation;
     bool useCamera;
 };
 

@@ -177,22 +177,26 @@ class RenderUtils {
             let pointer = renderInfoBuffer_!.contents()
             
             // Memory layout for shader types:
-            let packedFloat2Size = floatSize * 2
-            let packedFloat3Size = floatSize * 3
+            let packedFloat2Size = MemoryLayout<float2>.size
+            let packedFloat3Size = MemoryLayout<float3>.size
             let boolSize = MemoryLayout<Bool>.size
             
-            memcpy(pointer, &renderInfo.zoom, floatSize)
-            var offset = floatSize
+            memcpy(pointer, &renderInfo.zoom, floatSize) //0
+            var offset = floatSize // 0 + 4 = 4
             memcpy(pointer + offset, &renderInfo.near, floatSize)
-            offset += floatSize
+            offset += floatSize // 4 + 4 = 8
             memcpy(pointer + offset, &renderInfo.far, floatSize)
-            offset += floatSize
+            offset += floatSize // 8 + 4 = 12
+            // Need to be at multiple of 8 for float2:
+            offset += floatSize // 12 + 4 = Now at offset 16
             memcpy(pointer + offset, &renderInfo.winResolution, packedFloat2Size)
-            offset += packedFloat2Size
+            offset += packedFloat2Size // 16 + 8 = 24
+            // Need to be at offset 32 to start a float 3 (multiple of 16)
+            offset += floatSize * 2  // 24 + 6 + 2 = 32
             memcpy(pointer + offset, &renderInfo.cameraRotation, packedFloat3Size)
-            offset += packedFloat3Size
+            offset += packedFloat3Size // 32 + 16 = 48
             memcpy(pointer + offset, &renderInfo.cameraTranslation, packedFloat3Size)
-            offset += packedFloat3Size
+            offset += packedFloat3Size // 48 + 16 = 64
             memcpy(pointer + offset, &renderInfo.useCamera, boolSize)
 
         }
@@ -202,15 +206,15 @@ class RenderUtils {
         
         // Setup memory layout.
         let floatSize = MemoryLayout<Float>.size
-        let packedFloat2Size = floatSize * 2
-        let packedFloat3Size = floatSize * 3
+        let packedFloat2Size = MemoryLayout<float2>.size
+        let packedFloat3Size = MemoryLayout<float3>.size
         let boolSize = MemoryLayout<Bool>.size
         
-        var minBufferSize = floatSize * 3 // zoom, far, near
+        var minBufferSize = floatSize  // zoom, far, near + padding
         minBufferSize += packedFloat2Size // winResolultion
-        minBufferSize += packedFloat3Size * 2 // cameraRotation, cameraPosition
+        minBufferSize += packedFloat3Size * 4 // cameraRotation, cameraPosition + padding
         minBufferSize += boolSize // useCamera
-        let bufferSize = alignBufferSize(bufferSize: minBufferSize, alignment: floatSize)
+        let bufferSize = alignBufferSize(bufferSize: minBufferSize, alignment: packedFloat3Size)
         
         renderInfoBuffer_ = device.makeBuffer(length: bufferSize, options: [])
 
