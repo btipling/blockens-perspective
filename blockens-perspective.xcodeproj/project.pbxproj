@@ -12,6 +12,7 @@
 		401CD7FF1D8EF07A002A0050 /* GroundRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 401CD7FA1D8EF07A002A0050 /* GroundRenderer.swift */; };
 		401CD8001D8EF07A002A0050 /* CrossHairsRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 401CD7FB1D8EF07A002A0050 /* CrossHairsRenderer.swift */; };
 		401CD8011D8EF07A002A0050 /* CameraVectorRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 401CD7FC1D8EF07A002A0050 /* CameraVectorRenderer.swift */; };
+		4024998C1D9B0E4200A8F5E7 /* transforms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024998B1D9B0E4200A8F5E7 /* transforms.swift */; };
 		404A07BC1D8CBA6800B8CD1B /* CameraVector.metal in Sources */ = {isa = PBXBuildFile; fileRef = 404A07BB1D8CBA6800B8CD1B /* CameraVector.metal */; };
 		404E7BEA1D8C198D007B9D0F /* CrossHairs.metal in Sources */ = {isa = PBXBuildFile; fileRef = 404E7BE91D8C198D007B9D0F /* CrossHairs.metal */; };
 		4096F62F1D960A060000FE28 /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 4096F62E1D960A060000FE28 /* Data */; };
@@ -38,6 +39,7 @@
 		401CD7FA1D8EF07A002A0050 /* GroundRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroundRenderer.swift; sourceTree = "<group>"; };
 		401CD7FB1D8EF07A002A0050 /* CrossHairsRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrossHairsRenderer.swift; sourceTree = "<group>"; };
 		401CD7FC1D8EF07A002A0050 /* CameraVectorRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraVectorRenderer.swift; sourceTree = "<group>"; };
+		4024998B1D9B0E4200A8F5E7 /* transforms.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = transforms.swift; sourceTree = "<group>"; };
 		404A07BB1D8CBA6800B8CD1B /* CameraVector.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = CameraVector.metal; sourceTree = "<group>"; };
 		404E7BE91D8C198D007B9D0F /* CrossHairs.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = CrossHairs.metal; sourceTree = "<group>"; };
 		4096F62E1D960A060000FE28 /* Data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Data; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				596DDBF4F807336EDB86EBB8 /* RendererController.swift */,
 				596DD487FA02D6C3E5D44C7A /* RenderUtils.swift */,
 				596DD1C9EF7B9A6114F21ED0 /* utils.swift */,
+				4024998B1D9B0E4200A8F5E7 /* transforms.swift */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -220,6 +223,7 @@
 				596DDDAF64E0833AD5DA7782 /* Sky.metal in Sources */,
 				596DD46F6ADF9DE25D88B586 /* utils.metal in Sources */,
 				596DD46793DCDF17FC7CB954 /* Cube.metal in Sources */,
+				4024998C1D9B0E4200A8F5E7 /* transforms.swift in Sources */,
 				40E64B441D7E33D3004144A0 /* Ground.metal in Sources */,
 				596DDCCE8F426D3D180A5E6E /* GameViewController.swift in Sources */,
 				401CD7FF1D8EF07A002A0050 /* GroundRenderer.swift in Sources */,
