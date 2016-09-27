@@ -5,10 +5,6 @@ float4 rgbaToNormalizedGPUColors(int r, int g, int b) {
     return float4(float(r)/255.0, float(g)/255.0, float(b)/255.0, 1.0);
 }
 
-float4x4 matrixProduct4x4(float4x4 m1, float4x4 m2) {
-    return m1 * m2;
-}
-
 float4x4 scaleVector(float4 scale) {
     
     return float4x4(float4(scale.x, 0, 0, 0), float4(0, scale.y, 0, 0), float4(0, 0, scale.z, 0), float4(0, 0, 0, 1));
@@ -220,9 +216,8 @@ float4 toScreenCoordinates(ModelViewData modelViewData) {
     
     float4x4 SRT_CR;
     
-    // XXX: I am not sure why Metal flips out if these aren't wrapped in what should be an unnecessary function.
-    SRT_CR = matrixProduct4x4(SRT_C, cameraRotationMatrix.y);
-    SRT_CR = matrixProduct4x4(SRT_CR, cameraRotationMatrix.x);
+    SRT_CR = SRT_C * cameraRotationMatrix.y;
+    SRT_CR = SRT_CR * cameraRotationMatrix.x;
     
     float4x4 SRTP_CR;
     
