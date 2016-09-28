@@ -25,7 +25,6 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     var activeKey: UInt16? = nil
     var cameraRotationChange: (Float32, Float32) = (0.0, 0.0)
     
-    
     let renderUtils = RenderUtils()
 
     override func viewDidLoad() {
@@ -148,10 +147,24 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         frameInfo.cubePosition[dimension] = frameInfo.cubePosition[dimension] - (modifier * POS_CHANGE_MODIFIER)
     }
     
-    private func modifyCameraPosition(_ dimension: Int, _ modifier: Float32 = 1.0) {
-        var new = frameInfo.cameraTranslation
-        new[dimension] += modifier * CAMERA_CHANGE_MODIFIER
-        frameInfo.cameraTranslation = new
+    private func moveCamera(dimension: Dimension, modifier: Float32 = 1.0) {
+        var basisVector: float3! = nil
+        
+        switch dimension {
+        case .x:
+            basisVector = float3(1.0, 0.0, 0.0)
+        case .y:
+            basisVector = float3(0.0, 1.0, 0.0)
+        case .z:
+            basisVector = float3(0.0, 0.0, 1.0)
+        }
+        
+        let rotationMatrix = getRotationMatrix(rotationVector: toFloat4(position: -frameInfo.cameraRotation))
+        let finalRotationMatrix = rotationMatrix.x * rotationMatrix.y * rotationMatrix.z
+        let delta4 = toFloat4(position: basisVector) * finalRotationMatrix
+        var delta3 = float3(delta4.x, delta4.y, delta4.z)
+        delta3 *= modifier
+        frameInfo.cameraTranslation = frameInfo.cameraTranslation + delta3
     }
     
     func handleActiveKey() {
@@ -221,23 +234,22 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             break
         
         case W_KEY:
-            modifyCameraPosition(1)
+            moveCamera(dimension: .z)
             break
         case S_KEY:
-            modifyCameraPosition(1, -1.0)
+            moveCamera(dimension: .z, modifier: -1.0)
                 break
         case D_KEY:
-            modifyCameraPosition(0)
+            moveCamera(dimension: .x)
                 break
         case A_KEY:
-            modifyCameraPosition(0, -1.0)
+            moveCamera(dimension: .x, modifier: -1.0)
                 break
         case Q_KEY:
-            modifyCameraPosition(2)
+            moveCamera(dimension: .y)
                 break
         case E_KEY:
-            
-            modifyCameraPosition(2, -1.0)
+            moveCamera(dimension: .y, modifier: -1.0)
             break
 
         default:
@@ -263,7 +275,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         } else {
             xMovement *= -1.0
         }
-        let newX: Float32 = completeCircle + cameraRotation[0] + yMovement
+        let newX: Float32 = completeCircle + cameraRotation[0] - yMovement
         let newY: Float32 = completeCircle + cameraRotation[1] + xMovement
         frameInfo.cameraRotation = [newX, newY, 0.0]
         cameraRotationChange = (0.0, 0.0)

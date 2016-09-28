@@ -10,6 +10,19 @@ import Foundation
 import MetalKit
 
 
+enum Dimension: Int {
+    case x = 0
+    case y
+    case z
+}
+
+enum MatrixPosition: Int {
+    case P = 0
+    case Q
+    case R
+    case S
+}
+
 struct RotationMatrix {
     var x: float4x4
     var y: float4x4
