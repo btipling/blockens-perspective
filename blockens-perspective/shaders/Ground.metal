@@ -10,23 +10,11 @@
 
 vertex VertextOut GroundVertex(uint vid [[ vertex_id ]],
                                constant float3* position  [[ buffer(0) ]],
-                               constant Object3DInfo* groundInfo [[ buffer(1)]],
-                               constant RenderInfo* renderInfo [[ buffer(2) ]]) {
+                               constant float4x4* matrix [[ buffer(1) ]]) {
     
     VertextOut outVertex;
-  
-    // ## Set up vectors.
-    ModelViewData modelViewData = {
-        .positionVertex = toFloat4(position[vid]),
-        .scale = toFloat4(groundInfo->scale),
-        .rotationVertex = toFloat4(groundInfo->rotation),
-        .translationVertex = toFloat4(groundInfo->position),
-        .renderInfo = renderInfo
-    };
     
-    float4 screenCoordinates = toScreenCoordinates(modelViewData);
-    
-    outVertex.position = screenCoordinates;
+    outVertex.position = toFloat4(position[vid]) * *matrix;
 
     return outVertex;
 }

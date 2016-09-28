@@ -35,6 +35,7 @@ class RenderUtils {
     
     
     fileprivate var renderInfoBuffer_: MTLBuffer? = nil;
+    fileprivate var renderInfo_: RenderInfo? = nil
     var depthStencilState: MTLDepthStencilState? = nil
 
     let rectangleVertexData:[float3] = [
@@ -198,6 +199,8 @@ class RenderUtils {
             memcpy(pointer + offset, &renderInfo.cameraTranslation, packedFloat3Size)
             offset += packedFloat3Size // 48 + 16 = 64
             memcpy(pointer + offset, &renderInfo.useCamera, boolSize)
+            
+            renderInfo_ = renderInfo
 
         }
     }
@@ -218,6 +221,32 @@ class RenderUtils {
         
         renderInfoBuffer_ = device.makeBuffer(length: bufferSize, options: [])
 
+    }
+    
+    func createMatrixBuffer(device: MTLDevice, label: String) -> MTLBuffer {
+        let matrixSize = MemoryLayout<float4x4>.size
+        let buffer = device.makeBuffer(length: matrixSize, options: [])
+        buffer.label = label
+        return buffer
+    }
+    
+    func updateMatrixBuffer(buffer: MTLBuffer, object3DInfo: Object3DInfo) {
+        guard let renderInfo = renderInfo_ else {
+            return
+        }
+        let matrixSize = MemoryLayout<float4x4>.size
+        let pointer = buffer.contents()
+        let modelViewData = object3DInfoToModelViewData(object3DInfo: object3DInfo)
+        var matrix = modelViewTransform(modelViewData: modelViewData, renderInfo: renderInfo)
+        memcpy(pointer, &matrix, matrixSize)
+    }
+    
+    func object3DInfoToModelViewData(object3DInfo: Object3DInfo) -> ModelViewData {
+        return ModelViewData(
+            scale: toFloat4(position: object3DInfo.scale),
+            rotation: toFloat4(position: object3DInfo.rotation),
+            translation: toFloat4(position: object3DInfo.position)
+        )
     }
     
     func alignBufferSize(bufferSize: Int, alignment: Int) -> Int {
@@ -306,7 +335,7 @@ class RenderUtils {
         finishDrawing(renderEncoder: renderEncoder)
     }
     
-    func drawIndexedPrimitives(renderEncoder: MTLRenderCommandEncoder, meshes: [MTKMesh], materials: [MTLBuffer]) {
+    func drawIndexedPrimitives(renderEncoder: MTLRenderCommandEncoder, meshes: [MTKMesh], materials: [MTLBuffer], matrixBuffer: MTLBuffer) {
         for mesh in meshes {
             
             var buffer_index = 0
@@ -314,7 +343,7 @@ class RenderUtils {
                 renderEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, at: buffer_index)
                 buffer_index += 1
             }
-            renderEncoder.setVertexBuffer(renderInfoBuffer(), offset: 0, at: buffer_index)
+            renderEncoder.setVertexBuffer(matrixBuffer, offset: 0, at: buffer_index)
             buffer_index += 1
 
             for (i, submesh) in mesh.submeshes.enumerated() {

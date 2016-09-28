@@ -22,6 +22,9 @@ class DuckRenderer: Renderer, RenderController {
     var submeshes: [MDLSubmesh] = Array()
     let vertexDescriptor: MTLVertexDescriptor = MTLVertexDescriptor()
     
+    var matrixBuffer: MTLBuffer! = nil
+    var duckInfo: RenderUtils.Object3DInfo! = nil
+    
     func setRenderUtils(_ renderUtils: RenderUtils) {
         self.renderUtils = renderUtils
     }
@@ -100,8 +103,19 @@ class DuckRenderer: Renderer, RenderController {
         let pipelineStateDescriptor = renderUtils.createPipelineStateDescriptor(vertex: "duckVertex", fragment: "duckFragment", device: device, view: view)
         loadDuck(device: device, pipelineStateDescriptor: pipelineStateDescriptor);
         pipelineState = renderUtils.createPipeLineStateWithDescriptor(device: device, pipelineStateDescriptor: pipelineStateDescriptor)
+        matrixBuffer = renderUtils.createMatrixBuffer(device: device, label: "Duck matrix")
+
+        duckInfo = RenderUtils.Object3DInfo(
+            rotation: [0.0, 0.0, 0.0],
+            scale: [5.0, 5.0, 5.0],
+            position: [0.0, 20.0, 0.0])
         
+        update()
         print("loading Duck assets done")
+    }
+    
+    func update() {
+        renderUtils.updateMatrixBuffer(buffer: matrixBuffer, object3DInfo: duckInfo)
     }
     
     func render(_ renderEncoder: MTLRenderCommandEncoder) {
@@ -109,7 +123,7 @@ class DuckRenderer: Renderer, RenderController {
         renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "Duck")
         
         
-        renderUtils.drawIndexedPrimitives(renderEncoder: renderEncoder, meshes: meshes, materials: materials)
+        renderUtils.drawIndexedPrimitives(renderEncoder: renderEncoder, meshes: meshes, materials: materials, matrixBuffer: matrixBuffer)
         
     }
 }

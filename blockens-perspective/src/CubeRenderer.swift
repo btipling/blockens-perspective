@@ -14,7 +14,7 @@ class CubeRenderer: Renderer, RenderController {
 
     var cubeVertexBuffer: MTLBuffer! = nil
     var colorBuffer: MTLBuffer! = nil
-    var cubeInfoBuffer: MTLBuffer! = nil
+    var matrixBuffer: MTLBuffer! = nil
     var cubeInfo: RenderUtils.Object3DInfo! = nil
     
     let colors: [float4]
@@ -40,7 +40,7 @@ class CubeRenderer: Renderer, RenderController {
         
         cubeVertexBuffer = renderUtils.createCubeVertexBuffer(device: device, bufferLabel: "cube vertices")
         colorBuffer = renderUtils.createColorBuffer(device: device, colors: colors, label: "cube colors")
-        cubeInfoBuffer = renderUtils.createObject3DInfoBuffer(device: device, label: "cube info")
+        matrixBuffer = renderUtils.createMatrixBuffer(device: device, label: "Cube matrix")
         
     }
 
@@ -51,14 +51,19 @@ class CubeRenderer: Renderer, RenderController {
             scale: scale,
             position: position)
     }
+    
+    func update() {
+        guard let objectCopy = cubeInfo else {
+            return
+        }
+        renderUtils.updateMatrixBuffer(buffer: matrixBuffer, object3DInfo: objectCopy)
+    }
 
 
     func render(_ renderEncoder: MTLRenderCommandEncoder) {
-        let objectCopy = cubeInfo
-        renderUtils.updateObject3DInfoBuffer(object: objectCopy!, buffer: cubeInfoBuffer)
         
         renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "cube")
-        for (i, vertexBuffer) in [cubeVertexBuffer, colorBuffer, cubeInfoBuffer, renderUtils.renderInfoBuffer()].enumerated() {
+        for (i, vertexBuffer) in [cubeVertexBuffer, colorBuffer, matrixBuffer].enumerated() {
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: i)
         }
 

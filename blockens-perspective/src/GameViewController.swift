@@ -20,7 +20,6 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     var renderers: [Renderer] = Array()
     var cube: CubeRenderer! = nil
     var camera: CubeRenderer! = nil
-    var cameraVector: CameraVectorRenderer! = nil
     var frameInfo: FrameInfo! = nil
     
     var activeKey: UInt16? = nil
@@ -42,7 +41,6 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             let scale = Float32(arc4random_uniform(2) + 1)
             referenceCubes.append(CubeRenderer(colors: renderUtils.cameraColors, scale: [scale, scale, scale]))
         }
-        cameraVector = CameraVectorRenderer()
         gameWindow.addKeyEventCallback(handleKeyEvent)
 
         device = MTLCreateSystemDefaultDevice()
@@ -76,7 +74,6 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             GroundRenderer(),
             cube,
             camera,
-            cameraVector,
             DuckRenderer(),
         ]
         
@@ -110,6 +107,9 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         cube.update(rotation: frameInfo.cubeRotation, position: frameInfo.cubePosition)
         camera.update(rotation: frameInfo.cameraRotation, position: frameInfo.cameraTranslation)
         renderUtils.setRenderInfo(frameInfo: frameInfo)
+        for renderer in renderers {
+            renderer.update()
+        }
     }
     
     func windowDidResize(_ notification: Notification) {
@@ -334,16 +334,6 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
             renderUtils.setup3D(renderEncoder: renderEncoder)
             for renderer in renderers {
-                if frameInfo.useCamera  {
-                    if let r = renderer as? CubeRenderer {
-                        if r === camera {
-                            continue
-                        }
-                    }
-                    if renderer is CameraVectorRenderer {
-                        continue
-                    }
-                }
                 renderer.render(renderEncoder)
             }
 

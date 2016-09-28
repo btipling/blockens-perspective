@@ -11,24 +11,11 @@
 vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
                                      constant float3* position  [[ buffer(0) ]],
                                      constant float4* colors  [[ buffer(1) ]],
-                                     constant Object3DInfo* cubeInfo [[ buffer(2)]],
-                                     constant RenderInfo* renderInfo [[ buffer(3) ]]) {
+                                     constant float4x4* matrix) {
 
     CubeOut outVertex;
-
-    // ## Set up vectors.
-    ModelViewData modelViewData = {
-        .positionVertex = toFloat4(position[vid]),
-        .scale = toFloat4(cubeInfo->scale),
-        .rotationVertex = toFloat4(cubeInfo->rotation),
-        .translationVertex = toFloat4(cubeInfo->position),
-        .renderInfo = renderInfo
-    };
-
-    float4 screenCoordinates = toScreenCoordinates(modelViewData);
     
-    // Set up the output.
-    outVertex.position = screenCoordinates;
+    outVertex.position = toFloat4(position[vid]) * *matrix;
     
     uint face = vid / 6;
     float4 color = colors[face];

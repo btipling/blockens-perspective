@@ -35,6 +35,10 @@ class CrossHairsRenderer: Renderer, RenderController {
         return self
     }
     
+    func update() {
+        // Do nothing.
+    }
+    
     func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
         
         pipelineState = renderUtils.createPipeLineState(vertex: "crossHairsVertex", fragment: "crossHairsFragment", device: device, view: view)

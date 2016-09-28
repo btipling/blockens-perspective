@@ -18,8 +18,8 @@ struct RotationMatrix {
 
 struct ModelViewData {
     let scale: float4
-    let rotationVertex: float4
-    let translationVertex: float4
+    let rotation: float4
+    let translation: float4
 }
 
 func scaleMatrix(scale: float4) -> float4x4 {
@@ -194,7 +194,7 @@ func lookAt(cameraPosition: float4, cameraRotation: float4) -> float4x4 {
     return lookAtMatrix * translationMatrix(transVector: -cameraPosition)
 }
 
-func toScreenCoordinates(modelViewData: ModelViewData, renderInfo: RenderUtils.RenderInfo) -> float4x4 {
+func modelViewTransform(modelViewData: ModelViewData, renderInfo: RenderUtils.RenderInfo) -> float4x4 {
     
     // ## Setup camera vectors
     
@@ -204,8 +204,8 @@ func toScreenCoordinates(modelViewData: ModelViewData, renderInfo: RenderUtils.R
     // ## Setup matrices.
     
     let scaleMatrix_ = scaleMatrix(scale: modelViewData.scale)
-    let rotationMatrix = getRotationMatrix(rotationVector: modelViewData.rotationVertex)
-    let objectTranslationMatrix = translationMatrix(transVector: modelViewData.translationVertex)
+    let rotationMatrix = getRotationMatrix(rotationVector: modelViewData.rotation)
+    let objectTranslationMatrix = translationMatrix(transVector: modelViewData.translation)
     let cameraMatrix = lookAt(cameraPosition: cameraPosition, cameraRotation: toFloat4(position: renderInfo.cameraRotation))
     let cameraRotationMatrix = getRotationMatrix(rotationVector: toFloat4(position: renderInfo.cameraRotation))
     let perspectiveMatrix = perspectiveProjection(renderInfo: renderInfo)

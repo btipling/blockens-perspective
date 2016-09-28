@@ -21,6 +21,10 @@ class SkyRenderer: Renderer, RenderController {
     func renderer() -> Renderer {
         return self
     }
+    
+    func update() {
+        // Do nothing.
+    }
 
     func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
 

@@ -17,25 +17,12 @@ struct Color {
 };
 
 vertex CubeOut duckVertex(const VertexIn vertices [[stage_in]],
-                             constant RenderInfo* renderInfo [[ buffer(1) ]],
-                             constant Color* color [[ buffer(2) ]]) {
+                            constant float4x4* matrix [[ buffer(1) ]],
+                            constant Color* color [[ buffer(2) ]]) {
     
     CubeOut outVertex;
     
-    
-    // ## Set up vectors.
-    ModelViewData modelViewData = {
-        .positionVertex = toFloat4(vertices.position),
-        .scale = float4(5.0, 5.0, 5.0, 1.0),
-        .rotationVertex = zeroVector(),
-        .translationVertex = float4(0.0, 20.0, 0.0, 1.0),
-        .renderInfo = renderInfo
-    };
-    
-    float4 screenCoordinates = toScreenCoordinates(modelViewData);
-    
-    
-    outVertex.position = screenCoordinates;
+    outVertex.position = toFloat4(vertices.position) * *matrix;
     outVertex.color = toFloat4(color->color);
     return outVertex;
 }
