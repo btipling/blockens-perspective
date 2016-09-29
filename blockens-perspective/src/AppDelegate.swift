@@ -14,7 +14,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var window: NSWindow!
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        
+        window.makeKeyAndOrderFront(self)
+        NSApplication.shared().presentationOptions = [.hideMenuBar, .hideDock]
+        window.toggleFullScreen(self)
+        NSCursor.hide()
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

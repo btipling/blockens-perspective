@@ -42,6 +42,7 @@ let I_KEY: UInt16 = 34
 let O_KEY: UInt16 = 31
 let Q_KEY: UInt16 = 12
 let E_KEY: UInt16 = 14
+let SPACE_KEY: UInt16 = 49
 
 
 let PLUS_KEY: UInt16 = 24

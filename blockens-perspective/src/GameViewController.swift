@@ -22,10 +22,12 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     var camera: CubeRenderer! = nil
     var frameInfo: FrameInfo! = nil
     
-    var activeKey: UInt16? = nil
+    var activeKeys: [UInt16] = Array()
     var cameraRotationChange: (Float32, Float32) = (0.0, 0.0)
     
     let renderUtils = RenderUtils()
+    
+    var trackingArea: NSTrackingArea? = nil
 
     override func viewDidLoad() {
         
@@ -33,6 +35,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         
         let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let gameWindow = appDelegate.getWindow()
+        gameWindow.makeFirstResponder(self.view)
         cube = CubeRenderer(colors: renderUtils.cubeColors, scale: float3(1.0, 1.0, 1.0))
         camera = CubeRenderer(colors: renderUtils.cameraColors, scale: float3(0.25, 0.25, 0.25_))
         var referenceCubes: [CubeRenderer] = Array()
@@ -40,7 +43,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             let scale = Float32(arc4random_uniform(2) + 1)
             referenceCubes.append(CubeRenderer(colors: renderUtils.cameraColors, scale: [scale, scale, scale]))
         }
-        gameWindow.addKeyEventCallback(handleKeyEvent)
+        gameWindow.addKeyDownEventCallback(handleKeyDownEvent)
+        gameWindow.addKeyUpEventCallback(handleKeyUpEvent)
 
         device = MTLCreateSystemDefaultDevice()
         guard device != nil else { // Fallback to a blank NSView, an application could also fallback to OpenGL here.
@@ -56,12 +60,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         view.sampleCount = 4
         view.depthStencilPixelFormat = .depth32Float_stencil8
         
-        let trackingArea = NSTrackingArea(rect: view.frame, options: [
-            NSTrackingAreaOptions.enabledDuringMouseDrag,
-            NSTrackingAreaOptions.mouseMoved,
-            NSTrackingAreaOptions.activeAlways
-            ], owner: self, userInfo: nil)
-        view.addTrackingArea(trackingArea)
+        updateTrackingArea()
         
         // Setup some initial render state.
         setupFrameInfo(view)
@@ -98,8 +97,16 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         }
     }
     
-    override func mouseDragged(with event: NSEvent) {
+    override func mouseMoved(with event: NSEvent) {
         cameraRotationChange = (Float32(event.deltaX)/100.0, Float32(event.deltaY)/100.0)
+    }
+    
+    override func mouseExited(with event: NSEvent) {
+        NSCursor.unhide()
+    }
+    
+    override func mouseEntered(with event: NSEvent) {
+        NSCursor.hide()
     }
     
     func updateAll() {
@@ -115,12 +122,29 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         let view = self.view as! MTKView
         registerViewDimensions(view)
         updateAll()
+        updateTrackingArea()
     }
     
-    func handleKeyEvent(_ event: NSEvent?) {
+    func updateTrackingArea() {
+        if let area = trackingArea {
+            view.removeTrackingArea(area)
+        }
+        trackingArea = NSTrackingArea(rect: view.frame, options: [
+            NSTrackingAreaOptions.enabledDuringMouseDrag,
+            NSTrackingAreaOptions.mouseMoved,
+            NSTrackingAreaOptions.activeAlways
+            ], owner: self, userInfo: nil)
+        view.addTrackingArea(trackingArea!)
+    }
+    
+    func handleKeyDownEvent(_ event: NSEvent?) {
         
         guard let keyCode = event?.keyCode else {
-            activeKey = nil
+            activeKeys = Array()
+            return
+        }
+        
+        if (activeKeys.contains(keyCode)) {
             return
         }
         
@@ -136,7 +160,21 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             break
         }
         
-        activeKey = keyCode
+        activeKeys.append(keyCode)
+    }
+    
+    func handleKeyUpEvent(_ event: NSEvent?) {
+        
+        guard let keyCode = event?.keyCode else {
+            activeKeys = Array()
+            return
+        }
+        
+        
+        if let index = activeKeys.index(of: keyCode) {
+            activeKeys.remove(at: index)
+            return
+        }
     }
     
     private func modifyCubeRotation(_ dimension: Int, _ modifier: Float32 = 1.0) {
@@ -167,11 +205,13 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         frameInfo.cameraTranslation = frameInfo.cameraTranslation + delta3
     }
     
-    func handleActiveKey() {
-        
-        guard let keyCode = activeKey else {
-            return
+    func handleActiveKeys() {
+        for keyCode in activeKeys {
+            handleActiveKey(keyCode: keyCode)
         }
+    }
+    
+    func handleActiveKey(keyCode: UInt16) {
 
         switch keyCode {
 
@@ -245,10 +285,10 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         case A_KEY:
             moveCamera(dimension: .x, modifier: -1.0)
                 break
-        case Q_KEY:
+        case SPACE_KEY:
             moveCamera(dimension: .y)
                 break
-        case E_KEY:
+        case Q_KEY:
             moveCamera(dimension: .y, modifier: -1.0)
             break
 
@@ -275,8 +315,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         } else {
             xMovement *= -1.0
         }
-        let newX: Float32 = completeCircle + cameraRotation[0] - yMovement
-        let newY: Float32 = completeCircle + cameraRotation[1] + xMovement
+        let newX: Float32 = completeCircle + cameraRotation[0] + yMovement
+        let newY: Float32 = completeCircle + cameraRotation[1] - xMovement
         frameInfo.cameraRotation = [newX, newY, 0.0]
         cameraRotationChange = (0.0, 0.0)
     }
@@ -327,7 +367,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         _ = inflightSemaphore.wait(timeout: DispatchTime.distantFuture)
         
         
-        handleActiveKey()
+        handleActiveKeys()
         handleCameraRotation()
         updateAll()
         

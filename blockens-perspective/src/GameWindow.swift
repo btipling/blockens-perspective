@@ -9,26 +9,31 @@ typealias Callback = (NSEvent?) -> ()
 
 class GameWindow: NSWindow {
 
-    var keyEventListeners = Array<Callback>()
+    var keyDownEventListeners = Array<Callback>()
+    var keyUpEventListeners = Array<Callback>()
 
     override func keyDown(with event: NSEvent) {
         if event.modifierFlags.contains(NSEventModifierFlags.command) {
             super.keyDown(with: event)
             return
         }
-        for callback in keyEventListeners {
+        for callback in keyDownEventListeners {
             callback(event)
         }
     }
     
     override func keyUp(with event: NSEvent) {
-        for callback in keyEventListeners {
-            callback(nil)
+        for callback in keyUpEventListeners {
+            callback(event)
         }
     }
 
-    func addKeyEventCallback(_ callback: @escaping Callback) {
-        keyEventListeners.append(callback)
+    func addKeyDownEventCallback(_ callback: @escaping Callback) {
+        keyDownEventListeners.append(callback)
+    }
+    
+    func addKeyUpEventCallback(_ callback: @escaping Callback) {
+        keyUpEventListeners.append(callback)
     }
 
 
