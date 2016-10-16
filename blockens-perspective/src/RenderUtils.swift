@@ -486,5 +486,39 @@ class RenderUtils {
         renderEncoder.setFrontFacing(MTLWinding.clockwise)
     }
     
+    func meshesToMaterialsBuffer(device: MTLDevice, meshes: [MDLMesh]) -> (materials: [MDLSubmesh], submeshes: [MTLBuffer]) {
+        
+        var submeshes: [MDLSubmesh] = Array()
+        var materials: [MTLBuffer] = Array()
+        
+        for mesh in meshes {
+            guard let submeshes_ = mesh.submeshes else {
+                print("no submshes")
+                continue
+            }
+            for submesh_ in submeshes_ {
+                
+                print("submesh is \(submesh_)")
+                let submesh = submesh_ as! MDLSubmesh
+                submeshes.append(submesh)
+                print("submesh's name is \(submesh.name)")
+                
+                let specularColor = submesh.material?.property(with: MDLMaterialSemantic.baseColor)
+                var material = RenderUtils.MaterialUniform(color: float3(0.0, 0.0, 0.0))
+                if let color = specularColor {
+                    material.color = float3(color.float3Value.x, color.float3Value.y, color.float3Value.z)
+                    print("Found diffuse color: \(color.float3Value)")
+                } else {
+                    print("no diffuse")
+                }
+                materials.append(materialToBuffer(device: device, material: material, label: submesh.name))
+                
+                
+            }
+        }
+
+        return (submeshes, materials)
+    }
+    
     
 }
