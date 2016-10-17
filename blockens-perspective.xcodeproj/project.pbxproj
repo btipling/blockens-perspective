@@ -7,20 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		401CD7FD1D8EF07A002A0050 /* CubeRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 401CD7F81D8EF07A002A0050 /* CubeRenderer.swift */; };
 		401CD7FE1D8EF07A002A0050 /* SkyRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 401CD7F91D8EF07A002A0050 /* SkyRenderer.swift */; };
-		401CD7FF1D8EF07A002A0050 /* GroundRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 401CD7FA1D8EF07A002A0050 /* GroundRenderer.swift */; };
 		401CD8001D8EF07A002A0050 /* CrossHairsRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 401CD7FB1D8EF07A002A0050 /* CrossHairsRenderer.swift */; };
 		4024998C1D9B0E4200A8F5E7 /* transforms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024998B1D9B0E4200A8F5E7 /* transforms.swift */; };
 		404E7BEA1D8C198D007B9D0F /* CrossHairs.metal in Sources */ = {isa = PBXBuildFile; fileRef = 404E7BE91D8C198D007B9D0F /* CrossHairs.metal */; };
 		4096F62F1D960A060000FE28 /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 4096F62E1D960A060000FE28 /* Data */; };
 		4096F6311D963CA10000FE28 /* DuckViewRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4096F6301D963CA10000FE28 /* DuckViewRenderer.swift */; };
 		4096F6331D9640130000FE28 /* Duck.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4096F6321D9640130000FE28 /* Duck.metal */; };
-		40E64B441D7E33D3004144A0 /* Ground.metal in Sources */ = {isa = PBXBuildFile; fileRef = 40E64B431D7E33D3004144A0 /* Ground.metal */; };
+		40C1FDE51DB4778000DF22E2 /* ShapeRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40C1FDE41DB4778000DF22E2 /* ShapeRenderer.swift */; };
+		40C1FDE71DB48AB800DF22E2 /* Shape.metal in Sources */ = {isa = PBXBuildFile; fileRef = 40C1FDE61DB48AB800DF22E2 /* Shape.metal */; };
 		596DD26812FC658D99CC9622 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 596DD693FFA52B0A437EFF10 /* MainMenu.xib */; };
 		596DD346B1E75871BE2BC75C /* GameWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DD71509758D619368DD8F /* GameWindow.swift */; };
 		596DD42720830726C72D0BEF /* RenderUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DD487FA02D6C3E5D44C7A /* RenderUtils.swift */; };
-		596DD46793DCDF17FC7CB954 /* Cube.metal in Sources */ = {isa = PBXBuildFile; fileRef = 596DD1912B9EB22332E369CC /* Cube.metal */; };
 		596DD46F6ADF9DE25D88B586 /* utils.metal in Sources */ = {isa = PBXBuildFile; fileRef = 596DDF76465D421FA5A59446 /* utils.metal */; };
 		596DD7D7015F85301790101B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 596DD6FE29D7853C86BB1915 /* Assets.xcassets */; };
 		596DDA3141FB697E508AB7B4 /* utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DD1C9EF7B9A6114F21ED0 /* utils.swift */; };
@@ -32,17 +30,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		401CD7F81D8EF07A002A0050 /* CubeRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CubeRenderer.swift; sourceTree = "<group>"; };
 		401CD7F91D8EF07A002A0050 /* SkyRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkyRenderer.swift; sourceTree = "<group>"; };
-		401CD7FA1D8EF07A002A0050 /* GroundRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroundRenderer.swift; sourceTree = "<group>"; };
 		401CD7FB1D8EF07A002A0050 /* CrossHairsRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrossHairsRenderer.swift; sourceTree = "<group>"; };
 		4024998B1D9B0E4200A8F5E7 /* transforms.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = transforms.swift; sourceTree = "<group>"; };
 		404E7BE91D8C198D007B9D0F /* CrossHairs.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = CrossHairs.metal; sourceTree = "<group>"; };
 		4096F62E1D960A060000FE28 /* Data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Data; sourceTree = "<group>"; };
 		4096F6301D963CA10000FE28 /* DuckViewRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DuckViewRenderer.swift; sourceTree = "<group>"; };
 		4096F6321D9640130000FE28 /* Duck.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Duck.metal; sourceTree = "<group>"; };
-		40E64B431D7E33D3004144A0 /* Ground.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Ground.metal; sourceTree = "<group>"; };
-		596DD1912B9EB22332E369CC /* Cube.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Cube.metal; sourceTree = "<group>"; };
+		40C1FDE41DB4778000DF22E2 /* ShapeRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShapeRenderer.swift; sourceTree = "<group>"; };
+		40C1FDE61DB48AB800DF22E2 /* Shape.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shape.metal; sourceTree = "<group>"; };
 		596DD1AE74D3D2F6AF581CD5 /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		596DD1C9EF7B9A6114F21ED0 /* utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = utils.swift; sourceTree = "<group>"; };
 		596DD487FA02D6C3E5D44C7A /* RenderUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenderUtils.swift; sourceTree = "<group>"; };
@@ -74,9 +70,8 @@
 			isa = PBXGroup;
 			children = (
 				401CD7FB1D8EF07A002A0050 /* CrossHairsRenderer.swift */,
-				401CD7F81D8EF07A002A0050 /* CubeRenderer.swift */,
+				40C1FDE41DB4778000DF22E2 /* ShapeRenderer.swift */,
 				4096F6301D963CA10000FE28 /* DuckViewRenderer.swift */,
-				401CD7FA1D8EF07A002A0050 /* GroundRenderer.swift */,
 				401CD7F91D8EF07A002A0050 /* SkyRenderer.swift */,
 			);
 			name = renderer;
@@ -109,12 +104,11 @@
 		596DD7D06295D8F70BB473BB /* shaders */ = {
 			isa = PBXGroup;
 			children = (
+				40C1FDE61DB48AB800DF22E2 /* Shape.metal */,
 				596DD71252DC62F6946FB9A2 /* Sky.metal */,
 				596DDA5DB18DAFE007088EA9 /* utils.h */,
 				596DDF76465D421FA5A59446 /* utils.metal */,
-				40E64B431D7E33D3004144A0 /* Ground.metal */,
 				404E7BE91D8C198D007B9D0F /* CrossHairs.metal */,
-				596DD1912B9EB22332E369CC /* Cube.metal */,
 				4096F6321D9640130000FE28 /* Duck.metal */,
 			);
 			path = shaders;
@@ -211,16 +205,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				401CD7FD1D8EF07A002A0050 /* CubeRenderer.swift in Sources */,
 				4096F6311D963CA10000FE28 /* DuckViewRenderer.swift in Sources */,
 				404E7BEA1D8C198D007B9D0F /* CrossHairs.metal in Sources */,
 				596DDDAF64E0833AD5DA7782 /* Sky.metal in Sources */,
+				40C1FDE71DB48AB800DF22E2 /* Shape.metal in Sources */,
 				596DD46F6ADF9DE25D88B586 /* utils.metal in Sources */,
-				596DD46793DCDF17FC7CB954 /* Cube.metal in Sources */,
+				40C1FDE51DB4778000DF22E2 /* ShapeRenderer.swift in Sources */,
 				4024998C1D9B0E4200A8F5E7 /* transforms.swift in Sources */,
-				40E64B441D7E33D3004144A0 /* Ground.metal in Sources */,
 				596DDCCE8F426D3D180A5E6E /* GameViewController.swift in Sources */,
-				401CD7FF1D8EF07A002A0050 /* GroundRenderer.swift in Sources */,
 				401CD8001D8EF07A002A0050 /* CrossHairsRenderer.swift in Sources */,
 				4096F6331D9640130000FE28 /* Duck.metal in Sources */,
 				596DDC5BCCFDFE0C5304FAB9 /* AppDelegate.swift in Sources */,

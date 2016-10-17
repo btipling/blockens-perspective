@@ -18,7 +18,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     let inflightSemaphore = DispatchSemaphore(value: 1)
 
     var renderers: [Renderer] = Array()
-    var cube: CubeRenderer! = nil
+    var cube: ShapeRenderer! = nil
     var frameInfo: FrameInfo! = nil
     
     var activeKeys: [UInt16] = Array()
@@ -35,11 +35,12 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let gameWindow = appDelegate.getWindow()
         gameWindow.makeFirstResponder(self.view)
-        cube = CubeRenderer(colors: renderUtils.cubeColors, scale: float3(1.0, 1.0, 1.0))
-        var referenceCubes: [CubeRenderer] = Array()
+        cube = ShapeRenderer(colors: renderUtils.cubeColors, scale: float3(1.0, 1.0, 1.0), shapeType: .Cube)
+        
+        var referenceCubes: [ShapeRenderer] = Array()
         for _ in 0..<100 {
             let scale = Float32(arc4random_uniform(2) + 1)
-            referenceCubes.append(CubeRenderer(colors: renderUtils.cameraColors, scale: [scale, scale, scale]))
+            referenceCubes.append(ShapeRenderer(colors: renderUtils.cameraColors, scale: [scale, scale, scale], shapeType: .Cube))
         }
         gameWindow.addKeyDownEventCallback(handleKeyDownEvent)
         gameWindow.addKeyUpEventCallback(handleKeyUpEvent)
@@ -63,14 +64,19 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         // Setup some initial render state.
         setupFrameInfo(view)
         renderUtils.depthStencilState(device: device)
+        
+        
+        
+        let plane = ShapeRenderer(colors: renderUtils.groundColors, scale: float3(100.0, 100.0, 1.0), shapeType: .Plane)
 
         // Add render controllers, order matters.
         var renderControllers: [RenderController] = [
             SkyRenderer(),
-            GroundRenderer(),
             cube,
             DuckRenderer(),
+            plane,
         ]
+        plane.update(rotation: float3(1.6, 0.0, 0.0), position: float3(0.0, -6.0, 1.0))
         
         renderControllers = renderControllers + referenceCubes
         renderControllers.append(CrossHairsRenderer())

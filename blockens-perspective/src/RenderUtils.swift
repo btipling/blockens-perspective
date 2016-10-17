@@ -59,9 +59,10 @@ class RenderUtils {
         1.0,  1.0,
     ]
     
-    var cubeColors: [float4];
-    var cameraColors: [float4];
-    var vectorColors: [float4];
+    var cubeColors: [float4]
+    var cameraColors: [float4]
+    var vectorColors: [float4]
+    var groundColors: [float4]
     
     let CONSTANT_BUFFER_SIZE = 1024*1024
     
@@ -84,6 +85,12 @@ class RenderUtils {
             blueGray,
         ]
         
+        
+        groundColors = []
+        
+        for _ in 0...5 {
+            groundColors.append(groundGreen)
+        }
         vectorColors = [blueGray, red, yellow]
 
         floatSize = MemoryLayout<Float>.size

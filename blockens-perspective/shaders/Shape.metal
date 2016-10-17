@@ -9,7 +9,7 @@
 #include "utils.h"
 
 vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
-                          const VertexIn vertices [[stage_in]],
+                          const CubeIn vertices [[stage_in]],
                           constant float4x4* matrix [[ buffer(1)]],
                           constant float4* colors [[ buffer(2) ]]) {
 
@@ -17,7 +17,6 @@ vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
     
     outVertex.position = toFloat4(vertices.position) * *matrix;
     
-    outVertex.color = float4(0.5, 0.0, 1.0, 1.0);
     uint face = vid / 4;
     outVertex.color = colors[face % 6];
     
@@ -27,3 +26,4 @@ vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
 fragment float4 cubeFragment(CubeOut inFrag [[stage_in]]) {
     return inFrag.color;
 }
+

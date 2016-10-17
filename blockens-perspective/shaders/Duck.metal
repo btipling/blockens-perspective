@@ -8,7 +8,7 @@
 
 #include "utils.h"
 
-vertex CubeOut duckVertex(const VertexIn vertices [[stage_in]],
+vertex CubeOut duckVertex(const CubeIn vertices [[stage_in]],
                             constant float4x4* matrix [[ buffer(1) ]],
                             constant Color* color [[ buffer(2) ]]) {
     

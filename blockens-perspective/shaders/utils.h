@@ -6,8 +6,12 @@
 
 using namespace metal;
 
-struct VertexIn {
+struct CubeIn {
     float3 position [[attribute(0)]];
+};
+
+struct PlaneIn {
+    float2 position [[attribute(0)]];
 };
 
 struct Color {

@@ -75,6 +75,8 @@ let gray4 = rgbaToNormalizedGPUColors(173, g: 173, b: 173)
 let gray5 = rgbaToNormalizedGPUColors(214, g: 214, b: 214)
 let blueGray = rgbaToNormalizedGPUColors(33, g: 85, b: 124)
 
+let groundGreen = rgbaToNormalizedGPUColors(78, g: 183, b: 2)
+
 func rgbaToNormalizedGPUColors(_ r: Int, g: Int, b: Int, a: Int = 255) -> float4 {
     return float4(Float32(r)/255.0, Float32(g)/255.0, Float32(b)/255.0, Float32(a)/255.0)
 }
