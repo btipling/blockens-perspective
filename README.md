@@ -18,6 +18,7 @@ More progress on learning 3D math and Apple Metal
 Includes:
 
 * Loading objects using Model I/O including their materials
+* Creating shapes using MDLMesh helper functions.
 * Perspective projection
 * Multiple objects
 * Depth testing
