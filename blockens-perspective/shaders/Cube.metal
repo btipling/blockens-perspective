@@ -9,18 +9,18 @@
 #include "utils.h"
 
 vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
-                                     constant float3* position  [[ buffer(0) ]],
-                                     constant float4* colors  [[ buffer(1) ]],
-                                     constant float4x4* matrix) {
+                          const VertexIn vertices [[stage_in]],
+                          constant float4x4* matrix [[ buffer(1)]],
+                          constant float4* colors [[ buffer(2) ]]) {
 
     CubeOut outVertex;
     
-    outVertex.position = toFloat4(position[vid]) * *matrix;
+    outVertex.position = toFloat4(vertices.position) * *matrix;
     
-    uint face = vid / 6;
-    float4 color = colors[face];
-    outVertex.color = color;
-
+    outVertex.color = float4(0.5, 0.0, 1.0, 1.0);
+    uint face = vid / 4;
+    outVertex.color = colors[face % 6];
+    
     return outVertex;
 }
 

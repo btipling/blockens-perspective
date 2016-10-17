@@ -11,8 +11,9 @@ class CubeRenderer: Renderer, RenderController {
     var renderUtils: RenderUtils!
 
     var pipelineState: MTLRenderPipelineState! = nil
-
-    var cubeVertexBuffer: MTLBuffer! = nil
+    
+    var meshes: [MTKMesh] = Array()
+    var materials: [MTLBuffer] = Array()
     var colorBuffer: MTLBuffer! = nil
     var matrixBuffer: MTLBuffer! = nil
     var cubeInfo: RenderUtils.Object3DInfo! = nil
@@ -33,12 +34,32 @@ class CubeRenderer: Renderer, RenderController {
     func renderer() -> Renderer {
         return self
     }
+    
+    func loadCube(device: MTLDevice, view: MTKView) -> MTLRenderPipelineDescriptor {
+        
+        let pipelineStateDescriptor = renderUtils.createPipelineStateDescriptor(vertex: "cubeVertex", fragment: "cubeFragment", device: device, view: view)
+        let numSegments: vector_uint3 = vector_uint3(1)
+        let allocator = MTKMeshBufferAllocator.init(device: device)
+        let dimension: Float32 = 1.5
+        let boxMesh = MDLMesh.newBox(
+            withDimensions: float3(dimension, dimension, dimension),
+            segments: numSegments,
+            geometryType: MDLGeometryType.triangles,
+            inwardNormals: false,
+            allocator: allocator)
+        do {
+            try meshes = [MTKMesh.init(mesh: boxMesh, device: device)]
+        } catch let error {
+            print("Unable to load mesh for new box: \(error)")
+        }
+        materials = renderUtils.meshesToMaterialsBuffer(device: device, meshes: [boxMesh])
+        pipelineStateDescriptor.vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(boxMesh.vertexDescriptor)
+        return pipelineStateDescriptor
+    }
 
     func loadAssets(_ device: MTLDevice, view: MTKView, frameInfo: FrameInfo) {
-        
-        pipelineState = renderUtils.createPipeLineState(vertex: "cubeVertex", fragment: "cubeFragment", device: device, view: view)
-        
-        cubeVertexBuffer = renderUtils.createCubeVertexBuffer(device: device, bufferLabel: "cube vertices")
+        let pipelineStateDescriptor = loadCube(device: device, view: view)
+        pipelineState = renderUtils.createPipeLineStateWithDescriptor(device: device, pipelineStateDescriptor: pipelineStateDescriptor)
         colorBuffer = renderUtils.createColorBuffer(device: device, colors: colors, label: "cube colors")
         matrixBuffer = renderUtils.createMatrixBuffer(device: device, label: "Cube matrix")
         
@@ -61,13 +82,10 @@ class CubeRenderer: Renderer, RenderController {
 
 
     func render(_ renderEncoder: MTLRenderCommandEncoder) {
-        
         renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "cube")
-        for (i, vertexBuffer) in [cubeVertexBuffer, colorBuffer, matrixBuffer].enumerated() {
-            renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: i)
-        }
-
-        renderUtils.drawPrimitives(renderEncoder: renderEncoder, vertexCount: renderUtils.numVerticesInACube())
+        
+        let vertexBuffers: [MTLBuffer] = [matrixBuffer, colorBuffer]
+        let _ = renderUtils.drawIndexedPrimitives(renderEncoder: renderEncoder, meshes: meshes, materials: materials, vertexBuffers: vertexBuffers)
 
     }
 }

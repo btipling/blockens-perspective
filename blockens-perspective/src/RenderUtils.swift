@@ -58,81 +58,7 @@ class RenderUtils {
         1.0,  0.0,
         1.0,  1.0,
     ]
-
-    let cubeVertexData: [float3] = [
-
-        // Front face
-        // - ff left triangle
-        float3(-1.0, 1.0, -1.0),
-        float3(1.0, 1.0, -1.0),
-        float3(-1.0, -1.0, -1.0),
-
-        // - ff right triangle
-        float3(1.0, 1.0, -1.0),
-        float3(1.0, -1.0, -1.0),
-        float3(-1.0, -1.0, -1.0),
-
-
-        // Back face WRONG
-        // - bf left triangle
-        float3(1.0, 1.0, 1.0),
-        float3(-1.0, -1.0, 1.0),
-        float3(1.0, -1.0, 1.0),
-
-        // - bf right triangle
-        float3(1.0, 1.0, 1.0),
-        float3(-1.0, 1.0, 1.0),
-        float3(-1.0, -1.0, 1.0),
-
-
-        // Left face
-        // - lf left triangle
-        float3(-1.0, 1.0, 1.0),
-        float3(-1.0, 1.0, -1.0),
-        float3(-1.0, -1.0, 1.0),
-
-        // - lf right triangle
-        float3(-1.0, 1.0, -1.0),
-        float3(-1.0, -1.0, -1.0),
-        float3(-1.0, -1.0, 1.0),
-
-
-        // Right face
-        // - rf left triangle
-        float3(1.0, 1.0, -1.0),
-        float3(1.0, 1.0, 1.0),
-        float3(1.0, -1.0, -1.0),
-
-        // - rf right triangle
-        float3(1.0, 1.0, 1.0),
-        float3(1.0, -1.0, 1.0),
-        float3(1.0, -1.0, -1.0),
-
-
-        // Top face
-        // - tf left triangle
-        float3(-1.0, 1.0, 1.0),
-        float3(1.0, 1.0, 1.0),
-        float3(-1.0, 1.0, -1.0),
-
-        // - tf right triangle
-        float3(1.0, 1.0, 1.0),
-        float3(1.0, 1.0, -1.0),
-        float3(-1.0, 1.0, -1.0),
-
-
-        // Bottom face WRONG
-        // - bf left triangle
-        float3(1.0, -1.0, 1.0),
-        float3(-1.0, -1.0, -1.0),
-        float3(1.0, -1.0, -1.0),
-
-        // - bf right triangle
-        float3(1.0, -1.0, 1.0),
-        float3(-1.0, -1.0, 1.0),
-        float3(-1.0, -1.0, -1.0),
-    ]
-
+    
     var cubeColors: [float4];
     var cameraColors: [float4];
     var vectorColors: [float4];
@@ -266,10 +192,6 @@ class RenderUtils {
         return rectangleVertexData.count
     }
 
-    func numVerticesInACube() -> Int {
-        return cubeVertexData.count
-    }
-
     func numCubeColors() -> Int {
         return cubeColors.count/3 // Divided by 3 because RGB.
     }
@@ -335,20 +257,25 @@ class RenderUtils {
         finishDrawing(renderEncoder: renderEncoder)
     }
     
-    func drawIndexedPrimitives(renderEncoder: MTLRenderCommandEncoder, meshes: [MTKMesh], materials: [MTLBuffer], matrixBuffer: MTLBuffer) {
+    func drawIndexedPrimitives(renderEncoder: MTLRenderCommandEncoder, meshes: [MTKMesh], materials: [MTLBuffer], vertexBuffers: [MTLBuffer]) {
+        var bufferIndex = 0
         for mesh in meshes {
             
-            var buffer_index = 0
             for vertexBuffer in mesh.vertexBuffers {
-                renderEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, at: buffer_index)
-                buffer_index += 1
+                renderEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, at: bufferIndex)
+                bufferIndex += 1
             }
-            renderEncoder.setVertexBuffer(matrixBuffer, offset: 0, at: buffer_index)
-            buffer_index += 1
+            for buffer in vertexBuffers {
+                renderEncoder.setVertexBuffer(buffer, offset: 0, at: bufferIndex)
+                bufferIndex += 1
+            }
 
+            
             for (i, submesh) in mesh.submeshes.enumerated() {
-                let material = materials[i]
-                renderEncoder.setVertexBuffer(material, offset: 0, at: buffer_index)
+                if (!materials.isEmpty) {
+                    let material = materials[i]
+                    renderEncoder.setVertexBuffer(material, offset: 0, at: bufferIndex)
+                }
                 
                 renderEncoder.drawIndexedPrimitives(
                     type: submesh.primitiveType,
@@ -394,15 +321,6 @@ class RenderUtils {
         let buffer = device.makeBuffer(length: bufferSize, options: [])
         let pointer = buffer.contents()
         memcpy(pointer, rectangleVertexData, bufferSize)
-        buffer.label = bufferLabel
-
-        return buffer
-    }
-
-    func createCubeVertexBuffer(device: MTLDevice, bufferLabel: String) -> MTLBuffer {
-
-        let bufferSize = cubeVertexData.count * MemoryLayout<float3>.size
-        let buffer = device.makeBuffer(bytes: cubeVertexData, length: bufferSize, options: [])
         buffer.label = bufferLabel
 
         return buffer
@@ -486,7 +404,7 @@ class RenderUtils {
         renderEncoder.setFrontFacing(MTLWinding.clockwise)
     }
     
-    func meshesToMaterialsBuffer(device: MTLDevice, meshes: [MDLMesh]) -> (materials: [MDLSubmesh], submeshes: [MTLBuffer]) {
+    func meshesToMaterialsBuffer(device: MTLDevice, meshes: [MDLMesh]) -> [MTLBuffer] {
         
         var submeshes: [MDLSubmesh] = Array()
         var materials: [MTLBuffer] = Array()
@@ -517,7 +435,7 @@ class RenderUtils {
             }
         }
 
-        return (submeshes, materials)
+        return materials
     }
     
     

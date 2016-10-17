@@ -19,7 +19,6 @@ class DuckRenderer: Renderer, RenderController {
     
     var meshes: [MTKMesh] = Array()
     var materials: [MTLBuffer] = Array()
-    var submeshes: [MDLSubmesh] = Array()
     let vertexDescriptor: MTLVertexDescriptor = MTLVertexDescriptor()
     
     var matrixBuffer: MTLBuffer! = nil
@@ -70,7 +69,7 @@ class DuckRenderer: Renderer, RenderController {
             model_meshes.append(data as! MDLMesh)
         }
         print("mdlmesh \(model_meshes)")
-        (submeshes, materials) = renderUtils.meshesToMaterialsBuffer(device: device, meshes: model_meshes)
+        materials = renderUtils.meshesToMaterialsBuffer(device: device, meshes: model_meshes)
         print("done loading meshe for duck")
     }
     
@@ -98,8 +97,7 @@ class DuckRenderer: Renderer, RenderController {
         
         renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "Duck")
         
-        
-        renderUtils.drawIndexedPrimitives(renderEncoder: renderEncoder, meshes: meshes, materials: materials, matrixBuffer: matrixBuffer)
+        let _ = renderUtils.drawIndexedPrimitives(renderEncoder: renderEncoder, meshes: meshes, materials: materials, vertexBuffers: [matrixBuffer])
         
     }
 }

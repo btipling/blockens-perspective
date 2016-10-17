@@ -6,6 +6,13 @@
 
 using namespace metal;
 
+struct VertexIn {
+    float3 position [[attribute(0)]];
+};
+
+struct Color {
+    packed_float3 color;
+};
 
 struct VertextOut {
     float4  position [[position]];

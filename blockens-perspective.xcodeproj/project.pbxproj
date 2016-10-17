@@ -112,9 +112,9 @@
 				596DD71252DC62F6946FB9A2 /* Sky.metal */,
 				596DDA5DB18DAFE007088EA9 /* utils.h */,
 				596DDF76465D421FA5A59446 /* utils.metal */,
-				596DD1912B9EB22332E369CC /* Cube.metal */,
 				40E64B431D7E33D3004144A0 /* Ground.metal */,
 				404E7BE91D8C198D007B9D0F /* CrossHairs.metal */,
+				596DD1912B9EB22332E369CC /* Cube.metal */,
 				4096F6321D9640130000FE28 /* Duck.metal */,
 			);
 			path = shaders;

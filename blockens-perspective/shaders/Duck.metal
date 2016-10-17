@@ -8,14 +8,6 @@
 
 #include "utils.h"
 
-struct VertexIn {
-    float3 position [[attribute(0)]];
-};
-
-struct Color {
-    packed_float3 color;
-};
-
 vertex CubeOut duckVertex(const VertexIn vertices [[stage_in]],
                             constant float4x4* matrix [[ buffer(1) ]],
                             constant Color* color [[ buffer(2) ]]) {

@@ -19,7 +19,6 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
 
     var renderers: [Renderer] = Array()
     var cube: CubeRenderer! = nil
-    var camera: CubeRenderer! = nil
     var frameInfo: FrameInfo! = nil
     
     var activeKeys: [UInt16] = Array()
@@ -37,7 +36,6 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         let gameWindow = appDelegate.getWindow()
         gameWindow.makeFirstResponder(self.view)
         cube = CubeRenderer(colors: renderUtils.cubeColors, scale: float3(1.0, 1.0, 1.0))
-        camera = CubeRenderer(colors: renderUtils.cameraColors, scale: float3(0.25, 0.25, 0.25_))
         var referenceCubes: [CubeRenderer] = Array()
         for _ in 0..<100 {
             let scale = Float32(arc4random_uniform(2) + 1)
@@ -71,7 +69,6 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             SkyRenderer(),
             GroundRenderer(),
             cube,
-            camera,
             DuckRenderer(),
         ]
         
@@ -111,7 +108,6 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     
     func updateAll() {
         cube.update(rotation: frameInfo.cubeRotation, position: frameInfo.cubePosition)
-        camera.update(rotation: frameInfo.cameraRotation, position: frameInfo.cameraTranslation)
         renderUtils.setRenderInfo(frameInfo: frameInfo)
         for renderer in renderers {
             renderer.update()
@@ -328,7 +324,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             viewDimensions: [0.0, 0.0],
             viewDiffRatio: 0.0,
             cubeRotation: [5.5, 0.7, 1.4],
-            cubePosition: [0.0, 0.0, 5.0],
+            cubePosition: [60.0, 0.0, 5.0],
             zoom: 1,
             near: 0.1,
             far: 1000.0,
