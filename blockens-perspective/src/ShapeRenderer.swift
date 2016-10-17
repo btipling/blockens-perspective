@@ -27,12 +27,14 @@ class ShapeRenderer: Renderer, RenderController {
     let colors: [float4]
     let scale: float3
     let shapeType: ShapeType
+    let inward: Bool
     
 
-    init (colors: [float4], scale: float3, shapeType: ShapeType) {
+    init (colors: [float4], scale: float3, shapeType: ShapeType, inward: Bool=false) {
         self.colors = colors
         self.scale = scale
         self.shapeType = shapeType
+        self.inward = inward
     }
     
     func setRenderUtils(_ renderUtils: RenderUtils) {
@@ -59,7 +61,7 @@ class ShapeRenderer: Renderer, RenderController {
             mesh = MDLMesh.newBox(withDimensions: float3(dimension, dimension, dimension),
                                   segments: vector_uint3(1, 1, 1),
                                   geometryType: MDLGeometryType.triangles,
-                                  inwardNormals: false,
+                                  inwardNormals: inward,
                                   allocator: allocator)
         case .Plane:
             vertexName = "cubeVertex"
@@ -69,8 +71,17 @@ class ShapeRenderer: Renderer, RenderController {
                                   geometryType: MDLGeometryType.triangles,
                                   inwardNormals: false,
                                   allocator: allocator)
-        default:
-            print("Unsupported shape type")
+        case .Sphere:
+            vertexName = "sphereVertex"
+            fragmentName = "cubeFragment"
+            let sphereDimension: Float32 = 2.0
+            mesh = MDLMesh.newEllipsoid(withRadii: float3(sphereDimension, sphereDimension, sphereDimension),
+                                        radialSegments: 50,
+                                        verticalSegments: 50,
+                                        geometryType: MDLGeometryType.triangles,
+                                        inwardNormals: inward,
+                                        hemisphere: false,
+                                        allocator: allocator)
         }
         
         do {

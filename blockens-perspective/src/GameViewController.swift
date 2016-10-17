@@ -68,6 +68,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         
         
         let plane = ShapeRenderer(colors: renderUtils.groundColors, scale: float3(100.0, 100.0, 1.0), shapeType: .Plane)
+        let sphere = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(1.0, 1.0, 1.0), shapeType: .Sphere, inward: true)
 
         // Add render controllers, order matters.
         var renderControllers: [RenderController] = [
@@ -75,8 +76,10 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             cube,
             DuckRenderer(),
             plane,
+            sphere,
         ]
         plane.update(rotation: float3(1.6, 0.0, 0.0), position: float3(0.0, -6.0, 1.0))
+        sphere.update(rotation: float3(1.0, 1.0, 1.0), position: float3(60.0, 5.0, 5.0))
         
         renderControllers = renderControllers + referenceCubes
         renderControllers.append(CrossHairsRenderer())
