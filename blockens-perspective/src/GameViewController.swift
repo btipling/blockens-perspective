@@ -19,6 +19,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
 
     var renderers: [Renderer] = Array()
     var cube: ShapeRenderer! = nil
+    var sky: ShapeRenderer! = nil
     var frameInfo: FrameInfo! = nil
     
     var activeKeys: [UInt16] = Array()
@@ -37,10 +38,12 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         gameWindow.makeFirstResponder(self.view)
         cube = ShapeRenderer(colors: renderUtils.cubeColors, scale: float3(1.0, 1.0, 1.0), shapeType: .Cube)
         
-        var referenceCubes: [ShapeRenderer] = Array()
+        var bubbles: [ShapeRenderer] = Array()
         for _ in 0..<100 {
             let scale = Float32(arc4random_uniform(2) + 1)
-            referenceCubes.append(ShapeRenderer(colors: renderUtils.sphereColors, scale: [scale, scale, scale], shapeType: .Sphere))
+            let bubble = ShapeRenderer(colors: renderUtils.sphereColors, scale: [scale, scale, scale], shapeType: .Sphere)
+            bubble.vertexName = "bubbleVertex"
+            bubbles.append(bubble)
         }
         gameWindow.addKeyDownEventCallback(handleKeyDownEvent)
         gameWindow.addKeyUpEventCallback(handleKeyUpEvent)
@@ -65,23 +68,22 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         setupFrameInfo(view)
         renderUtils.depthStencilState(device: device)
         
+        let plane = ShapeRenderer(colors: renderUtils.groundColors, scale: float3(1000.0, 1000.0, 1.0), shapeType: .Plane)
+        plane.update(rotation: float3(1.6, 0.0, 0.0), position: float3(0.0, -6.0, 1.0))
         
-        
-        let plane = ShapeRenderer(colors: renderUtils.groundColors, scale: float3(100.0, 100.0, 1.0), shapeType: .Plane)
-        let sphere = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(1.0, 1.0, 1.0), shapeType: .Cube, inward: false)
+        sky = ShapeRenderer(colors: renderUtils.skyColors, scale: float3(400.0, 400.0, 400.0), shapeType: .Sphere, inward: true, translate: false)
+        sky.vertexName = "skyVertex"
+        sky.update(rotation: float3(1.0, 1.0, 1.0), position: float3(0.0, 0.0, 0.0))
 
         // Add render controllers, order matters.
         var renderControllers: [RenderController] = [
-            SkyRenderer(),
+            sky,
             cube,
             DuckRenderer(),
             plane,
-            sphere,
         ]
-        plane.update(rotation: float3(1.6, 0.0, 0.0), position: float3(0.0, -6.0, 1.0))
-        sphere.update(rotation: float3(1.0, 1.0, 1.0), position: float3(60.0, 5.0, 5.0))
         
-        renderControllers = renderControllers + referenceCubes
+        renderControllers = renderControllers + bubbles
         renderControllers.append(CrossHairsRenderer())
         
         // Collect renderers and provide renderUtils to controllers.
@@ -91,7 +93,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         }
         
         loadAssets(view)
-        for referenceCube in referenceCubes {
+        for referenceCube in bubbles {
             let x = Float32(arc4random_uniform(100)) - 50.0
             let y = Float32(arc4random_uniform(4)) - 2.0
             let z = Float32(arc4random_uniform(100)) - 50.0
@@ -336,7 +338,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             cubePosition: [60.0, 0.0, 5.0],
             zoom: 1,
             near: 0.1,
-            far: 1000.0,
+            far: 6000.0,
             cameraRotation: [0.25, 1.86, 0.0],
             cameraTranslation: [73.5, 0.0, 16.6],
             useCamera: true)

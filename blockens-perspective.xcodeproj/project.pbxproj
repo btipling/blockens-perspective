@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		401CD7FE1D8EF07A002A0050 /* SkyRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 401CD7F91D8EF07A002A0050 /* SkyRenderer.swift */; };
 		401CD8001D8EF07A002A0050 /* CrossHairsRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 401CD7FB1D8EF07A002A0050 /* CrossHairsRenderer.swift */; };
 		4024998C1D9B0E4200A8F5E7 /* transforms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024998B1D9B0E4200A8F5E7 /* transforms.swift */; };
 		404E7BEA1D8C198D007B9D0F /* CrossHairs.metal in Sources */ = {isa = PBXBuildFile; fileRef = 404E7BE91D8C198D007B9D0F /* CrossHairs.metal */; };
@@ -25,12 +24,10 @@
 		596DDB70DE8BC4A1BF45BD03 /* RendererController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DDBF4F807336EDB86EBB8 /* RendererController.swift */; };
 		596DDC5BCCFDFE0C5304FAB9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DD6F5A7DF142BE342CB0A /* AppDelegate.swift */; };
 		596DDCCE8F426D3D180A5E6E /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DDEDFB2F17F413AB3C038 /* GameViewController.swift */; };
-		596DDDAF64E0833AD5DA7782 /* Sky.metal in Sources */ = {isa = PBXBuildFile; fileRef = 596DD71252DC62F6946FB9A2 /* Sky.metal */; };
 		596DDF9DA312D49961BD799C /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596DD1AE74D3D2F6AF581CD5 /* Renderer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		401CD7F91D8EF07A002A0050 /* SkyRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkyRenderer.swift; sourceTree = "<group>"; };
 		401CD7FB1D8EF07A002A0050 /* CrossHairsRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrossHairsRenderer.swift; sourceTree = "<group>"; };
 		4024998B1D9B0E4200A8F5E7 /* transforms.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = transforms.swift; sourceTree = "<group>"; };
 		404E7BE91D8C198D007B9D0F /* CrossHairs.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = CrossHairs.metal; sourceTree = "<group>"; };
@@ -45,7 +42,6 @@
 		596DD525BBEEF0271C7B5C29 /* blockens-perspective.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "blockens-perspective.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		596DD6F5A7DF142BE342CB0A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		596DD6FE29D7853C86BB1915 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		596DD71252DC62F6946FB9A2 /* Sky.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Sky.metal; sourceTree = "<group>"; };
 		596DD71509758D619368DD8F /* GameWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameWindow.swift; sourceTree = "<group>"; };
 		596DDA5DB18DAFE007088EA9 /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
 		596DDA8539DA9FB8CFC085B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
@@ -72,7 +68,6 @@
 				401CD7FB1D8EF07A002A0050 /* CrossHairsRenderer.swift */,
 				40C1FDE41DB4778000DF22E2 /* ShapeRenderer.swift */,
 				4096F6301D963CA10000FE28 /* DuckViewRenderer.swift */,
-				401CD7F91D8EF07A002A0050 /* SkyRenderer.swift */,
 			);
 			name = renderer;
 			sourceTree = "<group>";
@@ -105,7 +100,6 @@
 			isa = PBXGroup;
 			children = (
 				40C1FDE61DB48AB800DF22E2 /* Shape.metal */,
-				596DD71252DC62F6946FB9A2 /* Sky.metal */,
 				596DDA5DB18DAFE007088EA9 /* utils.h */,
 				596DDF76465D421FA5A59446 /* utils.metal */,
 				404E7BE91D8C198D007B9D0F /* CrossHairs.metal */,
@@ -207,7 +201,6 @@
 			files = (
 				4096F6311D963CA10000FE28 /* DuckViewRenderer.swift in Sources */,
 				404E7BEA1D8C198D007B9D0F /* CrossHairs.metal in Sources */,
-				596DDDAF64E0833AD5DA7782 /* Sky.metal in Sources */,
 				40C1FDE71DB48AB800DF22E2 /* Shape.metal in Sources */,
 				596DD46F6ADF9DE25D88B586 /* utils.metal in Sources */,
 				40C1FDE51DB4778000DF22E2 /* ShapeRenderer.swift in Sources */,
@@ -216,7 +209,6 @@
 				401CD8001D8EF07A002A0050 /* CrossHairsRenderer.swift in Sources */,
 				4096F6331D9640130000FE28 /* Duck.metal in Sources */,
 				596DDC5BCCFDFE0C5304FAB9 /* AppDelegate.swift in Sources */,
-				401CD7FE1D8EF07A002A0050 /* SkyRenderer.swift in Sources */,
 				596DDF9DA312D49961BD799C /* Renderer.swift in Sources */,
 				596DDB70DE8BC4A1BF45BD03 /* RendererController.swift in Sources */,
 				596DDA3141FB697E508AB7B4 /* utils.swift in Sources */,

@@ -64,6 +64,7 @@ class RenderUtils {
     var vectorColors: [float4]
     var groundColors: [float4]
     var sphereColors: [float4]
+    var skyColors: [float4]
     
     var windingOrder: MTLWinding = .clockwise
     
@@ -100,10 +101,16 @@ class RenderUtils {
         sphereColors = [
             white,
             lightGray,
-            gray3,
-            gray4,
-            gray5,
-            blueGray,
+        ]
+        
+        sphereColors = [
+            white,
+            lightGray,
+        ]
+        
+        skyColors = [
+            skyBlue,
+            white,
         ]
         
         vectorColors = [blueGray, red, yellow]
@@ -178,14 +185,14 @@ class RenderUtils {
         return buffer
     }
     
-    func updateMatrixBuffer(buffer: MTLBuffer, object3DInfo: Object3DInfo) {
+    func updateMatrixBuffer(buffer: MTLBuffer, object3DInfo: Object3DInfo, translate: Bool=true) {
         guard let renderInfo = renderInfo_ else {
             return
         }
         let matrixSize = MemoryLayout<float4x4>.size
         let pointer = buffer.contents()
         let modelViewData = object3DInfoToModelViewData(object3DInfo: object3DInfo)
-        var matrix = modelViewTransform(modelViewData: modelViewData, renderInfo: renderInfo)
+        var matrix = modelViewTransform(modelViewData: modelViewData, renderInfo: renderInfo, translate: translate)
         memcpy(pointer, &matrix, matrixSize)
     }
     

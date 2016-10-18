@@ -29,13 +29,17 @@ class ShapeRenderer: Renderer, RenderController {
     let scale: float3
     let shapeType: ShapeType
     let inward: Bool
+    let translate: Bool
+    var vertexName = "cubeVertex"
+    var fragmentName = "cubeFragment"
     
 
-    init (colors: [float4], scale: float3, shapeType: ShapeType, inward: Bool=false) {
+    init (colors: [float4], scale: float3, shapeType: ShapeType, inward: Bool=false, translate: Bool=true) {
         self.colors = colors
         self.scale = scale
         self.shapeType = shapeType
         self.inward = inward
+        self.translate = translate
     }
     
     func setRenderUtils(_ renderUtils: RenderUtils) {
@@ -52,21 +56,15 @@ class ShapeRenderer: Renderer, RenderController {
         let dimension: Float32 = 2.0
         
         var mesh: MDLMesh! = nil
-        var vertexName = ""
-        var fragmentName = ""
         
         switch shapeType {
         case .Cube:
-            vertexName = "cubeVertex"
-            fragmentName = "cubeFragment"
             mesh = MDLMesh.newBox(withDimensions: float3(dimension, dimension, dimension),
                                   segments: vector_uint3(1, 1, 1),
                                   geometryType: MDLGeometryType.triangles,
                                   inwardNormals: inward,
                                   allocator: allocator)
         case .Plane:
-            vertexName = "cubeVertex"
-            fragmentName = "cubeFragment"
             mesh = MDLMesh.newBox(withDimensions: float3(dimension, dimension, 0.0),
                                   segments: vector_uint3(1, 1, 1),
                                   geometryType: MDLGeometryType.triangles,
@@ -75,8 +73,6 @@ class ShapeRenderer: Renderer, RenderController {
         case .Sphere:
             fallthrough
         case .Hemisphere:
-            vertexName = "sphereVertex"
-            fragmentName = "cubeFragment"
             let sphereDimension: Float32 = 2.0
             mesh = MDLMesh.newEllipsoid(withRadii: float3(sphereDimension, sphereDimension, sphereDimension),
                                         radialSegments: 40,
@@ -122,7 +118,7 @@ class ShapeRenderer: Renderer, RenderController {
         guard let objectCopy = ShapeInfo else {
             return
         }
-        renderUtils.updateMatrixBuffer(buffer: matrixBuffer, object3DInfo: objectCopy)
+        renderUtils.updateMatrixBuffer(buffer: matrixBuffer, object3DInfo: objectCopy, translate: translate)
     }
 
 

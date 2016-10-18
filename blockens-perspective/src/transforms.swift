@@ -207,7 +207,7 @@ func lookAt(cameraPosition: float4, cameraRotation: float4) -> float4x4 {
     return lookAtMatrix * translationMatrix(transVector: -cameraPosition)
 }
 
-func modelViewTransform(modelViewData: ModelViewData, renderInfo: RenderUtils.RenderInfo) -> float4x4 {
+func modelViewTransform(modelViewData: ModelViewData, renderInfo: RenderUtils.RenderInfo, translate: Bool=true) -> float4x4 {
     
     // ## Setup camera vectors
     
@@ -239,7 +239,10 @@ func modelViewTransform(modelViewData: ModelViewData, renderInfo: RenderUtils.Re
         return SRT * perspectiveMatrix
     }
     
-    let SRT_C: float4x4 = SRT * cameraMatrix
+    var SRT_C: float4x4 = SRT
+    if translate {
+        SRT_C = SRT_C * cameraMatrix
+    }
     
     var SRT_CR: float4x4 = SRT_C * cameraRotationMatrix.y
     SRT_CR = SRT_CR * cameraRotationMatrix.x
