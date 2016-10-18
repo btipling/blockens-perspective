@@ -32,7 +32,7 @@ vertex CubeOut sphereVertex(uint vid [[ vertex_id ]],
     
     outVertex.position = toFloat4(vertices.position) * *matrix;
     
-    uint face = vid > 1500 ? 1 : 2;
+    uint face = vid > 700 ? 0 : 1;
     outVertex.color = colors[face];
     
     return outVertex;

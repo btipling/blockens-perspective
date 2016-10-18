@@ -63,6 +63,9 @@ class RenderUtils {
     var cameraColors: [float4]
     var vectorColors: [float4]
     var groundColors: [float4]
+    var sphereColors: [float4]
+    
+    var windingOrder: MTLWinding = .clockwise
     
     let CONSTANT_BUFFER_SIZE = 1024*1024
     
@@ -89,8 +92,20 @@ class RenderUtils {
         groundColors = []
         
         for _ in 0...5 {
-            groundColors.append(groundGreen)
+            groundColors.append(blueGray)
         }
+        
+        sphereColors = []
+        
+        sphereColors = [
+            white,
+            lightGray,
+            gray3,
+            gray4,
+            gray5,
+            blueGray,
+        ]
+        
         vectorColors = [blueGray, red, yellow]
 
         floatSize = MemoryLayout<Float>.size
@@ -406,9 +421,9 @@ class RenderUtils {
     func setup3D(renderEncoder: MTLRenderCommandEncoder) {
         
         renderEncoder.setDepthStencilState(depthStencilState!)
-        
+        windingOrder = MTLWinding.clockwise
         renderEncoder.setCullMode(MTLCullMode.back)
-        renderEncoder.setFrontFacing(MTLWinding.clockwise)
+        renderEncoder.setFrontFacing(windingOrder)
     }
     
     func meshesToMaterialsBuffer(device: MTLDevice, meshes: [MDLMesh]) -> [MTLBuffer] {

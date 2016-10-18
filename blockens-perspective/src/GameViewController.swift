@@ -40,7 +40,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         var referenceCubes: [ShapeRenderer] = Array()
         for _ in 0..<100 {
             let scale = Float32(arc4random_uniform(2) + 1)
-            referenceCubes.append(ShapeRenderer(colors: renderUtils.cameraColors, scale: [scale, scale, scale], shapeType: .Cube))
+            referenceCubes.append(ShapeRenderer(colors: renderUtils.sphereColors, scale: [scale, scale, scale], shapeType: .Sphere))
         }
         gameWindow.addKeyDownEventCallback(handleKeyDownEvent)
         gameWindow.addKeyUpEventCallback(handleKeyUpEvent)
@@ -68,7 +68,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         
         
         let plane = ShapeRenderer(colors: renderUtils.groundColors, scale: float3(100.0, 100.0, 1.0), shapeType: .Plane)
-        let sphere = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(1.0, 1.0, 1.0), shapeType: .Sphere, inward: true)
+        let sphere = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(1.0, 1.0, 1.0), shapeType: .Cube, inward: false)
 
         // Add render controllers, order matters.
         var renderControllers: [RenderController] = [

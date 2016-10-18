@@ -74,6 +74,9 @@ let gray3 = rgbaToNormalizedGPUColors(139, g: 139, b: 139)
 let gray4 = rgbaToNormalizedGPUColors(173, g: 173, b: 173)
 let gray5 = rgbaToNormalizedGPUColors(214, g: 214, b: 214)
 let blueGray = rgbaToNormalizedGPUColors(33, g: 85, b: 124)
+let white = float4(1.0, 1.0, 1.0, 1.0)
+let lightGray = float4(0.9, 0.9, 0.9, 0.9)
+
 
 let groundGreen = rgbaToNormalizedGPUColors(78, g: 183, b: 2)
 

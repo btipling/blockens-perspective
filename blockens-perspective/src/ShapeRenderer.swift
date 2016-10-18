@@ -12,6 +12,7 @@ class ShapeRenderer: Renderer, RenderController {
         case Cube
         case Plane
         case Sphere
+        case Hemisphere
     }
 
     var renderUtils: RenderUtils!
@@ -72,15 +73,17 @@ class ShapeRenderer: Renderer, RenderController {
                                   inwardNormals: false,
                                   allocator: allocator)
         case .Sphere:
+            fallthrough
+        case .Hemisphere:
             vertexName = "sphereVertex"
             fragmentName = "cubeFragment"
             let sphereDimension: Float32 = 2.0
             mesh = MDLMesh.newEllipsoid(withRadii: float3(sphereDimension, sphereDimension, sphereDimension),
-                                        radialSegments: 50,
-                                        verticalSegments: 50,
+                                        radialSegments: 40,
+                                        verticalSegments: 40,
                                         geometryType: MDLGeometryType.triangles,
                                         inwardNormals: inward,
-                                        hemisphere: false,
+                                        hemisphere: shapeType == .Hemisphere,
                                         allocator: allocator)
         }
         
@@ -126,8 +129,19 @@ class ShapeRenderer: Renderer, RenderController {
     func render(_ renderEncoder: MTLRenderCommandEncoder) {
         renderUtils.setPipeLineState(renderEncoder: renderEncoder, pipelineState: pipelineState, name: "Shape")
         
+        var changedWindingOrder = false
+        // Inward pointing spheres require changing the winding order.
+        if (shapeType == .Sphere && inward && renderUtils.windingOrder != .counterClockwise) {
+            renderEncoder.setFrontFacing(.counterClockwise)
+            changedWindingOrder = true
+        }
+        
         let vertexBuffers: [MTLBuffer] = [matrixBuffer, colorBuffer]
         let _ = renderUtils.drawIndexedPrimitives(renderEncoder: renderEncoder, meshes: meshes, materials: materials, vertexBuffers: vertexBuffers)
+        
+        if (changedWindingOrder) {
+            renderEncoder.setFrontFacing(renderUtils.windingOrder)
+        }
 
     }
 }
