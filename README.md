@@ -2,6 +2,9 @@
 
 More progress on learning 3D math and Apple Metal
 
+
+[![Sky rendering](https://img.youtube.com/vi/5b-w9dEqFGE/maxresdefault.jpg)](https://www.youtube.com/watch?v=5b-w9dEqFGE)
+
 ![Duck model](https://cloud.githubusercontent.com/assets/249641/18813120/3d6eeb16-82a1-11e6-8fc1-f717600ea3de.png)
 
 
