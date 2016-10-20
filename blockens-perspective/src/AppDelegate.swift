@@ -14,6 +14,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var window: NSWindow!
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        NSApp.activate(ignoringOtherApps: true)
         window.makeKeyAndOrderFront(self)
         NSApplication.shared().presentationOptions = [.hideMenuBar, .hideDock]
         window.toggleFullScreen(self)
