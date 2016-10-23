@@ -25,21 +25,25 @@ class ShapeRenderer: Renderer, RenderController {
     var matrixBuffer: MTLBuffer! = nil
     var ShapeInfo: RenderUtils.Object3DInfo! = nil
     
+    private var textureName: String? = nil
+    private var texture: MTLTexture? = nil
+    
     let colors: [float4]
     let scale: float3
     let shapeType: ShapeType
     let inward: Bool
     let translate: Bool
-    var vertexName = "cubeVertex"
-    var fragmentName = "cubeFragment"
+    var vertexName = "shapeVertex"
+    var fragmentName = "shapeFragment"
     
 
-    init (colors: [float4], scale: float3, shapeType: ShapeType, inward: Bool=false, translate: Bool=true) {
+    init (colors: [float4], scale: float3, shapeType: ShapeType, textureName: String?=nil, inward: Bool=false, translate: Bool=true) {
         self.colors = colors
         self.scale = scale
         self.shapeType = shapeType
         self.inward = inward
         self.translate = translate
+        self.textureName = textureName
     }
     
     func setRenderUtils(_ renderUtils: RenderUtils) {
@@ -83,17 +87,22 @@ class ShapeRenderer: Renderer, RenderController {
                                         allocator: allocator)
         }
         
+        if let textureName = self.textureName {
+            texture = renderUtils.loadTexture(device: device, name: textureName)
+        }
+        
         do {
             try meshes = [MTKMesh.init(mesh: mesh, device: device)]
         } catch let error {
             print("Unable to load mesh for new box: \(error)")
         }
-        
         materials = renderUtils.meshesToMaterialsBuffer(device: device, meshes: [mesh])
         
         
         let pipelineStateDescriptor = renderUtils.createPipelineStateDescriptor(vertex: vertexName, fragment: fragmentName, device: device, view: view)
         pipelineStateDescriptor.vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(mesh.vertexDescriptor)
+        let attributes3 = pipelineStateDescriptor.vertexDescriptor!.attributes[2]
+        print(attributes3!.format)
         return pipelineStateDescriptor
     }
 
@@ -127,9 +136,13 @@ class ShapeRenderer: Renderer, RenderController {
         
         var changedWindingOrder = false
         // Inward pointing spheres require changing the winding order.
-        if (shapeType == .Sphere && inward && renderUtils.windingOrder != .counterClockwise) {
+        if shapeType == .Sphere && inward && renderUtils.windingOrder != .counterClockwise {
             renderEncoder.setFrontFacing(.counterClockwise)
             changedWindingOrder = true
+        }
+        
+        if texture != nil {
+            renderEncoder.setFragmentTexture(texture, at: 0)
         }
         
         let vertexBuffers: [MTLBuffer] = [matrixBuffer, colorBuffer]

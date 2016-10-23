@@ -8,14 +8,15 @@
 
 #include "utils.h"
 
-vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
-                          const CubeIn vertices [[stage_in]],
+vertex ShapeOut shapeVertex(uint vid [[ vertex_id ]],
+                          const ShapeIn vertices [[stage_in]],
                           constant float4x4* matrix [[ buffer(1)]],
                           constant float4* colors [[ buffer(2) ]]) {
 
-    CubeOut outVertex;
+    ShapeOut outVertex;
     
     outVertex.position = toFloat4(vertices.position) * *matrix;
+    outVertex.textureCoords = vertices.textureCoords;
     
     uint face = vid / 4;
     outVertex.color = colors[face % 6];
@@ -23,12 +24,12 @@ vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
     return outVertex;
 }
 
-vertex CubeOut bubbleVertex(uint vid [[ vertex_id ]],
-                          const CubeIn vertices [[stage_in]],
+vertex ShapeOut bubbleVertex(uint vid [[ vertex_id ]],
+                          const ShapeIn vertices [[stage_in]],
                           constant float4x4* matrix [[ buffer(1)]],
                           constant float4* colors [[ buffer(2) ]]) {
     
-    CubeOut outVertex;
+    ShapeOut outVertex;
     
     outVertex.position = toFloat4(vertices.position) * *matrix;
     
@@ -38,12 +39,12 @@ vertex CubeOut bubbleVertex(uint vid [[ vertex_id ]],
     return outVertex;
 }
 
-vertex CubeOut skyVertex(uint vid [[ vertex_id ]],
-                            const CubeIn vertices [[stage_in]],
+vertex ShapeOut skyVertex(uint vid [[ vertex_id ]],
+                            const ShapeIn vertices [[stage_in]],
                             constant float4x4* matrix [[ buffer(1)]],
                             constant float4* colors [[ buffer(2) ]]) {
     
-    CubeOut outVertex;
+    ShapeOut outVertex;
     
     outVertex.position = toFloat4(vertices.position) * *matrix;
     
@@ -53,8 +54,19 @@ vertex CubeOut skyVertex(uint vid [[ vertex_id ]],
     return outVertex;
 }
 
-fragment float4 cubeFragment(CubeOut inFrag [[stage_in]]) {
+fragment float4 shapeFragment(ShapeOut inFrag [[stage_in]]) {
     return inFrag.color;
 }
+
+fragment float4 shapeTextureFragment(ShapeOut in [[stage_in]],
+                             texture2d<float>  diffuseTexture [[ texture(0) ]]) {
+    constexpr sampler defaultSampler;
+    
+    // Blend texture color with input color and output to framebuffer
+    float4 color =  diffuseTexture.sample(defaultSampler, in.textureCoords);
+    
+    return color;
+}
+
 
 

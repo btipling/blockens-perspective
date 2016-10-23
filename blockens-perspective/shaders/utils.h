@@ -6,8 +6,26 @@
 
 using namespace metal;
 
-struct CubeIn {
+
+struct DuckIn {
     float3 position [[attribute(0)]];
+};
+
+struct DuckOut {
+    float4  position [[position]];
+    float4 color;
+};
+
+struct ShapeIn {
+    float3 position [[attribute(0)]];
+    //    float3 normals [[attribute(1)]];
+    float2 textureCoords [[attribute(2)]];
+};
+
+struct ShapeOut {
+    float4  position [[position]];
+    float2 textureCoords;
+    float4 color;
 };
 
 struct PlaneIn {
@@ -20,11 +38,6 @@ struct Color {
 
 struct VertextOut {
     float4  position [[position]];
-};
-
-struct CubeOut {
-    float4  position [[position]];
-    float4 color;
 };
 
 struct RenderInfo {

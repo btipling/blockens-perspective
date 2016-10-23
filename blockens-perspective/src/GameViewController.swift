@@ -33,9 +33,17 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         
         super.viewDidLoad()
         
+        device = MTLCreateSystemDefaultDevice()
+        guard device != nil else {
+            print("Metal is not supported on this device")
+            exit(1)
+        }
+        
+        let view = self.view as! MTKView
+        
         let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let gameWindow = appDelegate.getWindow()
-        gameWindow.makeFirstResponder(self.view)
+        gameWindow.makeFirstResponder(view)
         cube = ShapeRenderer(colors: renderUtils.cubeColors, scale: float3(1.0, 1.0, 1.0), shapeType: .Cube)
         
         var bubbles: [ShapeRenderer] = Array()
@@ -48,15 +56,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         gameWindow.addKeyDownEventCallback(handleKeyDownEvent)
         gameWindow.addKeyUpEventCallback(handleKeyUpEvent)
 
-        device = MTLCreateSystemDefaultDevice()
-        guard device != nil else { // Fallback to a blank NSView, an application could also fallback to OpenGL here.
-            print("Metal is not supported on this device")
-            self.view = NSView(frame: self.view.frame)
-            return
-        }
 
         // Setup view properties.
-        let view = self.view as! MTKView
         view.delegate = self
         view.device = device
         view.sampleCount = 4
@@ -74,6 +75,10 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         sky = ShapeRenderer(colors: renderUtils.skyColors, scale: float3(400.0, 400.0, 400.0), shapeType: .Sphere, inward: true, translate: false)
         sky.vertexName = "skyVertex"
         sky.update(rotation: float3(1.0, 1.0, 1.0), position: float3(0.0, 0.0, 0.0))
+        
+        let testCube = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(1.0, 1.0, 1.0), shapeType: .Cube, textureName: "spaghetti")
+        testCube.fragmentName = "shapeTextureFragment"
+        testCube.update(rotation: float3(0.0, 0.0, 1.0), position: float3(55.0, 0.0, 5.0))
 
         // Add render controllers, order matters.
         var renderControllers: [RenderController] = [
@@ -81,6 +86,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             cube,
             DuckRenderer(),
             plane,
+            testCube,
         ]
         
         renderControllers = renderControllers + bubbles
