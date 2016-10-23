@@ -48,16 +48,6 @@ class RenderUtils {
         float3(1.0, -1.0, 1.0),
         float3(-1.0, -1.0, 1.0),
     ]
-
-    let rectangleTextureCoords:[Float32] = [
-        0.0,  1.0,
-        0.0,  0.0,
-        1.0,  1.0,
-
-        0.0,  0.0,
-        1.0,  0.0,
-        1.0,  1.0,
-    ]
     
     var cubeColors: [float4]
     var cameraColors: [float4]
@@ -224,21 +214,6 @@ class RenderUtils {
     func numCubeColors() -> Int {
         return cubeColors.count/3 // Divided by 3 because RGB.
     }
-
-    func loadTexture(device: MTLDevice, name: String) -> MTLTexture {
-        var image = NSImage(named: name)!
-        image = flipImage(image)
-        var imageRect:CGRect = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-        let imageRef = image.cgImage(forProposedRect: &imageRect, context: nil, hints: nil)!
-        let textureLoader = MTKTextureLoader(device: device)
-        var texture: MTLTexture? = nil
-        do {
-            texture = try textureLoader.newTexture(with: imageRef, options: .none)
-        } catch {
-            print("Got an error trying to texture \(error)")
-        }
-        return texture!
-    }
     
     func createPipelineStateDescriptor(vertex: String, fragment: String, device: MTLDevice, view: MTKView) -> MTLRenderPipelineDescriptor {
         
@@ -354,17 +329,7 @@ class RenderUtils {
 
         return buffer
     }
-
-    func createRectangleTextureCoordsBuffer(device: MTLDevice, bufferLabel: String) -> MTLBuffer {
-
-        let bufferSize = rectangleTextureCoords.count * MemoryLayout.size(ofValue: rectangleTextureCoords[0])
-        let buffer = device.makeBuffer(bytes: rectangleTextureCoords, length: bufferSize, options: [])
-        
-        buffer.label = bufferLabel
-
-        return buffer
-    }
-
+    
     func createBufferFromIntArray(device: MTLDevice, count: Int, bufferLabel: String) -> MTLBuffer {
         let bufferSize = MemoryLayout.size(ofValue: Array<Int32>(repeating: 0, count: count))
         let buffer = device.makeBuffer(length: bufferSize, options: [])

@@ -25,8 +25,7 @@ class ShapeRenderer: Renderer, RenderController {
     var matrixBuffer: MTLBuffer! = nil
     var ShapeInfo: RenderUtils.Object3DInfo! = nil
     
-    private var textureName: String? = nil
-    private var texture: MTLTexture? = nil
+    private var textureLoader: TextureLoader? = nil
     
     let colors: [float4]
     let scale: float3
@@ -37,13 +36,13 @@ class ShapeRenderer: Renderer, RenderController {
     var fragmentName = "shapeFragment"
     
 
-    init (colors: [float4], scale: float3, shapeType: ShapeType, textureName: String?=nil, inward: Bool=false, translate: Bool=true) {
+    init (colors: [float4], scale: float3, shapeType: ShapeType, textureLoader: TextureLoader?=nil, inward: Bool=false, translate: Bool=true) {
         self.colors = colors
         self.scale = scale
         self.shapeType = shapeType
         self.inward = inward
         self.translate = translate
-        self.textureName = textureName
+        self.textureLoader = textureLoader
     }
     
     func setRenderUtils(_ renderUtils: RenderUtils) {
@@ -87,8 +86,8 @@ class ShapeRenderer: Renderer, RenderController {
                                         allocator: allocator)
         }
         
-        if let textureName = self.textureName {
-            texture = renderUtils.loadTexture(device: device, name: textureName)
+        if let textureLoader = self.textureLoader {
+            textureLoader.load(device: device)
         }
         
         do {
@@ -141,9 +140,7 @@ class ShapeRenderer: Renderer, RenderController {
             changedWindingOrder = true
         }
         
-        if texture != nil {
-            renderEncoder.setFragmentTexture(texture, at: 0)
-        }
+        textureLoader?.loadInto(renderEncoder: renderEncoder)
         
         let vertexBuffers: [MTLBuffer] = [matrixBuffer, colorBuffer]
         let _ = renderUtils.drawIndexedPrimitives(renderEncoder: renderEncoder, meshes: meshes, materials: materials, vertexBuffers: vertexBuffers)
