@@ -80,9 +80,13 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         testCube.fragmentName = "shapeTextureFragment"
         testCube.update(rotation: float3(0.0, 0.0, 1.0), position: float3(55.0, 0.0, 5.0))
         
-        let testSphere = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(1.0, 1.0, 1.0), shapeType: .Sphere, textureName: "spaghetti")
-        testSphere.fragmentName = "shapeTextureFragment"
-        testSphere.update(rotation: float3(2.0, 2.0, 0.0), position: float3(55.0, 0.0, -5.0))
+        let testTextureSphere = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(1.0, 1.0, 1.0), shapeType: .Sphere, textureName: "spaghetti")
+        testTextureSphere.fragmentName = "shapeTextureFragment"
+        testTextureSphere.update(rotation: float3(2.0, 2.0, 0.0), position: float3(55.0, 0.0, -5.0))
+        
+        let testDrawingSphere = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(1.0, 1.0, 1.0), shapeType: .Sphere)
+        testDrawingSphere.fragmentName = "sphereDrawingFragment"
+        testDrawingSphere.update(rotation: float3(2.0, 2.0, 0.0), position: float3(60.0, 0.0, 0.0))
 
         // Add render controllers, order matters.
         var renderControllers: [RenderController] = [
@@ -91,7 +95,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             DuckRenderer(),
             plane,
             testCube,
-            testSphere,
+            testTextureSphere,
+            testDrawingSphere,
         ]
         
         renderControllers = renderControllers + bubbles
@@ -346,7 +351,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             viewDimensions: [0.0, 0.0],
             viewDiffRatio: 0.0,
             cubeRotation: [5.5, 0.7, 1.4],
-            cubePosition: [60.0, 0.0, 5.0],
+            cubePosition: [60.0, 0.0, 10.0],
             zoom: 1,
             near: 0.1,
             far: 6000.0,

@@ -24,6 +24,7 @@ struct ShapeIn {
 
 struct ShapeOut {
     float4  position [[position]];
+    float4 modelCoordinates;
     float2 textureCoords;
     float4 color;
 };

@@ -15,8 +15,10 @@ vertex ShapeOut shapeVertex(uint vid [[ vertex_id ]],
 
     ShapeOut outVertex;
     
-    outVertex.position = toFloat4(vertices.position) * *matrix;
+    float4 pos = toFloat4(vertices.position);
+    outVertex.position = pos * *matrix;
     outVertex.textureCoords = vertices.textureCoords;
+    outVertex.modelCoordinates = pos;
     
     uint face = vid / 4;
     outVertex.color = colors[face % 6];
@@ -66,6 +68,46 @@ fragment float4 shapeTextureFragment(ShapeOut in [[stage_in]],
     float4 color =  diffuseTexture.sample(defaultSampler, in.textureCoords);
     
     return color;
+}
+
+fragment float4 sphereDrawingFragment(ShapeOut in [[stage_in]]) {
+    
+    float4 purple = rgbaToNormalizedGPUColors(233, 116, 223);
+    float4 orange = rgbaToNormalizedGPUColors(255, 191, 127);
+    float4 green = rgbaToNormalizedGPUColors(158, 236, 117);
+    float4 red = rgbaToNormalizedGPUColors(249, 82, 12);
+    float4 yellow = rgbaToNormalizedGPUColors(249, 237, 12);
+    float4 cherry = rgbaToNormalizedGPUColors(249, 0, 75);
+    float4 lightBlue = rgbaToNormalizedGPUColors(0, 159, 225);
+    float4 lightGreen = rgbaToNormalizedGPUColors(159, 250, 0);
+    
+    
+    float4 pos = in.modelCoordinates;
+    if (pos.x < 0) {
+        if (pos.y < 0) {
+            if (pos.z < 0) {
+                return lightBlue;
+            }
+            return orange;
+        }
+        if (pos.z < 0) {
+            return yellow;
+        }
+        return green;
+    }
+    if (pos.y < 0) {
+        if (pos.z < 0) {
+            return lightGreen;
+        }
+        return purple;
+    }
+    if (pos.z < 0) {
+        return cherry;
+    }
+    
+    
+    
+    return red;
 }
 
 

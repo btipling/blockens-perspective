@@ -60,6 +60,9 @@ let UP_KEY: UInt16 = 126
 let DOWN_KEY: UInt16 = 125
 
 let skyBlue = rgbaToNormalizedGPUColors(116, g:184, b:223);
+let lightBlue = rgbaToNormalizedGPUColors(0, g: 159, b: 225);
+let lightGreen = rgbaToNormalizedGPUColors(159, g: 250, b: 0);
+
 
 let purple = rgbaToNormalizedGPUColors(233, g: 116, b: 223)
 let orange = rgbaToNormalizedGPUColors(255, g: 191, b: 127)
