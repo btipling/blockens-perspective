@@ -33,7 +33,7 @@ class DuckRenderer: Renderer, RenderController {
     }
     
     func loadDuck(device: MTLDevice, pipelineStateDescriptor: MTLRenderPipelineDescriptor) {
-        let path = Bundle.main.path(forResource: "duck", ofType: "obj", inDirectory: "Data/assets")
+        let path = Bundle.main.path(forResource: "duck", ofType: "obj", inDirectory: "Data/assets/models")
         if(path == nil) {
             print("Could not find duck.")
         } else {
