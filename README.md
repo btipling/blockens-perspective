@@ -22,6 +22,7 @@ Includes:
 
 * Loading objects using Model I/O including their materials
 * Creating shapes using MDLMesh helper functions.
+* Texturing MDLMesh based shapes.
 * Perspective projection
 * Multiple objects
 * Depth testing
