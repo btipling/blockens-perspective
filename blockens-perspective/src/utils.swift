@@ -95,12 +95,14 @@ func log_e(_ n: Double) -> Double {
     return log(n)/log(M_E)
 }
 
-func flipImage(_ image: NSImage) -> NSImage {
+func fix(image: NSImage, flip: Bool=false) -> NSImage {
     var imageBounds = NSZeroRect
     imageBounds.size = image.size
     var transform = AffineTransform.identity
-    transform.translate(x: 0.0, y: imageBounds.height)
-    transform.scale(x: 1, y: -1)
+    if flip {
+        transform.translate(x: 0.0, y: imageBounds.height)
+        transform.scale(x: 1.0, y: -1.0)
+    }
     let flippedImage = NSImage(size: imageBounds.size)
 
     flippedImage.lockFocus()

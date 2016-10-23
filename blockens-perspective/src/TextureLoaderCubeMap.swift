@@ -1,5 +1,5 @@
 //
-//  TextureLoader2D.swift
+//  TextureLoaderCubeMap.swift
 //  blockens-perspective
 //
 //  Created by Bjorn Tipling on 10/23/16.
@@ -9,7 +9,7 @@
 import Foundation
 import MetalKit
 
-class TextureLoader2D: TextureLoader {
+class TextureLoaderCubeMap: TextureLoader {
     
     private let name: String
     private var texture: MTLTexture?
@@ -43,5 +43,5 @@ class TextureLoader2D: TextureLoader {
             renderEncoder.setFragmentTexture(texture!, at: 0)
         }
     }
-
+    
 }

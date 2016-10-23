@@ -12,6 +12,7 @@
 		404E7BEA1D8C198D007B9D0F /* CrossHairs.metal in Sources */ = {isa = PBXBuildFile; fileRef = 404E7BE91D8C198D007B9D0F /* CrossHairs.metal */; };
 		4052C56C1DBD7F340019DAB7 /* TextureLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4052C56B1DBD7F340019DAB7 /* TextureLoader.swift */; };
 		4052C56E1DBD7FE30019DAB7 /* TextureLoader2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4052C56D1DBD7FE30019DAB7 /* TextureLoader2D.swift */; };
+		4052C5701DBD83530019DAB7 /* TextureLoaderCubeMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4052C56F1DBD83530019DAB7 /* TextureLoaderCubeMap.swift */; };
 		4096F62F1D960A060000FE28 /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 4096F62E1D960A060000FE28 /* Data */; };
 		4096F6311D963CA10000FE28 /* DuckViewRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4096F6301D963CA10000FE28 /* DuckViewRenderer.swift */; };
 		4096F6331D9640130000FE28 /* Duck.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4096F6321D9640130000FE28 /* Duck.metal */; };
@@ -35,6 +36,7 @@
 		404E7BE91D8C198D007B9D0F /* CrossHairs.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = CrossHairs.metal; sourceTree = "<group>"; };
 		4052C56B1DBD7F340019DAB7 /* TextureLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextureLoader.swift; sourceTree = "<group>"; };
 		4052C56D1DBD7FE30019DAB7 /* TextureLoader2D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextureLoader2D.swift; sourceTree = "<group>"; };
+		4052C56F1DBD83530019DAB7 /* TextureLoaderCubeMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextureLoaderCubeMap.swift; sourceTree = "<group>"; };
 		4096F62E1D960A060000FE28 /* Data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Data; sourceTree = "<group>"; };
 		4096F6301D963CA10000FE28 /* DuckViewRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DuckViewRenderer.swift; sourceTree = "<group>"; };
 		4096F6321D9640130000FE28 /* Duck.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Duck.metal; sourceTree = "<group>"; };
@@ -98,6 +100,7 @@
 				4024998B1D9B0E4200A8F5E7 /* transforms.swift */,
 				4052C56B1DBD7F340019DAB7 /* TextureLoader.swift */,
 				4052C56D1DBD7FE30019DAB7 /* TextureLoader2D.swift */,
+				4052C56F1DBD83530019DAB7 /* TextureLoaderCubeMap.swift */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -211,6 +214,7 @@
 				40C1FDE71DB48AB800DF22E2 /* Shape.metal in Sources */,
 				596DD46F6ADF9DE25D88B586 /* utils.metal in Sources */,
 				40C1FDE51DB4778000DF22E2 /* ShapeRenderer.swift in Sources */,
+				4052C5701DBD83530019DAB7 /* TextureLoaderCubeMap.swift in Sources */,
 				4024998C1D9B0E4200A8F5E7 /* transforms.swift in Sources */,
 				4052C56C1DBD7F340019DAB7 /* TextureLoader.swift in Sources */,
 				596DDCCE8F426D3D180A5E6E /* GameViewController.swift in Sources */,
