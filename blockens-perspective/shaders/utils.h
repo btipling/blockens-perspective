@@ -29,6 +29,18 @@ struct ShapeOut {
     float4 color;
 };
 
+struct CubeIn {
+    float3 position [[attribute(0)]];
+    //    float3 normals [[attribute(1)]];
+    float3 textureCoords [[attribute(2)]];
+};
+
+struct CubeOut {
+    float4 position [[position]];
+    float3 textureCoords;
+    float4 color;
+};
+
 struct PlaneIn {
     float2 position [[attribute(0)]];
 };

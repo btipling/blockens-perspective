@@ -88,6 +88,13 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         let testDrawingSphere = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(1.0, 1.0, 1.0), shapeType: .Sphere)
         testDrawingSphere.fragmentName = "sphereDrawingFragment"
         testDrawingSphere.update(rotation: float3(2.0, 2.0, 0.0), position: float3(60.0, 0.0, 0.0))
+        
+        let ggTexture = TextureLoaderCubeMap(name: "gg", renderUtils: renderUtils)
+        let testMappedCube = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(10.0, 10.0, 10.0), shapeType: .Cube, textureLoader: ggTexture,
+                                           inward: false)
+        testMappedCube.vertexName = "cubeVertex"
+        testMappedCube.fragmentName = "cubeTextureFragment"
+        testMappedCube.update(rotation: float3(0.0, 0.0, 0.0), position: float3(65.0, 10.0, 25.0))
 
         // Add render controllers, order matters.
         var renderControllers: [RenderController] = [
@@ -98,6 +105,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             testCube,
             testTextureSphere,
             testDrawingSphere,
+            testMappedCube,
         ]
         
         renderControllers = renderControllers + bubbles
@@ -356,8 +364,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             zoom: 1,
             near: 0.1,
             far: 6000.0,
-            cameraRotation: [0.25, 1.86, 0.0],
-            cameraTranslation: [73.5, 0.0, 16.6],
+            cameraRotation: [-0.36, 01.06, 0],
+            cameraTranslation: [73.8, 16.0, -8.0],
             useCamera: true)
         registerViewDimensions(view)
     }
