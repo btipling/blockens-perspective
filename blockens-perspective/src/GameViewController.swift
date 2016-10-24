@@ -76,7 +76,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         sky.vertexName = "skyVertex"
         sky.update(rotation: float3(1.0, 1.0, 1.0), position: float3(0.0, 0.0, 0.0))
         
-        let doggoTexture = TextureLoader2D(name: "spaghetti")
+        let doggoTexture = TextureLoader2D(name: "spaghetti", renderUtils: renderUtils)
         let testCube = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(1.0, 1.0, 1.0), shapeType: .Cube, textureLoader: doggoTexture)
         testCube.fragmentName = "shapeTextureFragment"
         testCube.update(rotation: float3(0.0, 0.0, 1.0), position: float3(55.0, 0.0, 5.0))

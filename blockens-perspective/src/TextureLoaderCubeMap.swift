@@ -18,7 +18,7 @@ class TextureLoaderCubeMap: TextureLoader {
         self.name = name
     }
     
-    internal func load(device: MTLDevice) {
+    func load(device: MTLDevice) {
         
         if (texture != nil) {
             // Already loaded texture.
@@ -26,7 +26,6 @@ class TextureLoaderCubeMap: TextureLoader {
         }
         
         var image = NSImage(named: name)!
-        
         image = fix(image: image)
         var imageRect:CGRect = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
         let imageRef = image.cgImage(forProposedRect: &imageRect, context: nil, hints: nil)!
@@ -38,7 +37,7 @@ class TextureLoaderCubeMap: TextureLoader {
         }
     }
     
-    internal func loadInto(renderEncoder: MTLRenderCommandEncoder) {
+    func loadInto(renderEncoder: MTLRenderCommandEncoder) {
         if texture != nil {
             renderEncoder.setFragmentTexture(texture!, at: 0)
         }

@@ -12,33 +12,25 @@ import MetalKit
 class TextureLoader2D: TextureLoader {
     
     private let name: String
+    private let renderUtils: RenderUtils
     private var texture: MTLTexture?
     
-    init (name: String) {
+    init (name: String, renderUtils: RenderUtils) {
         self.name = name
+        self.renderUtils = renderUtils
     }
     
-    internal func load(device: MTLDevice) {
+    func load(device: MTLDevice) {
         
         if (texture != nil) {
             // Already loaded texture.
             return
         }
         
-        var image = NSImage(named: name)!
-        
-        image = fix(image: image)
-        var imageRect:CGRect = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-        let imageRef = image.cgImage(forProposedRect: &imageRect, context: nil, hints: nil)!
-        let textureLoader = MTKTextureLoader(device: device)
-        do {
-            texture = try textureLoader.newTexture(with: imageRef, options: .none)
-        } catch {
-            print("Got an error trying to texture \(error)")
-        }
+        texture = renderUtils.loadImageIntoTexture(device: device, name: name)
     }
     
-    internal func loadInto(renderEncoder: MTLRenderCommandEncoder) {
+    func loadInto(renderEncoder: MTLRenderCommandEncoder) {
         if texture != nil {
             renderEncoder.setFragmentTexture(texture!, at: 0)
         }

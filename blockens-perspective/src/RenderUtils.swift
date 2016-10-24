@@ -238,6 +238,21 @@ class RenderUtils {
     }
 
     
+    func loadImageIntoTexture(device: MTLDevice, name: String) -> MTLTexture? {
+        
+        var image = NSImage(named: name)!
+        image = fix(image: image)
+        var imageRect:CGRect = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+        let imageRef = image.cgImage(forProposedRect: &imageRect, context: nil, hints: nil)!
+        let textureLoader = MTKTextureLoader(device: device)
+        do {
+            return try textureLoader.newTexture(with: imageRef, options: .none)
+        } catch {
+            print("Got an error trying to texture \(error)")
+        }
+        return nil
+    }
+    
     func createPipeLineStateWithDescriptor(device: MTLDevice, pipelineStateDescriptor: MTLRenderPipelineDescriptor) -> MTLRenderPipelineState {
         var pipelineState: MTLRenderPipelineState! = nil
         do {
