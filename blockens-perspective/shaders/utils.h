@@ -16,6 +16,11 @@ struct DuckOut {
     float4 color;
 };
 
+struct ShapeInfo {
+    float4 colors;
+    uint numSides;
+};
+
 struct ShapeIn {
     float3 position [[attribute(0)]];
     //    float3 normals [[attribute(1)]];
@@ -32,12 +37,12 @@ struct ShapeOut {
 struct CubeIn {
     float3 position [[attribute(0)]];
     //    float3 normals [[attribute(1)]];
-    float3 textureCoords [[attribute(2)]];
+    float2 textureCoords [[attribute(2)]];
 };
 
 struct CubeOut {
     float4 position [[position]];
-    float3 textureCoords;
+    float2 textureCoords;
     float4 color;
 };
 

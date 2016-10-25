@@ -14,6 +14,7 @@ class TextureLoaderCubeMap: TextureLoader {
     private let name: String
     private let renderUtils: RenderUtils
     private var texture: MTLTexture?
+    private var sampler: MTLSamplerState?
     
     init (name: String, renderUtils: RenderUtils) {
         self.name = name
@@ -26,7 +27,16 @@ class TextureLoaderCubeMap: TextureLoader {
             // Already loaded texture.
             return
         }
+        
+        // Load sampler
+        
+        let samplerDescriptor = MTLSamplerDescriptor()
+        samplerDescriptor.minFilter = MTLSamplerMinMagFilter.nearest
+        samplerDescriptor.magFilter = MTLSamplerMinMagFilter.linear
+        sampler = device.makeSamplerState(descriptor: samplerDescriptor)
       
+        // Load texture
+        
         let sides = [
             "posx",
             "negx",
@@ -47,17 +57,17 @@ class TextureLoaderCubeMap: TextureLoader {
         let firstTexture = textures.first
         let descriptor = MTLTextureDescriptor.textureCubeDescriptor(pixelFormat: firstTexture!.pixelFormat, size: 4096, mipmapped: false)
         texture = device.makeTexture(descriptor: descriptor)
+        
         for (index, currentSide) in textures.enumerated() {
-            let origin = MTLOrigin(x: 0, y: 0, z: 0)
-            let size = MTLSize(width: currentSide.width, height: currentSide.height, depth: currentSide.depth)
-            let bytesPerRow = 8 * currentSide.width
+            let bytesPerRow = 4 * currentSide.width
             let imageSize = bytesPerRow * currentSide.height
-            let region = MTLRegion(origin: origin, size: size)
+            let region = MTLRegionMake2D(0, 0, currentSide.width, currentSide.height)
             let pointer = UnsafeMutableRawPointer.allocate(bytes: imageSize, alignedTo: 4)
             let roPointer = UnsafeRawPointer.init(pointer)
             print("rowBytes: \(bytesPerRow)")
             currentSide.getBytes(pointer, bytesPerRow: bytesPerRow, from: region, mipmapLevel: 0)
-            texture!.replace(region: region, mipmapLevel: 0, slice: index, withBytes: roPointer, bytesPerRow: bytesPerRow, bytesPerImage: imageSize)
+            texture!.replace(region: region, mipmapLevel: 0, slice: 0, withBytes: roPointer, bytesPerRow: bytesPerRow, bytesPerImage: imageSize)
+            return
         }
         
         
@@ -66,6 +76,9 @@ class TextureLoaderCubeMap: TextureLoader {
     func loadInto(renderEncoder: MTLRenderCommandEncoder) {
         if texture != nil {
             renderEncoder.setFragmentTexture(texture!, at: 0)
+            if (sampler != nil) {
+                renderEncoder.setFragmentSamplerState(sampler, at: 0)
+            }
         }
     }
     

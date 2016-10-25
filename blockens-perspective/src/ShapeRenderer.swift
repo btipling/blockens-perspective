@@ -14,6 +14,11 @@ class ShapeRenderer: Renderer, RenderController {
         case Sphere
         case Hemisphere
     }
+    
+    struct ShapeInfo {
+        let colors: [float4]
+        let numSides: uint4
+    }
 
     var renderUtils: RenderUtils!
 
@@ -21,9 +26,9 @@ class ShapeRenderer: Renderer, RenderController {
     
     var meshes: [MTKMesh] = Array()
     var materials: [MTLBuffer] = Array()
-    var colorBuffer: MTLBuffer! = nil
+    var shapeInfoBuffer: MTLBuffer! = nil
     var matrixBuffer: MTLBuffer! = nil
-    var ShapeInfo: RenderUtils.Object3DInfo! = nil
+    var object3DInfo: RenderUtils.Object3DInfo! = nil
     
     private var textureLoader: TextureLoader? = nil
     
@@ -96,6 +101,22 @@ class ShapeRenderer: Renderer, RenderController {
             print("Unable to load mesh for new box: \(error)")
         }
         materials = renderUtils.meshesToMaterialsBuffer(device: device, meshes: [mesh])
+        let meshDescriptor = mesh.vertexDescriptor
+        let attributes = meshDescriptor.attributes
+        let tc = mesh.vertexAttributeData(forAttributeNamed: "textureCoordinate")!
+        let map = tc.map
+        switch(tc.format) {
+        case .float2:
+            print("float2")
+        case .float3:
+            print("float3")
+        case .float4:
+            print("float4")
+        case .half3:
+            print("half3")
+        default:
+            print("nope")
+        }
         
         
         let pipelineStateDescriptor = renderUtils.createPipelineStateDescriptor(vertex: vertexName, fragment: fragmentName, device: device, view: view)
@@ -109,21 +130,49 @@ class ShapeRenderer: Renderer, RenderController {
         let pipelineStateDescriptor: MTLRenderPipelineDescriptor
             pipelineStateDescriptor = loadShape(device: device, view: view)
         pipelineState = renderUtils.createPipeLineStateWithDescriptor(device: device, pipelineStateDescriptor: pipelineStateDescriptor)
-        colorBuffer = renderUtils.createColorBuffer(device: device, colors: colors, label: "Shape colors")
+        
+        loadShapeInfo(device: device)
         matrixBuffer = renderUtils.createMatrixBuffer(device: device, label: "Shape matrix")
         
+    }
+    
+    func loadShapeInfo(device: MTLDevice) {
+        
+        var numSides = self.numSides()
+        
+        let floatSize = MemoryLayout<float4>.size
+        let uint4Size = MemoryLayout<uint4>.size
+        let colorsSize = floatSize * colors.count
+        let bufferSize = colorsSize + uint4Size
+        
+        
+        let buffer = device.makeBuffer(length: bufferSize, options: [])
+        buffer.label = "Shape info"
+        let pointer = buffer.contents()
+        memcpy(pointer, colors, bufferSize)
+        memcpy(pointer + colorsSize, &numSides, uint4Size)
+        shapeInfoBuffer = buffer
+    }
+    
+    func numSides() -> uint4 {
+        switch shapeType {
+        case .Cube:
+                return uint4(6)
+        default:
+                return uint4(0)
+        }
     }
 
     func update(rotation: float3, position: float3, scale: float3?=nil) {
         
-        ShapeInfo = RenderUtils.Object3DInfo(
+        object3DInfo = RenderUtils.Object3DInfo(
             rotation: rotation,
             scale: scale ?? self.scale,
             position: position)
     }
     
     func update() {
-        guard let objectCopy = ShapeInfo else {
+        guard let objectCopy = object3DInfo else {
             return
         }
         renderUtils.updateMatrixBuffer(buffer: matrixBuffer, object3DInfo: objectCopy, translate: translate)
@@ -142,7 +191,7 @@ class ShapeRenderer: Renderer, RenderController {
         
         textureLoader?.loadInto(renderEncoder: renderEncoder)
         
-        let vertexBuffers: [MTLBuffer] = [matrixBuffer, colorBuffer]
+        let vertexBuffers: [MTLBuffer] = [matrixBuffer, shapeInfoBuffer]
         let _ = renderUtils.drawIndexedPrimitives(renderEncoder: renderEncoder, meshes: meshes, materials: materials, vertexBuffers: vertexBuffers)
         
         if (changedWindingOrder) {
