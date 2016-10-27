@@ -90,11 +90,11 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         testDrawingSphere.update(rotation: float3(2.0, 2.0, 0.0), position: float3(60.0, 0.0, 0.0))
         
         let ggTexture = TextureLoaderCubeMap(name: "gg", renderUtils: renderUtils)
-        let testMappedCube = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(10.0, 10.0, 10.0), shapeType: .Cube, textureLoader: ggTexture,
-                                           inward: false)
+        let testMappedCube = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(200.0, 200.0, 200.0), shapeType: .Cube, textureLoader: ggTexture,
+                                           inward: true)
         testMappedCube.vertexName = "cubeVertex"
         testMappedCube.fragmentName = "cubeTextureFragment"
-        testMappedCube.update(rotation: float3(0.0, 0.0, 0.0), position: float3(65.0, 10.0, 25.0))
+        testMappedCube.update(rotation: float3(0.0, 0.0, 0.0), position: float3(285.0, 250.0, 155.0))
 
         // Add render controllers, order matters.
         var renderControllers: [RenderController] = [
@@ -357,15 +357,15 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     func setupFrameInfo(_ view: MTKView) {
         print("Setting up frame info")
         frameInfo = FrameInfo(
-            viewDimensions: [0.0, 0.0],
+            viewDimensions: float2(0.0, 0.0),
             viewDiffRatio: 0.0,
-            cubeRotation: [5.5, 0.7, 1.4],
-            cubePosition: [60.0, 0.0, 10.0],
+            cubeRotation: float3(5.5, 0.7, 1.4),
+            cubePosition: float3(60.0, 0.0, 10.0),
             zoom: 1,
             near: 0.1,
             far: 6000.0,
-            cameraRotation: [-0.36, 01.06, 0],
-            cameraTranslation: [73.8, 16.0, -8.0],
+            cameraRotation: float3(-0.36, 01.06, 0),
+            cameraTranslation: float3(61.6952, 6.77314, 24.5539),
             useCamera: true)
         registerViewDimensions(view)
     }
