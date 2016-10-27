@@ -27,6 +27,7 @@ class ShapeRenderer: Renderer, RenderController {
     var meshes: [MTKMesh] = Array()
     var materials: [MTLBuffer] = Array()
     var shapeInfoBuffer: MTLBuffer! = nil
+    var colorBuffer: MTLBuffer! = nil
     var matrixBuffer: MTLBuffer! = nil
     var object3DInfo: RenderUtils.Object3DInfo! = nil
     
@@ -130,7 +131,7 @@ class ShapeRenderer: Renderer, RenderController {
         let pipelineStateDescriptor: MTLRenderPipelineDescriptor
             pipelineStateDescriptor = loadShape(device: device, view: view)
         pipelineState = renderUtils.createPipeLineStateWithDescriptor(device: device, pipelineStateDescriptor: pipelineStateDescriptor)
-        
+        colorBuffer = renderUtils.createColorBuffer(device: device, colors: colors, label: "Color shape buffer")
         loadShapeInfo(device: device)
         matrixBuffer = renderUtils.createMatrixBuffer(device: device, label: "Shape matrix")
         
@@ -140,17 +141,13 @@ class ShapeRenderer: Renderer, RenderController {
         
         var numSides = self.numSides()
         
-        let floatSize = MemoryLayout<float4>.size
         let uint4Size = MemoryLayout<uint4>.size
-        let colorsSize = floatSize * colors.count
-        let bufferSize = colorsSize + uint4Size
-        
+        let bufferSize = uint4Size
         
         let buffer = device.makeBuffer(length: bufferSize, options: [])
         buffer.label = "Shape info"
         let pointer = buffer.contents()
-        memcpy(pointer, colors, bufferSize)
-        memcpy(pointer + colorsSize, &numSides, uint4Size)
+        memcpy(pointer, &numSides, uint4Size)
         shapeInfoBuffer = buffer
     }
     
@@ -191,7 +188,7 @@ class ShapeRenderer: Renderer, RenderController {
         
         textureLoader?.loadInto(renderEncoder: renderEncoder)
         
-        let vertexBuffers: [MTLBuffer] = [matrixBuffer, shapeInfoBuffer]
+        let vertexBuffers: [MTLBuffer] = [matrixBuffer, shapeInfoBuffer, colorBuffer]
         let _ = renderUtils.drawIndexedPrimitives(renderEncoder: renderEncoder, meshes: meshes, materials: materials, vertexBuffers: vertexBuffers)
         
         if (changedWindingOrder) {

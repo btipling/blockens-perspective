@@ -14,7 +14,8 @@
 vertex ShapeOut shapeVertex(uint vid [[ vertex_id ]],
                             const ShapeIn vertices [[stage_in]],
                             constant float4x4* matrix [[ buffer(1)]],
-                            constant ShapeInfo* shapeInfo [[ buffer(2) ]]) {
+                            constant ShapeInfo* shapeInfo [[ buffer(2)]],
+                            constant float4* colors [[ buffer (3) ]]) {
 
     ShapeOut outVertex;
     
@@ -24,7 +25,7 @@ vertex ShapeOut shapeVertex(uint vid [[ vertex_id ]],
     outVertex.modelCoordinates = pos;
     
     uint face = vid / 4;
-    outVertex.color = shapeInfo->colors[face % 6];
+    outVertex.color = colors[face % 6];
     
     return outVertex;
 }
@@ -32,14 +33,15 @@ vertex ShapeOut shapeVertex(uint vid [[ vertex_id ]],
 vertex ShapeOut bubbleVertex(uint vid [[ vertex_id ]],
                              const ShapeIn vertices [[stage_in]],
                              constant float4x4* matrix [[ buffer(1)]],
-                             constant ShapeInfo* shapeInfo [[ buffer(2) ]]) {
+                             constant ShapeInfo* shapeInfo [[ buffer(2)]],
+                             constant float4* colors [[ buffer (3) ]]) {
     
     ShapeOut outVertex;
     
     outVertex.position = toFloat4(vertices.position) * *matrix;
     
     uint face = vid > 700 ? 0 : 1;
-    outVertex.color = shapeInfo->colors[face];
+    outVertex.color = colors[face];
     
     return outVertex;
 }
@@ -47,14 +49,15 @@ vertex ShapeOut bubbleVertex(uint vid [[ vertex_id ]],
 vertex ShapeOut skyVertex(uint vid [[ vertex_id ]],
                           const ShapeIn vertices [[stage_in]],
                           constant float4x4* matrix [[ buffer(1)]],
-                          constant ShapeInfo* shapeInfo [[ buffer(2) ]]) {
+                          constant ShapeInfo* shapeInfo [[ buffer(2)]],
+                          constant float4* colors [[ buffer (3) ]]) {
     
     ShapeOut outVertex;
     
     outVertex.position = toFloat4(vertices.position) * *matrix;
     
     uint face = vid > 41 ? 0 : 1;
-    outVertex.color = shapeInfo->colors[face];
+    outVertex.color = colors[face];
     
     return outVertex;
 }
@@ -76,28 +79,42 @@ fragment float4 shapeTextureFragment(ShapeOut in [[stage_in]],
 // Cube Map shaders
 
 vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
-                            const CubeIn vertices [[stage_in]],
-                            constant float4x4* matrix [[ buffer(1)]],
-                            constant ShapeInfo* shapeInfo [[ buffer(2) ]]) {
+                          const CubeIn vertices [[stage_in]],
+                          constant float4x4* matrix [[ buffer(1)]],
+                          constant ShapeInfo* shapeInfo [[ buffer(2)]],
+                          constant float4* colors [[ buffer (3) ]]) {
     
     CubeOut outVertex;
     
+    uint sideNo = vid / 4;
+    
     float4 pos = toFloat4(vertices.position);
     outVertex.position = pos * *matrix;
-    outVertex.textureCoords = vertices.textureCoords;
     
+    outVertex.textureCoords = vertices.textureCoords;
+    if (vid == 0) {
+        outVertex.color = float4(1.0, 0.0, 0.0, 1.0);
+    } else if (vid == 1) {
+        outVertex.color = float4(0.0, 1.0, 0.0, 1.0);
+    } else {
+        outVertex.color = float4(0.0, 1.0, 1.0, 1.0);
+    }
+    outVertex.cubeSide = sideNo;
+       
     return outVertex;
 }
 
 
 fragment float4 cubeTextureFragment(CubeOut in [[stage_in]],
-                                     texturecube<float>  cubeTexture [[ texture(0) ]],
+                                     texture2d_array<float> cubeTexture [[ texture(0) ]],
                                      sampler cubeSampler [[ sampler(0)]]) {
     constexpr sampler defaultSampler;
     
-    //float4 color =  cubeTexture.sample(defaultSampler, in.textureCoords);
+    float4 color =  cubeTexture.sample(cubeSampler, in.textureCoords, in.cubeSide);
     
-    return float4(0.64, 1.0, 0.0, 1.0);
+    //return float4(0.64, 1.0, 0.0, 1.0);
+    return color;
+    //return in.color;
 }
 
 

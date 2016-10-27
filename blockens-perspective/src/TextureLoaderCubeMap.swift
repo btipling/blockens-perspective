@@ -55,7 +55,14 @@ class TextureLoaderCubeMap: TextureLoader {
             }
         }
         let firstTexture = textures.first
-        let descriptor = MTLTextureDescriptor.textureCubeDescriptor(pixelFormat: firstTexture!.pixelFormat, size: 4096, mipmapped: false)
+        let descriptor = MTLTextureDescriptor()
+        
+        descriptor.pixelFormat = firstTexture!.pixelFormat
+        descriptor.textureType = MTLTextureType.type2DArray
+        descriptor.width = 4096
+        descriptor.height = 4096
+        descriptor.mipmapLevelCount = 1
+        descriptor.arrayLength = 6
         texture = device.makeTexture(descriptor: descriptor)
         
         for (index, currentSide) in textures.enumerated() {
@@ -66,8 +73,7 @@ class TextureLoaderCubeMap: TextureLoader {
             let roPointer = UnsafeRawPointer.init(pointer)
             print("rowBytes: \(bytesPerRow)")
             currentSide.getBytes(pointer, bytesPerRow: bytesPerRow, from: region, mipmapLevel: 0)
-            texture!.replace(region: region, mipmapLevel: 0, slice: 0, withBytes: roPointer, bytesPerRow: bytesPerRow, bytesPerImage: imageSize)
-            return
+            texture!.replace(region: region, mipmapLevel: 0, slice: index, withBytes: roPointer, bytesPerRow: bytesPerRow, bytesPerImage: imageSize)
         }
         
         
