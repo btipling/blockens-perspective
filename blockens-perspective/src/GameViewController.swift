@@ -90,11 +90,19 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         testDrawingSphere.update(rotation: float3(2.0, 2.0, 0.0), position: float3(60.0, 0.0, 0.0))
         
         let ggTexture = TextureLoaderCubeMap(name: "gg", renderUtils: renderUtils)
-        let testMappedCube = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(200.0, 200.0, 200.0), shapeType: .Cube, textureLoader: ggTexture,
+        let testMappedCube = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(25.0, 25.0, 25.0), shapeType: .Cube, textureLoader: ggTexture,
                                            inward: true)
         testMappedCube.vertexName = "cubeVertex"
         testMappedCube.fragmentName = "cubeTextureFragment"
-        testMappedCube.update(rotation: float3(0.0, 0.0, 0.0), position: float3(285.0, 250.0, 155.0))
+        testMappedCube.update(rotation: float3(0.0, 0.0, 0.0), position: float3(105.0, 25.0, 55.0))
+        
+        
+        let earthTexture = TextureLoader2D(name: "earth", renderUtils: renderUtils)
+        let testMappedSphere = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(15.0, 15.0, 15.0), shapeType: .Sphere, textureLoader: earthTexture,
+                                           inward: false)
+        testMappedSphere.vertexName = "shapeVertex"
+        testMappedSphere.fragmentName = "shapeTextureFragment"
+        testMappedSphere.update(rotation: float3(0.0, 0.0, 0.0), position: float3(4.3, 25.0, 121.0))
 
         // Add render controllers, order matters.
         var renderControllers: [RenderController] = [
@@ -106,6 +114,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             testTextureSphere,
             testDrawingSphere,
             testMappedCube,
+            testMappedSphere,
         ]
         
         renderControllers = renderControllers + bubbles

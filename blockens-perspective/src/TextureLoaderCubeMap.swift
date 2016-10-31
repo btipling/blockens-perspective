@@ -55,15 +55,7 @@ class TextureLoaderCubeMap: TextureLoader {
             }
         }
         let firstTexture = textures.first
-        let descriptor = MTLTextureDescriptor()
-        
-        descriptor.pixelFormat = firstTexture!.pixelFormat
-        descriptor.textureType = MTLTextureType.type2DArray
-        descriptor.width = 4096
-        descriptor.height = 4096
-        descriptor.mipmapLevelCount = 1
-        descriptor.arrayLength = 6
-        texture = device.makeTexture(descriptor: descriptor)
+        texture = device.makeTexture(descriptor: textureDescriptor(device: device, texture: firstTexture!))
         
         for (index, currentSide) in textures.enumerated() {
             let bytesPerRow = 4 * currentSide.width
@@ -75,8 +67,20 @@ class TextureLoaderCubeMap: TextureLoader {
             currentSide.getBytes(pointer, bytesPerRow: bytesPerRow, from: region, mipmapLevel: 0)
             texture!.replace(region: region, mipmapLevel: 0, slice: index, withBytes: roPointer, bytesPerRow: bytesPerRow, bytesPerImage: imageSize)
         }
+    }
+    
+    func textureDescriptor(device: MTLDevice, texture: MTLTexture) -> MTLTextureDescriptor {
         
+        let descriptor = MTLTextureDescriptor()
         
+        descriptor.pixelFormat = texture.pixelFormat
+        descriptor.textureType = MTLTextureType.type2DArray
+        descriptor.width = 4096
+        descriptor.height = 4096
+        descriptor.mipmapLevelCount = 1
+        descriptor.arrayLength = 6
+        
+        return descriptor
     }
     
     func loadInto(renderEncoder: MTLRenderCommandEncoder) {

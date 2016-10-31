@@ -90,31 +90,19 @@ vertex CubeOut cubeVertex(uint vid [[ vertex_id ]],
     
     float4 pos = toFloat4(vertices.position);
     outVertex.position = pos * *matrix;
+    outVertex.cubeSide = sideNo;
     
     outVertex.textureCoords = vertices.textureCoords;
-    if (vid == 0) {
-        outVertex.color = float4(1.0, 0.0, 0.0, 1.0);
-    } else if (vid == 1) {
-        outVertex.color = float4(0.0, 1.0, 0.0, 1.0);
-    } else {
-        outVertex.color = float4(0.0, 1.0, 1.0, 1.0);
-    }
-    outVertex.cubeSide = sideNo;
-       
     return outVertex;
 }
-
 
 fragment float4 cubeTextureFragment(CubeOut in [[stage_in]],
                                      texture2d_array<float> cubeTexture [[ texture(0) ]],
                                      sampler cubeSampler [[ sampler(0)]]) {
-    constexpr sampler defaultSampler;
     
     float4 color =  cubeTexture.sample(cubeSampler, in.textureCoords, in.cubeSide);
     
-    //return float4(0.64, 1.0, 0.0, 1.0);
     return color;
-    //return in.color;
 }
 
 
@@ -154,8 +142,6 @@ fragment float4 sphereDrawingFragment(ShapeOut in [[stage_in]]) {
     if (pos.z < 0) {
         return cherry;
     }
-    
-    
     
     return red;
 }
