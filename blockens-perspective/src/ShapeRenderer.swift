@@ -102,10 +102,7 @@ class ShapeRenderer: Renderer, RenderController {
             print("Unable to load mesh for new box: \(error)")
         }
         materials = renderUtils.meshesToMaterialsBuffer(device: device, meshes: [mesh])
-        let meshDescriptor = mesh.vertexDescriptor
-        let attributes = meshDescriptor.attributes
         let tc = mesh.vertexAttributeData(forAttributeNamed: "textureCoordinate")!
-        let map = tc.map
         switch(tc.format) {
         case .float2:
             print("float2")
@@ -160,7 +157,7 @@ class ShapeRenderer: Renderer, RenderController {
         }
     }
 
-    func update(rotation: float3, position: float3, scale: float3?=nil) {
+    func update(rotation: float4, position: float3, scale: float3?=nil) {
         
         object3DInfo = RenderUtils.Object3DInfo(
             rotation: rotation,

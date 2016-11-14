@@ -24,7 +24,7 @@ class RenderUtils {
 
     
     struct Object3DInfo {
-        var rotation: float3
+        var rotation: float4
         var scale: float3
         var position: float3
     }
@@ -189,7 +189,7 @@ class RenderUtils {
     func object3DInfoToModelViewData(object3DInfo: Object3DInfo) -> ModelViewData {
         return ModelViewData(
             scale: toFloat4(position: object3DInfo.scale),
-            rotation: toFloat4(position: object3DInfo.rotation),
+            rotation: object3DInfo.rotation,
             translation: toFloat4(position: object3DInfo.position)
         )
     }
@@ -445,6 +445,14 @@ class RenderUtils {
         }
 
         return materials
+    }
+    
+    func fromEuler(_ pitch: Float32, _ heading: Float32, _ roll: Float32) -> float4 {
+        return float4(pitch, heading, roll, 0.0);
+    }
+    
+    func fromEulerFloat3(_ angles: float3) -> float4 {
+        return fromEuler(angles.x, angles.y, angles.z);
     }
     
     

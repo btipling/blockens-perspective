@@ -81,9 +81,9 @@ class DuckRenderer: Renderer, RenderController {
         matrixBuffer = renderUtils.createMatrixBuffer(device: device, label: "Duck matrix")
 
         duckInfo = RenderUtils.Object3DInfo(
-            rotation: [0.0, 0.0, 0.0],
-            scale: [5.0, 5.0, 5.0],
-            position: [0.0, 20.0, 0.0])
+            rotation: float4(0.0, 0.0, 0.0, 0.0),
+            scale: float3(5.0, 5.0, 5.0),
+            position: float3(0.0, 20.0, 0.0))
         
         update()
         print("loading Duck assets done")
