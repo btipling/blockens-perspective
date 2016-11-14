@@ -89,51 +89,6 @@ func perspectiveProjection(renderInfo: RenderUtils.RenderInfo) -> float4x4 {
     return projectionMatrix
 }
 
-func rotateX(angles: float4) -> float4x4 {
-    
-    let cosX: Float32 = cos(angles.x)
-    let sinX: Float32 = sin(angles.x)
-    
-    var rotationMatrix = float4x4()
-    
-    rotationMatrix[0] = float4(1, 0, 0, 0)
-    rotationMatrix[1] = float4(0, cosX, sinX * -1, 0)
-    rotationMatrix[2] = float4(0, sinX, cosX, 0)
-    rotationMatrix[3] = float4(0, 0, 0, 1)
-    
-    return rotationMatrix
-}
-
-func rotateY(angles: float4) -> float4x4 {
-    
-    let cosY: Float32 = cos(angles.y)
-    let sinY: Float32 = sin(angles.y)
-    
-    var rotationMatrix = float4x4()
-    
-    rotationMatrix[0] = float4(cosY, 0, sinY, 0)
-    rotationMatrix[1] = float4(0, 1, 0, 0)
-    rotationMatrix[2] = float4(sinY * -1, 0, cosY, 0)
-    rotationMatrix[3] = float4(0, 0, 0, 1)
-    
-    return rotationMatrix
-}
-
-func rotateZ(angles: float4) -> float4x4 {
-    
-    let cosZ: Float32 = cos(angles.z)
-    let sinZ: Float32 = sin(angles.z)
-    
-    var rotationMatrix = float4x4()
-    
-    rotationMatrix[0] = float4(cosZ, sinZ * -1, 0, 0)
-    rotationMatrix[1] = float4(sinZ, cosZ, 0, 0)
-    rotationMatrix[2] = float4(0, 0, 1, 0)
-    rotationMatrix[3] = float4(0, 0, 0, 1)
-    
-    return rotationMatrix
-}
-
 func translationMatrix(transVector: float4) -> float4x4 {
     
     var translationMatrix = float4x4()
@@ -158,15 +113,41 @@ func zeroVector() -> float4 {
     return float4(0.0, 0.0, 0.0, 0.0)
 }
 
-func getRotationMatrix(rotationVector: float4) -> RotationMatrix {
-    return RotationMatrix(
-        x: rotateX(angles: rotationVector),
-        y: rotateY(angles: rotationVector),
-        z: rotateZ(angles: rotationVector)
-    )
+func getRotationMatrix(q: float4) -> float4x4 {
+    
+    let x2 = pow(q.x, 2)
+    let y2 = pow(q.y, 2)
+    let z2 = pow(q.z, 2)
+    
+    /**
+     1 − 2y^2 − 2z^2,  2xy + 2wz,  2xz − 2wy
+     2xy − 2wz,  1 − 2x^2 − 2z^2,  2yz + 2wx
+     2xz + 2wy, 2yz − 2wx, 1 − 2x^2 − 2y^2.
+     
+ */
+    let m11 = 1 - 2 * y2 - 2 * z2
+    let m12 = 2 * q.x * q.y + 2 * q.w * q.z 
+    let m13 = 2 * q.x * q.z - 2 * q.w * q.y 
+    
+    let m21 = 2 * q.x * q.y - 2 * q.w * q.z 
+    let m22 = 1 - 2 * x2 - 2 * z2
+    let m23 = 2 * q.y * q.z + 2 * q.w * q.x
+    
+    let m31 = 2 * q.x * q.z + 2 * q.w * q.y
+    let m32 = 2 * q.y * q.z - 2 * q.w * q.x
+    let m33 = 1 - 2 * x2 - 2 * y2
+    
+    var rotationMatrix = float4x4()
+    
+    rotationMatrix[0] = float4(m11, m12, m13, 0)
+    rotationMatrix[1] = float4(m21, m22, m23, 0)
+    rotationMatrix[2] = float4(m31, m32, m33, 0)
+    rotationMatrix[3] = float4(0, 0, 0, 1)
+    
+    return rotationMatrix
 }
 
-func lookAt(cameraPosition: float4, cameraRotation: float4) -> float4x4 {
+func lookAt(cameraPosition: float4) -> float4x4 {
     
     let initialUp = float4(0.0, 1.0, 0.0, 1.0)
     
@@ -217,10 +198,10 @@ func modelViewTransform(modelViewData: ModelViewData, renderInfo: RenderUtils.Re
     // ## Setup matrices.
     
     let scaleMatrix_ = scaleMatrix(scale: modelViewData.scale)
-    let rotationMatrix = getRotationMatrix(rotationVector: modelViewData.rotation)
+    let rotationMatrix = getRotationMatrix(q: modelViewData.rotation)
     let objectTranslationMatrix = translationMatrix(transVector: modelViewData.translation)
-    let cameraMatrix = lookAt(cameraPosition: cameraPosition, cameraRotation: toFloat4(position: renderInfo.cameraRotation))
-    let cameraRotationMatrix = getRotationMatrix(rotationVector: toFloat4(position: renderInfo.cameraRotation))
+    let cameraMatrix = lookAt(cameraPosition: cameraPosition)
+    let cameraRotationMatrix = getRotationMatrix(q: renderInfo.cameraRotation)
     let perspectiveMatrix = perspectiveProjection(renderInfo: renderInfo)
     
     // ## Build the final transformation matrix by multiplying the matrices together, matrices are associative: ABC == A(BC).
@@ -228,9 +209,7 @@ func modelViewTransform(modelViewData: ModelViewData, renderInfo: RenderUtils.Re
     // Camera translation C
     // Then multiply the vector by v(SRTP(C))
     
-    var SR: float4x4 = scaleMatrix_ * rotationMatrix.x
-    SR = SR * rotationMatrix.y
-    SR = SR * rotationMatrix.z
+    let SR: float4x4 = scaleMatrix_ * rotationMatrix
     
     let SRT: float4x4 = SR * objectTranslationMatrix
     
@@ -244,8 +223,7 @@ func modelViewTransform(modelViewData: ModelViewData, renderInfo: RenderUtils.Re
         SRT_C = SRT_C * cameraMatrix
     }
     
-    var SRT_CR: float4x4 = SRT_C * cameraRotationMatrix.y
-    SRT_CR = SRT_CR * cameraRotationMatrix.x
+    let SRT_CR: float4x4 = SRT_C * cameraRotationMatrix
     
     // Finally add perspective transformation, for eventual v(SRTP(CR):
     return SRT_CR * perspectiveMatrix

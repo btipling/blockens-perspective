@@ -70,31 +70,31 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         renderUtils.depthStencilState(device: device)
         
         let plane = ShapeRenderer(colors: renderUtils.groundColors, scale: float3(1000.0, 1000.0, 1.0), shapeType: .Plane)
-        plane.update(rotation: renderUtils.fromEuler(1.6, 0.0, 0.0), position: float3(0.0, -6.0, 1.0))
+        plane.update(rotation: RenderUtils.fromEuler(1.6, 0.0, 0.0), position: float3(0.0, -6.0, 1.0))
         
         sky = ShapeRenderer(colors: renderUtils.skyColors, scale: float3(400.0, 400.0, 400.0), shapeType: .Sphere, inward: true, translate: false)
         sky.vertexName = "skyVertex"
-        sky.update(rotation: renderUtils.fromEuler(1.0, 1.0, 1.0), position: float3(0.0, 0.0, 0.0))
+        sky.update(rotation: RenderUtils.fromEuler(1.0, 1.0, 1.0), position: float3(0.0, 0.0, 0.0))
         
         let doggoTexture = TextureLoader2D(name: "spaghetti", renderUtils: renderUtils)
         let testCube = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(1.0, 1.0, 1.0), shapeType: .Cube, textureLoader: doggoTexture)
         testCube.fragmentName = "shapeTextureFragment"
-        testCube.update(rotation: renderUtils.fromEuler(0.0, 0.0, 1.0), position: float3(55.0, 0.0, 5.0))
+        testCube.update(rotation: RenderUtils.fromEuler(0.0, 0.0, 1.0), position: float3(55.0, 0.0, 5.0))
         
         let testTextureSphere = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(1.0, 1.0, 1.0), shapeType: .Sphere, textureLoader: doggoTexture)
         testTextureSphere.fragmentName = "shapeTextureFragment"
-        testTextureSphere.update(rotation: renderUtils.fromEuler(2.0, 2.0, 0.0), position: float3(55.0, 0.0, -5.0))
+        testTextureSphere.update(rotation: RenderUtils.fromEuler(2.0, 2.0, 0.0), position: float3(55.0, 0.0, -5.0))
         
         let testDrawingSphere = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(1.0, 1.0, 1.0), shapeType: .Sphere)
         testDrawingSphere.fragmentName = "sphereDrawingFragment"
-        testDrawingSphere.update(rotation: renderUtils.fromEuler(2.0, 2.0, 0.0), position: float3(60.0, 0.0, 0.0))
+        testDrawingSphere.update(rotation: RenderUtils.fromEuler(2.0, 2.0, 0.0), position: float3(60.0, 0.0, 0.0))
         
         let ggTexture = TextureLoaderCubeMap(name: "gg", renderUtils: renderUtils)
         let testMappedCube = ShapeRenderer(colors: renderUtils.cameraColors, scale: float3(25.0, 25.0, 25.0), shapeType: .Cube, textureLoader: ggTexture,
                                            inward: true)
         testMappedCube.vertexName = "cubeVertex"
         testMappedCube.fragmentName = "cubeTextureFragment"
-        testMappedCube.update(rotation: renderUtils.fromEuler(0.0, 0.0, 0.0), position: float3(105.0, 25.0, 55.0))
+        testMappedCube.update(rotation: RenderUtils.fromEuler(0.0, 0.0, 0.0), position: float3(105.0, 25.0, 55.0))
         
         
         let earthTexture = TextureLoader2D(name: "earth", renderUtils: renderUtils)
@@ -102,7 +102,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
                                            inward: false)
         testMappedSphere.vertexName = "shapeVertex"
         testMappedSphere.fragmentName = "shapeTextureFragment"
-        testMappedSphere.update(rotation: renderUtils.fromEuler(0.0, 0.0, 0.0), position: float3(4.3, 25.0, 121.0))
+        testMappedSphere.update(rotation: RenderUtils.fromEuler(0.0, 0.0, 0.0), position: float3(4.3, 25.0, 121.0))
 
         // Add render controllers, order matters.
         var renderControllers: [RenderController] = [
@@ -135,7 +135,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             let pitch = Float32(arc4random_uniform(5))
             let heading = Float32(arc4random_uniform(5))
             let roll = Float32(arc4random_uniform(1))
-            referenceCube.update(rotation: renderUtils.fromEuler(pitch, heading, roll), position: [x, y, z]);
+            referenceCube.update(rotation: RenderUtils.fromEuler(pitch, heading, roll), position: [x, y, z]);
         }
     }
     
@@ -152,7 +152,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
     }
     
     func updateAll() {
-        cube.update(rotation: renderUtils.fromEulerFloat3(frameInfo.cubeRotation), position: frameInfo.cubePosition)
+        cube.update(rotation: RenderUtils.fromEulerFloat3(frameInfo.cubeRotation), position: frameInfo.cubePosition)
         renderUtils.setRenderInfo(frameInfo: frameInfo)
         for renderer in renderers {
             renderer.update()
@@ -238,9 +238,8 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             basisVector = float3(0.0, 0.0, 1.0)
         }
         
-        let rotationMatrix = getRotationMatrix(rotationVector: toFloat4(position: -frameInfo.cameraRotation))
-        let finalRotationMatrix = rotationMatrix.x * rotationMatrix.y * rotationMatrix.z
-        let delta4 = toFloat4(position: basisVector) * finalRotationMatrix
+        let rotationMatrix = getRotationMatrix(q: RenderUtils.fromEulerFloat3(frameInfo.cameraRotation))
+        let delta4 = toFloat4(position: basisVector) * rotationMatrix
         var delta3 = float3(delta4.x, delta4.y, delta4.z)
         delta3 *= modifier
         frameInfo.cameraTranslation = frameInfo.cameraTranslation + delta3
@@ -349,16 +348,15 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         }
         
         let cameraRotation = frameInfo.cameraRotation
-        let completeCircle: Float32 = 0.0
         // The x rotation rotates around the x coordinate, so we use y movement and so on.
         if frameInfo.useCamera {
             yMovement *= -1.0
         } else {
             xMovement *= -1.0
         }
-        let newX: Float32 = completeCircle + cameraRotation[0] + yMovement
-        let newY: Float32 = completeCircle + cameraRotation[1] - xMovement
-        frameInfo.cameraRotation = [newX, newY, 0.0]
+        let newX: Float32 = cameraRotation[0] + yMovement
+        let newY: Float32 = cameraRotation[1] - xMovement
+        frameInfo.cameraRotation = float3(newX, newY, 0.0)
         cameraRotationChange = (0.0, 0.0)
     }
     

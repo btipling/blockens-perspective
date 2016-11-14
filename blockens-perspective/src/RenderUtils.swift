@@ -13,7 +13,7 @@ class RenderUtils {
         var near: Float32
         var far: Float32
         var winResolution: float2
-        var cameraRotation: float3
+        var cameraRotation: float4
         var cameraTranslation: float3
         var useCamera: Bool
     }
@@ -116,7 +116,7 @@ class RenderUtils {
                 near: frameInfo.near,
                 far: frameInfo.far,
                 winResolution: frameInfo.viewDimensions,
-                cameraRotation: frameInfo.cameraRotation,
+                cameraRotation: RenderUtils.fromEulerFloat3(frameInfo.cameraRotation),
                 cameraTranslation: frameInfo.cameraTranslation,
                 useCamera: frameInfo.useCamera)
         if (renderInfoBuffer_ != nil) {
@@ -447,11 +447,27 @@ class RenderUtils {
         return materials
     }
     
-    func fromEuler(_ pitch: Float32, _ heading: Float32, _ roll: Float32) -> float4 {
-        return float4(pitch, heading, roll, 0.0);
+    static func fromEuler(_ pitch: Float32, _ heading: Float32, _ roll: Float32) -> float4 {
+        /**
+          cos(h/2) cos(p/2) cos(b/2) + sin(h/2) sin(p/2) sin(b/2)
+          − cos(h/2) sin(p/2) cos(b/2) − sin(h/2) cos(p/2) sin(b/2)
+         cos(h/2) sin(p/2) sin(b/2) − sin(h/2) cos(p/2) cos(b/2)
+         sin(h/2) sin(p/2) cos(b/2) − cos(h/2) cos(p/2) sin(b/2)
+ */
+        let p = pitch/2
+        let h = heading/2
+        let b = roll/2
+        
+        var q = float4()
+        q.w = cos(h) * cos(p) * cos(b) + sin(h) * sin(p) * sin(b)
+        q.x = -cos(h) * sin(p) * cos(b) - sin(h) * cos(p) * sin(b)
+        q.y = cos(h) * sin(p) * sin(b) - sin(h) * cos(p) * cos(b)
+        q.z = sin(h) * sin(p) * cos(b) - cos(h) * cos(p) * sin(b)
+        
+        return q
     }
     
-    func fromEulerFloat3(_ angles: float3) -> float4 {
+    static func fromEulerFloat3(_ angles: float3) -> float4 {
         return fromEuler(angles.x, angles.y, angles.z);
     }
     
