@@ -170,14 +170,21 @@ func lookAt(cameraPosition: float4, cameraRotation: float4) -> float4x4 {
     
     let initialUp = float4(0.0, 1.0, 0.0, 1.0)
     
-    let poiFromOrigin = float4(cameraPosition.x, cameraPosition.y, cameraPosition.z + 1000.0, 1.0)
+    var poiFromOrigin = float4(cameraPosition.x, cameraPosition.y, cameraPosition.z + 1000.0, 1.0)
+    
+    let cameraRotationMatrix = getRotationMatrix(rotationVector:  cameraRotation)
     
     
     let eye = float3(cameraPosition.x, cameraPosition.y, cameraPosition.z)
+    
+    poiFromOrigin = poiFromOrigin * cameraRotationMatrix.x
+    poiFromOrigin = poiFromOrigin * cameraRotationMatrix.y
+    
     let poi = float3(poiFromOrigin.x, poiFromOrigin.y, poiFromOrigin.z)
     let up = float3(initialUp.x, initialUp.y, initialUp.z)
     
     let f: float3 = normalize(poi - eye)
+    
     let s: float3 = normalize(cross(up, f))
     let u: float3 = cross(f, s)
     
@@ -204,7 +211,31 @@ func lookAt(cameraPosition: float4, cameraRotation: float4) -> float4x4 {
                     0.0,
                     1.0)
     
-    return lookAtMatrix * translationMatrix(transVector: -cameraPosition)
+    var undoMatrix: float4x4 = float4x4()
+    
+    
+    undoMatrix[0] = float4(
+        1.0,
+        0.0,
+        0.0,
+        -eye.x)
+    undoMatrix[1] = float4(
+        0.0,
+        1.0,
+        0.0,
+        -eye.y)
+    undoMatrix[2] = float4(
+        0.0,
+        0.0,
+        1.0,
+        -eye.z)
+    undoMatrix[3] = float4(
+        0.0,
+        0.0,
+        0.0,
+        1.0)
+    
+    return undoMatrix * lookAtMatrix
 }
 
 func modelViewTransform(modelViewData: ModelViewData, renderInfo: RenderUtils.RenderInfo, translate: Bool=true) -> float4x4 {
@@ -220,7 +251,7 @@ func modelViewTransform(modelViewData: ModelViewData, renderInfo: RenderUtils.Re
     let rotationMatrix = getRotationMatrix(rotationVector: modelViewData.rotation)
     let objectTranslationMatrix = translationMatrix(transVector: modelViewData.translation)
     let cameraMatrix = lookAt(cameraPosition: cameraPosition, cameraRotation: toFloat4(position: renderInfo.cameraRotation))
-    let cameraRotationMatrix = getRotationMatrix(rotationVector: toFloat4(position: renderInfo.cameraRotation))
+//    let cameraRotationMatrix = getRotationMatrix(rotationVector: toFloat4(position: renderInfo.cameraRotation))
     let perspectiveMatrix = perspectiveProjection(renderInfo: renderInfo)
     
     // ## Build the final transformation matrix by multiplying the matrices together, matrices are associative: ABC == A(BC).
@@ -244,10 +275,10 @@ func modelViewTransform(modelViewData: ModelViewData, renderInfo: RenderUtils.Re
         SRT_C = SRT_C * cameraMatrix
     }
     
-    var SRT_CR: float4x4 = SRT_C * cameraRotationMatrix.y
-    SRT_CR = SRT_CR * cameraRotationMatrix.x
+//    var SRT_CR: float4x4 = SRT_C * cameraRotationMatrix.y
+//    SRT_CR = SRT_CR * cameraRotationMatrix.x
     
     // Finally add perspective transformation, for eventual v(SRTP(CR):
-    return SRT_CR * perspectiveMatrix
+    return SRT_C * perspectiveMatrix
     
 }
