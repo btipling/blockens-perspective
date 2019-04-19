@@ -16,7 +16,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         NSApp.activate(ignoringOtherApps: true)
         window.makeKeyAndOrderFront(self)
-        NSApplication.shared().presentationOptions = [.hideMenuBar, .hideDock]
+        NSApplication.shared.presentationOptions = [.hideMenuBar, .hideDock]
         window.toggleFullScreen(self)
         NSCursor.hide()
     }

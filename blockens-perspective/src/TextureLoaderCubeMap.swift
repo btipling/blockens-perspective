@@ -61,7 +61,7 @@ class TextureLoaderCubeMap: TextureLoader {
             let bytesPerRow = 4 * currentSide.width
             let imageSize = bytesPerRow * currentSide.height
             let region = MTLRegionMake2D(0, 0, currentSide.width, currentSide.height)
-            let pointer = UnsafeMutableRawPointer.allocate(bytes: imageSize, alignedTo: 4)
+            let pointer = UnsafeMutableRawPointer.allocate(byteCount: imageSize, alignment: 4)
             let roPointer = UnsafeRawPointer.init(pointer)
             print("rowBytes: \(bytesPerRow)")
             currentSide.getBytes(pointer, bytesPerRow: bytesPerRow, from: region, mipmapLevel: 0)
@@ -85,9 +85,9 @@ class TextureLoaderCubeMap: TextureLoader {
     
     func loadInto(renderEncoder: MTLRenderCommandEncoder) {
         if texture != nil {
-            renderEncoder.setFragmentTexture(texture!, at: 0)
+            renderEncoder.setFragmentTexture(texture!, index: 0)
             if (sampler != nil) {
-                renderEncoder.setFragmentSamplerState(sampler, at: 0)
+                renderEncoder.setFragmentSamplerState(sampler, index: 0)
             }
         }
     }
