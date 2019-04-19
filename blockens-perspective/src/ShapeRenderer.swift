@@ -144,7 +144,7 @@ class ShapeRenderer: Renderer, RenderController {
         let uint4Size = MemoryLayout<uint4>.size
         let bufferSize = uint4Size
         
-        let buffer = device.makeBuffer(length: bufferSize, options: [])
+        let buffer = device.makeBuffer(length: bufferSize, options: [])!
         buffer.label = "Shape info"
         let pointer = buffer.contents()
         memcpy(pointer, &numSides, uint4Size)

@@ -49,7 +49,7 @@ class CrossHairsRenderer: Renderer, RenderController {
     func createLinesBuffer(device: MTLDevice) -> MTLBuffer {
         
         let bufferSize = crossHairsVertexData.count * MemoryLayout.size(ofValue: crossHairsVertexData[0])
-        let buffer = device.makeBuffer(length: bufferSize, options: [])
+        let buffer = device.makeBuffer(length: bufferSize, options: [])!
         let pointer = buffer.contents()
         memcpy(pointer, crossHairsVertexData, bufferSize)
         buffer.label = "Cross hairs buffer"
@@ -63,7 +63,7 @@ class CrossHairsRenderer: Renderer, RenderController {
         
         
         for (i, vertexBuffer) in [crossHairsVertexBuffer, renderUtils.renderInfoBuffer()].enumerated() {
-            renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: i)
+            renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: i)
         }
         
         

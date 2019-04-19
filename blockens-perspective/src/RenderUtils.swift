@@ -170,7 +170,7 @@ class RenderUtils {
     
     func createMatrixBuffer(device: MTLDevice, label: String) -> MTLBuffer {
         let matrixSize = MemoryLayout<float4x4>.size
-        let buffer = device.makeBuffer(length: matrixSize, options: [])
+        let buffer = device.makeBuffer(length: matrixSize, options: [])!
         buffer.label = label
         return buffer
     }
@@ -217,7 +217,7 @@ class RenderUtils {
     
     func createPipelineStateDescriptor(vertex: String, fragment: String, device: MTLDevice, view: MTKView) -> MTLRenderPipelineDescriptor {
         
-        let defaultLibrary = device.newDefaultLibrary()!
+        let defaultLibrary = device.makeDefaultLibrary()!
         let vertexProgram = defaultLibrary.makeFunction(name: vertex)!
         let fragmentProgram = defaultLibrary.makeFunction(name: fragment)!
         
@@ -246,7 +246,7 @@ class RenderUtils {
         let imageRef = image.cgImage(forProposedRect: &imageRect, context: nil, hints: nil)!
         let textureLoader = MTKTextureLoader(device: device)
         do {
-            return try textureLoader.newTexture(with: imageRef, options: .none)
+            return try textureLoader.newTexture(cgImage: imageRef, options: .none)
         } catch {
             print("Got an error trying to texture \(error)")
         }
@@ -281,11 +281,11 @@ class RenderUtils {
         for mesh in meshes {
             
             for vertexBuffer in mesh.vertexBuffers {
-                renderEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, at: bufferIndex)
+                renderEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: bufferIndex)
                 bufferIndex += 1
             }
             for buffer in vertexBuffers {
-                renderEncoder.setVertexBuffer(buffer, offset: 0, at: bufferIndex)
+                renderEncoder.setVertexBuffer(buffer, offset: 0, index: bufferIndex)
                 bufferIndex += 1
             }
 
@@ -293,7 +293,7 @@ class RenderUtils {
             for (i, submesh) in mesh.submeshes.enumerated() {
                 if (!materials.isEmpty) {
                     let material = materials[i]
-                    renderEncoder.setVertexBuffer(material, offset: 0, at: bufferIndex)
+                    renderEncoder.setVertexBuffer(material, offset: 0, index: bufferIndex)
                 }
                 
                 renderEncoder.drawIndexedPrimitives(
@@ -313,7 +313,7 @@ class RenderUtils {
         let floatSize = MemoryLayout<Float>.size
         let packedFloat3Size = floatSize * 3;
         let bufferSize = packedFloat3Size
-        let buffer = device.makeBuffer(length: bufferSize, options: [])
+        let buffer = device.makeBuffer(length: bufferSize, options: [])!
         let pointer = buffer.contents()
         memcpy(pointer, &material.color, packedFloat3Size)
         buffer.label = label
@@ -327,7 +327,7 @@ class RenderUtils {
 
     func createSizedBuffer(_ device: MTLDevice, bufferLabel: String) -> MTLBuffer {
 
-        let buffer = device.makeBuffer(length: CONSTANT_BUFFER_SIZE, options: [])
+        let buffer = device.makeBuffer(length: CONSTANT_BUFFER_SIZE, options: [])!
         buffer.label = bufferLabel
 
         return buffer
@@ -337,7 +337,7 @@ class RenderUtils {
 
         let float3Size = MemoryLayout<float3>.size
         let bufferSize = rectangleVertexData.count * float3Size
-        let buffer = device.makeBuffer(length: bufferSize, options: [])
+        let buffer = device.makeBuffer(length: bufferSize, options: [])!
         let pointer = buffer.contents()
         memcpy(pointer, rectangleVertexData, bufferSize)
         buffer.label = bufferLabel
@@ -347,7 +347,7 @@ class RenderUtils {
     
     func createBufferFromIntArray(device: MTLDevice, count: Int, bufferLabel: String) -> MTLBuffer {
         let bufferSize = MemoryLayout.size(ofValue: Array<Int32>(repeating: 0, count: count))
-        let buffer = device.makeBuffer(length: bufferSize, options: [])
+        let buffer = device.makeBuffer(length: bufferSize, options: [])!
         buffer.label = bufferLabel
 
         return buffer
@@ -355,14 +355,14 @@ class RenderUtils {
 
     func createBufferFromFloatArray(device: MTLDevice, count: Int, bufferLabel: String) -> MTLBuffer {
         let bufferSize = MemoryLayout.size(ofValue: Array<Float32>(repeating: 0, count: count))
-        let buffer = device.makeBuffer(length: bufferSize, options: [])
+        let buffer = device.makeBuffer(length: bufferSize, options: [])!
         buffer.label = bufferLabel
 
         return buffer
     }
     
     func createObject3DInfoBuffer(device: MTLDevice, label: String) -> MTLBuffer {
-        let buffer = device.makeBuffer(length: object3DInfoSize, options: [])
+        let buffer = device.makeBuffer(length: object3DInfoSize, options: [])!
         buffer.label = "ground rotation"
         return buffer
     }
@@ -371,7 +371,7 @@ class RenderUtils {
         
         let floatSize = MemoryLayout<float4>.size
         let bufferSize = floatSize * colors.count
-        let buffer = device.makeBuffer(length: bufferSize, options: [])
+        let buffer = device.makeBuffer(length: bufferSize, options: [])!
         buffer.label = label
         let pointer = buffer.contents()
         memcpy(pointer, colors, bufferSize)

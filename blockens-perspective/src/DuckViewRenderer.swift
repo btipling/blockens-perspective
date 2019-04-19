@@ -59,7 +59,7 @@ class DuckRenderer: Renderer, RenderController {
         let pointer: UnsafeMutablePointer<NSArray>? = UnsafeMutablePointer<NSArray>.allocate(capacity: 1)
         let autopointer: AutoreleasingUnsafeMutablePointer<NSArray?>? = AutoreleasingUnsafeMutablePointer<NSArray?>.init(pointer!)
         do {
-            try meshes = MTKMesh.newMeshes(from: asset, device: device, sourceMeshes: autopointer)
+            try meshes = MTKMesh.newMeshes(asset: asset, device: device).metalKitMeshes
         } catch let error {
             print("Unable to load mesh for duck: \(error)")
         }

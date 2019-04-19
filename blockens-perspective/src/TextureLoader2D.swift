@@ -32,7 +32,7 @@ class TextureLoader2D: TextureLoader {
     
     func loadInto(renderEncoder: MTLRenderCommandEncoder) {
         if texture != nil {
-            renderEncoder.setFragmentTexture(texture!, at: 0)
+            renderEncoder.setFragmentTexture(texture!, index: 0)
         }
     }
 

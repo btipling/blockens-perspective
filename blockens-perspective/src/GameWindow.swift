@@ -13,7 +13,7 @@ class GameWindow: NSWindow {
     var keyUpEventListeners = Array<Callback>()
 
     override func keyDown(with event: NSEvent) {
-        if event.modifierFlags.contains(NSEventModifierFlags.command) {
+        if event.modifierFlags.contains(NSEvent.ModifierFlags.command) {
             super.keyDown(with: event)
             return
         }

@@ -41,7 +41,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         
         let view = self.view as! MTKView
         
-        let appDelegate = NSApplication.shared().delegate as! AppDelegate
+        let appDelegate = NSApplication.shared.delegate as! AppDelegate
         let gameWindow = appDelegate.getWindow()
         gameWindow.makeFirstResponder(view)
         cube = ShapeRenderer(colors: renderUtils.cubeColors, scale: float3(1.0, 1.0, 1.0), shapeType: .Cube)
@@ -171,9 +171,9 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
             view.removeTrackingArea(area)
         }
         trackingArea = NSTrackingArea(rect: view.frame, options: [
-            NSTrackingAreaOptions.enabledDuringMouseDrag,
-            NSTrackingAreaOptions.mouseMoved,
-            NSTrackingAreaOptions.activeAlways
+            NSTrackingArea.Options.enabledDuringMouseDrag,
+            NSTrackingArea.Options.mouseMoved,
+            NSTrackingArea.Options.activeAlways
             ], owner: self, userInfo: nil)
         view.addTrackingArea(trackingArea!)
     }
@@ -412,7 +412,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
         handleCameraRotation()
         updateAll()
         
-        let commandBuffer = commandQueue.makeCommandBuffer()
+        let commandBuffer = commandQueue.makeCommandBuffer()!
         commandBuffer.label = "Frame command buffer"
 
         commandBuffer.addCompletedHandler{ [weak self] commandBuffer in
@@ -424,7 +424,7 @@ class GameViewController: NSViewController, MTKViewDelegate, NSWindowDelegate {
 
         if let renderPassDescriptor = view.currentRenderPassDescriptor, let currentDrawable = view.currentDrawable {
 
-            let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
+            let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
             renderUtils.setup3D(renderEncoder: renderEncoder)
             for renderer in renderers {
                 renderer.render(renderEncoder)
